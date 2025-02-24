@@ -23,6 +23,10 @@ span[data-section] {
     transform: translateX(calc(-100% - 50px));
 }
 
+.markdown-embed span[data-section]{
+    display: none;
+}
+
 span[data-section]::before {
     content: attr(data-section);
     color: var(--text-muted);
