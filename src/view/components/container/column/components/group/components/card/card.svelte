@@ -98,7 +98,6 @@
         activeStatus={active}
         nodeId={node}
         {section}
-        {hasChildren}
         {pinned}
     />
     <Bridges {active} {editing} {hasActiveChildren} {firstColumn} {style} />

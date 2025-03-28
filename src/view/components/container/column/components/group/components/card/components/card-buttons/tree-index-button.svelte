@@ -21,7 +21,6 @@
     export let nodeId: string;
     export let activeStatus: ActiveStatus | null;
     export let section: string;
-    export let hasChildren: boolean;
     export let pinned: boolean;
 
     // eslint-disable-next-line no-undef
@@ -54,7 +53,7 @@
         <Pin />
     {/if}
     <span aria-label={lang.card_btn_reveal_in_editor} on:click={openFile}>
-        {section}{#if hasChildren}.{/if}
+        {section}
     </span>
 </div>
 
