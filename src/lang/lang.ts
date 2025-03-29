@@ -278,7 +278,7 @@ export const lang = {
     // rules
     modals_rules_add_rule: 'New rule',
     modals_rules_no_rules: 'No rules',
-    controls_rules: 'Rule-based styles',
+    controls_rules: 'Style rules',
     modals_rules_matches: 'Number of matches',
     modals_rules_drag_handle: 'Change priority',
     modals_rules_tab_global_rules: 'Global rules',

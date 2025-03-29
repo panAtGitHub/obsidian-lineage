@@ -1,6 +1,6 @@
 <script lang="ts">
     import { FileText, Globe } from 'lucide-svelte';
-    import ClickableIcon from '../../../shared/clickable-icon.svelte';
+    import ClickableIcon from './components/clickable-icon.svelte';
     import { lang } from 'src/lang/lang';
     import { ActiveStyleRulesTab } from 'src/stores/settings/derived/style-rules';
     import { getView } from 'src/view/components/container/context';
@@ -17,10 +17,9 @@
     }
 </script>
 
-<div class="sidebar-tabs-header">
+<div class="style-rules-tabs-header">
     <div class="tab-header-buttons">
         <ClickableIcon
-            hasEnabledItems={false}
             isActive={$activeTab === 'global-rules'}
             label={lang.modals_rules_tab_global_rules}
             onClick={() => setActiveTab('global-rules')}
@@ -28,7 +27,6 @@
             <Globe class="svg-icon" />
         </ClickableIcon>
         <ClickableIcon
-            hasEnabledItems={false}
             isActive={$activeTab === 'document-rules'}
             label={lang.modals_rules_tab_document_rules}
             onClick={() => setActiveTab('document-rules')}
@@ -39,7 +37,7 @@
 </div>
 
 <style>
-    .sidebar-tabs-header {
+    .style-rules-tabs-header {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -50,6 +48,7 @@
         justify-self: center;
         box-sizing: border-box;
         height: auto;
+        padding-top: 10px;
     }
 
     .tab-header-buttons {
