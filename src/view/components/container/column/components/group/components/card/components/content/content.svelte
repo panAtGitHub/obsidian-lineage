@@ -3,7 +3,7 @@
     import { markdownPreviewAction } from 'src/view/actions/markdown-preview/markdown-preview-action';
     import {
         handleLinks
-    } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links';
+    } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/handle-links';
     import { ActiveStatus } from 'src/view/components/container/column/components/group/components/active-status.enum';
     import {
         getCursorPosition
