@@ -1,6 +1,6 @@
 import { chunkPositionsCache } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/shapes/helpers/chunk-positions-cache';
 
-export enum ChunkType {
+export enum ElementName {
     heading = 'heading',
     period = 'period',
     bullet = 'bullet',
@@ -13,58 +13,62 @@ export enum ChunkType {
     comma = 'comma',
 }
 
-export enum Category {
-    single_character = 'single_character',
+export enum ElementScope {
+    multi_line = 'multi_line',
     full_line = 'full_line', // heading
-    full_line_container = 'full_line_container', // bullet point
-    block_with_space = 'block_with_space',
-    block_without_space = 'block_without_space',
+    block = 'block',
+    character = 'character',
 }
 
-const charToChunkType: Record<string, ChunkType> = {
-    '#': ChunkType.heading,
-    '-': ChunkType.bullet,
-    '.': ChunkType.period,
-    '=': ChunkType.highlight,
-    '*': ChunkType.bold_italic,
-    _: ChunkType.bold_italic,
-    '[': ChunkType.wikilink,
-    ']': ChunkType.wikilink,
-    '~': ChunkType.strikethrough,
-    ',': ChunkType.comma,
+const charToElementName: Record<string, ElementName> = {
+    '#': ElementName.heading,
+    '-': ElementName.bullet,
+    '.': ElementName.period,
+    '=': ElementName.highlight,
+    '*': ElementName.bold_italic,
+    _: ElementName.bold_italic,
+    '[': ElementName.wikilink,
+    ']': ElementName.wikilink,
+    '~': ElementName.strikethrough,
+    ',': ElementName.comma,
 };
 
-type ChunkPosition = {
+export type MinimapElement = {
     chunk: string;
     line: number;
     x_chars: number;
     length_chars: number;
-    type: ChunkType | null;
+    type: ElementName | null;
 };
 
 export type ChunkPositionResult = {
-    chunks: ChunkPosition[];
+    chunks: MinimapElement[];
     totalLines: number;
     empty: boolean;
 };
 
+type ElementMeta = {
+    scope: ElementScope;
+    elementName: ElementName;
+    noSpaces?: boolean;
+    canBeParent?: boolean;
+};
+
 type State = {
-    chunk: ChunkPosition;
+    element: MinimapElement;
+    elementMeta: ElementMeta | null;
+    currentCharacterName: ElementName | null;
+
     x: number;
-    line: number;
-    previousLine: number;
-    category: Category | null;
-    type: ChunkType | null;
-    previousType: ChunkType | null;
-    isSpace: boolean;
-    isAfterOpeningElement: boolean;
-    lineType: ChunkType | null;
+    lineNumber: number;
+    // highlight/task/bullet point
+    parentElementMeta: ElementMeta | null;
 };
 
 const abbrevRegex =
     /\b(dr|mr|mrs|ms|e\.g|e\.i|sr|jr|st|ave|rd|no|vs|etc|vol|ed|pp)\b/i;
 
-const unhallowedTagCharacters = new Set([
+const illegalObsidianTagCharacters = new Set([
     '^',
     '.',
     '!',
@@ -111,211 +115,274 @@ export const calculateChunkPositions = (
         content = 'empty';
     }
 
-    const positions: ChunkPosition[] = [];
+    const elements: MinimapElement[] = [];
     const state: State = {
-        chunk: {
+        element: {
             chunk: '',
             length_chars: -1,
             line: 0,
             type: null,
             x_chars: 0,
         },
+        elementMeta: null,
+        parentElementMeta: null,
+        currentCharacterName: null,
         x: 0,
-        line: 0,
-        type: null,
-        previousType: null,
-        previousLine: 0,
-        category: null,
-        isSpace: false,
-        isAfterOpeningElement: false,
-        lineType: null,
+        lineNumber: 0,
     };
 
     for (let i = 0; i < content.length; i++) {
-        const chunk = content[i];
-        if (chunk === '\n') {
-            state.line++;
-            state.lineType = null;
+        const character = content[i];
+        if (character === '\n') {
+            state.lineNumber++;
             state.x = 0;
-            if (
-                state.category === Category.full_line ||
-                state.category === Category.block_without_space ||
-                !state.isAfterOpeningElement
-            ) {
-                state.category = null;
-                state.type = null;
-                state.previousType = null;
+            const activeMultiLineElement =
+                state.elementMeta &&
+                state.elementMeta.scope === ElementScope.multi_line;
+            if (!activeMultiLineElement) {
+                state.elementMeta = null;
             }
-            continue;
-        } else if (chunk === ' ') {
-            const allowSpace =
-                state.category === Category.block_with_space ||
-                state.category === Category.full_line ||
-                state.category === Category.full_line_container;
-            if (!allowSpace) {
-                state.type = null;
-                // state.x++;
-                state.isSpace = true;
-            }
-        } else if (state.category !== Category.full_line) {
-            const chunkType = charToChunkType[chunk];
-            if (chunkType) {
-                state.type = chunkType;
-                const nextChunk = content[i + 1];
-                const isBlockWithSpace =
-                    (chunk === '=' && nextChunk === '=') ||
-                    (chunk === '~' && nextChunk === '~') ||
-                    (chunk === '[' && nextChunk === '[') ||
-                    (chunk === ']' && nextChunk === ']') ||
-                    // **text**
-                    (chunk === '*' && nextChunk === '*') ||
-                    // *text*
-                    (chunk === '*' && content[i - 1] !== '*') ||
-                    chunk === '_';
 
-                if (isBlockWithSpace) {
-                    if (state.type !== state.previousType) {
-                        state.category = Category.block_with_space;
-                        state.isAfterOpeningElement = true;
-                    } else {
-                        state.category = null;
-                        state.isAfterOpeningElement = false;
-                    }
-                }
+            continue;
+        } else if (character === ' ') {
+            if (state.elementMeta?.noSpaces) {
+                state.elementMeta = null;
+            }
+            state.currentCharacterName = null;
+        } else if (
+            !state.elementMeta ||
+            state.elementMeta?.scope !== ElementScope.full_line
+        ) {
+            const elementName = charToElementName[character];
+            state.currentCharacterName = elementName;
+            if (elementName) {
+                const nextCharacter = content[i + 1];
                 // heading
-                else if (
-                    chunk === '#' &&
+                if (
+                    character === '#' &&
                     state.x === 0 &&
-                    (nextChunk === ' ' || nextChunk === '#')
+                    (nextCharacter === ' ' || nextCharacter === '#')
                 ) {
-                    state.category = Category.full_line;
-                    state.lineType = state.type;
+                    state.elementMeta = {
+                        elementName,
+                        scope: ElementScope.full_line,
+                    };
                 }
                 // tag
                 else if (
-                    chunk === '#' &&
-                    !unhallowedTagCharacters.has(nextChunk)
+                    character === '#' &&
+                    !illegalObsidianTagCharacters.has(nextCharacter)
                 ) {
-                    // switch from "heading" to "tag"
-                    state.type = ChunkType.tag;
-                    state.category = Category.block_without_space;
-                }
-
-                // bullet point
-                else if (chunk === '-' && state.x === 0) {
-                    state.category = Category.full_line_container;
-                    if (
-                        nextChunk === ' ' &&
-                        content[i + 2] === '[' &&
-                        content[i + 4] === ']'
-                    ) {
-                        // switch from "bullet" to "task"
-                        state.type = ChunkType.task;
+                    if (state.elementMeta?.canBeParent) {
+                        state.parentElementMeta = state.elementMeta;
                     }
-                    state.lineType = state.type;
-                } else if (chunk === '.') {
+                    state.elementMeta = {
+                        elementName: ElementName.tag,
+                        scope: ElementScope.block,
+                        noSpaces: true,
+                    };
+                }
+                // bullet point
+                else if (character === '-' && state.x === 0) {
+                    const isTask =
+                        nextCharacter === ' ' &&
+                        content[i + 2] === '[' &&
+                        content[i + 4] === ']';
+                    if (isTask) {
+                        state.elementMeta = {
+                            elementName: ElementName.task,
+                            scope: ElementScope.block,
+                            canBeParent: true,
+                        };
+                    } else {
+                        state.elementMeta = {
+                            elementName: ElementName.bullet,
+                            scope: ElementScope.block,
+                            canBeParent: true,
+                        };
+                    }
+                }
+                // period
+                else if (
+                    character === '.' &&
+                    (!state.elementMeta ||
+                        state.elementMeta.elementName === ElementName.tag)
+                ) {
                     const previousChunk =
                         (content[i - 3] || '') +
                         content[i - 2] +
                         content[i - 1];
-
-                    if (
-                        !(nextChunk && nextChunk.match(/[A-Z\d]/)) &&
+                    const nextCharacter = content[i + 1];
+                    const notAPeriod =
+                        !(nextCharacter && nextCharacter.match(/[A-Z\d]/)) &&
                         content[i - 1] &&
                         !content[i - 1].match(/[.!?]/) &&
                         !abbrevRegex.test(previousChunk) &&
-                        !(content[i - 1] === 'e' && nextChunk === 'g') &&
-                        !(content[i - 1] === 'i' && nextChunk === 'e')
-                    ) {
-                        state.category = Category.single_character;
-                    } else {
-                        state.type = state.previousType;
+                        !(content[i - 1] === 'e' && nextCharacter === 'g') &&
+                        !(content[i - 1] === 'i' && nextCharacter === 'e');
+                    if (notAPeriod) {
+                        state.elementMeta = {
+                            elementName: ElementName.period,
+                            scope: ElementScope.character,
+                        };
                     }
-                } else if (chunk === ',') {
+                }
+                // comma
+                else if (
+                    character === ',' &&
+                    (!state.elementMeta ||
+                        state.elementMeta.elementName === ElementName.tag)
+                ) {
                     const previousChunk = content[i - 1] || '';
                     const nextChunk = content[i + 1] || '';
 
                     // don't highlight commas in numbers (e.g., 1,000)
                     if (!previousChunk.match(/\d/) || !nextChunk.match(/\d/)) {
-                        state.category = Category.single_character;
-                    } else {
-                        state.type = state.previousType;
+                        state.elementMeta = {
+                            elementName: ElementName.comma,
+                            scope: ElementScope.character,
+                        };
                     }
                 } else {
-                    state.type = state.previousType;
+                    const isHighlight = character === '=';
+                    const isDoubleCharacterTag =
+                        (isHighlight && nextCharacter === '=') ||
+                        (character === '~' && nextCharacter === '~') ||
+                        (character === '[' && nextCharacter === '[') ||
+                        (character === ']' && nextCharacter === ']') ||
+                        // **text**
+                        (character === '*' && nextCharacter === '*');
+                    const isDoubleTagElement =
+                        isDoubleCharacterTag ||
+                        // *text*
+                        (character === '*' && content[i - 1] !== '*') ||
+                        character === '_';
+
+                    if (isDoubleTagElement) {
+                        const isClosingTag =
+                            state.elementMeta?.elementName === elementName;
+                        if (isClosingTag) {
+                            state.elementMeta = null;
+                        } else {
+                            const scope = isHighlight
+                                ? ElementScope.multi_line
+                                : ElementScope.block;
+                            if (
+                                state.elementMeta?.canBeParent &&
+                                scope === ElementScope.block
+                            ) {
+                                state.parentElementMeta = state.elementMeta;
+                            }
+                            state.elementMeta = {
+                                elementName,
+                                scope: scope,
+                                canBeParent: isHighlight,
+                            };
+                        }
+                    }
                 }
             }
         }
         if (state.x + 1 > availableLineCharacters) {
-            state.line++;
+            state.lineNumber++;
             state.x = 0;
-            state.lineType = null;
-        } else if (!state.type && state.lineType) {
-            // fallback to heading/task/bullet point types
-            state.type = state.lineType;
         }
-        if (state.line !== state.previousLine) {
-            state.chunk.length_chars = state.chunk.chunk.length;
-            if (state.chunk.length_chars > 0) {
-                positions.push(state.chunk);
+        // fallback to highlight/task/bullet-point types
+        else if (
+            !state.currentCharacterName &&
+            !state.elementMeta &&
+            state.parentElementMeta
+        ) {
+            state.elementMeta = state.parentElementMeta;
+            state.parentElementMeta = null;
+        }
+
+        // char is in a new minimap line
+        if (state.lineNumber !== state.element.line) {
+            state.element.length_chars = state.element.chunk.length;
+            if (state.element.length_chars > 0) {
+                elements.push(state.element);
             }
-            // chunk type is kept
-            state.chunk = {
-                chunk: chunk,
-                line: state.line,
+            // character type is kept
+            state.element = {
+                chunk: character,
+                line: state.lineNumber,
                 x_chars: 0,
                 length_chars: -1,
-                type: state.type,
+                type: state.elementMeta ? state.elementMeta.elementName : null,
             };
-            state.previousLine = state.line;
-        } else if (state.isSpace) {
-            state.chunk.length_chars = state.chunk.chunk.length;
-            if (state.chunk.length_chars > 0) {
-                positions.push(state.chunk);
+        }
+        // char is a breaking space
+        else if (
+            character === ' ' &&
+            (!state.elementMeta || state.elementMeta?.noSpaces)
+        ) {
+            state.element.length_chars = state.element.chunk.length;
+            if (state.element.length_chars > 0) {
+                elements.push(state.element);
             }
-            state.chunk = {
+            state.element = {
                 chunk: '',
-                line: state.line,
+                line: state.lineNumber,
                 x_chars: state.x + 1,
                 length_chars: -1,
-                type: state.type,
+                type: null,
             };
-            state.isSpace = false;
-            state.category = null;
-        } else if (
-            state.type !== state.previousType ||
-            state.category === Category.single_character
+            state.elementMeta = null;
+        }
+        // char is a period/comma
+        else if (state.elementMeta?.scope === ElementScope.character) {
+            state.element.length_chars = state.element.chunk.length;
+            if (state.element.length_chars > 0) {
+                elements.push(state.element);
+            }
+            elements.push({
+                chunk: character,
+                line: state.lineNumber,
+                x_chars: state.x,
+                length_chars: 1,
+                type: state.elementMeta.elementName,
+            });
+            state.elementMeta = null;
+            state.element = {
+                chunk: '',
+                line: state.lineNumber,
+                x_chars: state.x + 1,
+                length_chars: -1,
+                type: null,
+            };
+        }
+        // new minimap element
+        else if (
+            state.elementMeta &&
+            state.elementMeta.elementName !== state.element.type
         ) {
-            state.chunk.length_chars = state.chunk.chunk.length;
-            if (state.chunk.length_chars > 0) {
-                positions.push(state.chunk);
+            state.element.length_chars = state.element.chunk.length;
+            if (state.element.length_chars > 0) {
+                elements.push(state.element);
             }
 
-            state.chunk = {
-                chunk: chunk,
-                line: state.line,
+            state.element = {
+                chunk: character,
+                line: state.lineNumber,
                 x_chars: state.x,
                 length_chars: -1,
-                type: state.type,
+                type: state.elementMeta.elementName,
             };
-            if (state.category === Category.single_character) {
-                state.type = null;
-            }
         } else {
-            state.chunk.chunk += chunk;
+            state.element.chunk += character;
         }
 
         state.x++;
-        state.previousType = state.type;
     }
-    state.chunk.length_chars = state.chunk.chunk.length;
-    if (state.chunk.length_chars > 0) {
-        positions.push(state.chunk);
+    state.element.length_chars = state.element.chunk.length;
+    if (state.element.length_chars > 0) {
+        elements.push(state.element);
     }
 
     const result = {
-        chunks: positions,
-        totalLines: state.line + 1,
+        chunks: elements,
+        totalLines: state.lineNumber + 1,
         empty: isEmptyCard,
     };
     chunkPositionsCache.cacheResult(

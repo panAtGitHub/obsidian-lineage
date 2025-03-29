@@ -1084,26 +1084,13 @@ describe('calculate-chunk-position', () => {
                     type: 'tag',
                 },
                 {
-                    chunk: 'text',
+                    chunk: ' text. text',
                     line: 0,
-                    x_chars: 24,
-                    length_chars: 4,
+                    x_chars: 23,
+                    length_chars: 11,
                     type: 'task',
                 },
-                {
-                    chunk: '.',
-                    line: 0,
-                    x_chars: 28,
-                    length_chars: 1,
-                    type: 'period',
-                },
-                {
-                    chunk: 'text',
-                    line: 0,
-                    x_chars: 30,
-                    length_chars: 4,
-                    type: 'task',
-                },
+
                 {
                     chunk: '- [ ] task 2 ',
                     line: 1,
@@ -1119,6 +1106,13 @@ describe('calculate-chunk-position', () => {
                     type: 'wikilink',
                 },
                 {
+                    chunk: ' ',
+                    length_chars: 1,
+                    line: 1,
+                    type: 'task',
+                    x_chars: 27,
+                },
+                {
                     chunk: '#medium',
                     line: 1,
                     x_chars: 28,
@@ -1126,18 +1120,11 @@ describe('calculate-chunk-position', () => {
                     type: 'tag',
                 },
                 {
-                    chunk: 'description',
+                    chunk: 'description.',
                     line: 2,
                     x_chars: 0,
-                    length_chars: 11,
-                    type: null,
-                },
-                {
-                    chunk: '.',
-                    line: 2,
-                    x_chars: 11,
-                    length_chars: 1,
-                    type: 'period',
+                    length_chars: 12,
+                    type: 'task',
                 },
             ],
             totalLines: 3,
@@ -1209,6 +1196,225 @@ describe('calculate-chunk-position', () => {
                 },
             ],
             totalLines: 1,
+            empty: false,
+        };
+        const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
+        expect(actual).toEqual(output);
+    });
+
+    test('case: period inside highlight', () => {
+        const input = '==word1. word2== #tag word3.';
+        const output = {
+            chunks: [
+                {
+                    chunk: '==word1. word2==',
+                    line: 0,
+                    x_chars: 0,
+                    length_chars: 16,
+                    type: 'highlight',
+                },
+                {
+                    chunk: '#tag',
+                    line: 0,
+                    x_chars: 17,
+                    length_chars: 4,
+                    type: 'tag',
+                },
+                {
+                    chunk: 'word3',
+                    line: 0,
+                    x_chars: 22,
+                    length_chars: 5,
+                    type: null,
+                },
+                {
+                    chunk: '.',
+                    line: 0,
+                    x_chars: 27,
+                    length_chars: 1,
+                    type: 'period',
+                },
+            ],
+            totalLines: 1,
+            empty: false,
+        };
+        const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
+        expect(actual).toEqual(output);
+    });
+
+    test('case: bold inside highlight', () => {
+        const input = '==word1. word2. **bold** word3== word4';
+        const output = {
+            chunks: [
+                {
+                    chunk: '==word1. word2. ',
+                    line: 0,
+                    x_chars: 0,
+                    length_chars: 16,
+                    type: 'highlight',
+                },
+                {
+                    chunk: '**bold**',
+                    line: 0,
+                    x_chars: 16,
+                    length_chars: 8,
+                    type: 'bold_italic',
+                },
+                {
+                    chunk: ' word3==',
+                    line: 0,
+                    x_chars: 24,
+                    length_chars: 8,
+                    type: 'highlight',
+                },
+                {
+                    chunk: 'word4',
+                    line: 0,
+                    x_chars: 33,
+                    length_chars: 5,
+                    type: null,
+                },
+            ],
+            totalLines: 1,
+            empty: false,
+        };
+        const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
+        expect(actual).toEqual(output);
+    });
+    test('case: multi line highlight', () => {
+        const input =
+            '==word1, word2. **bold**\n' +
+            'word3\n' +
+            'word4== word5 #tag word6.';
+        const output = {
+            chunks: [
+                {
+                    chunk: '==word1, word2. ',
+                    line: 0,
+                    x_chars: 0,
+                    length_chars: 16,
+                    type: 'highlight',
+                },
+                {
+                    chunk: '**bold**',
+                    line: 0,
+                    x_chars: 16,
+                    length_chars: 8,
+                    type: 'bold_italic',
+                },
+                {
+                    chunk: 'word3',
+                    line: 1,
+                    x_chars: 0,
+                    length_chars: 5,
+                    type: 'highlight',
+                },
+                {
+                    chunk: 'word4==',
+                    line: 2,
+                    x_chars: 0,
+                    length_chars: 7,
+                    type: 'highlight',
+                },
+                {
+                    chunk: 'word5',
+                    line: 2,
+                    x_chars: 8,
+                    length_chars: 5,
+                    type: null,
+                },
+                {
+                    chunk: '#tag',
+                    line: 2,
+                    x_chars: 14,
+                    length_chars: 4,
+                    type: 'tag',
+                },
+                {
+                    chunk: 'word6',
+                    line: 2,
+                    x_chars: 19,
+                    length_chars: 5,
+                    type: null,
+                },
+                {
+                    chunk: '.',
+                    line: 2,
+                    x_chars: 24,
+                    length_chars: 1,
+                    type: 'period',
+                },
+            ],
+            totalLines: 3,
+            empty: false,
+        };
+        const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
+        expect(actual).toEqual(output);
+    });
+    test('case: task with a tag', () => {
+        const input =
+            '- [ ] task word1. word2, #tag _italic_ word3.\n' +
+            'word4. _italic_';
+        const output = {
+            chunks: [
+                {
+                    chunk: '- [ ] task word1. word2, ',
+                    line: 0,
+                    x_chars: 0,
+                    length_chars: 25,
+                    type: 'task',
+                },
+                {
+                    chunk: '#tag',
+                    line: 0,
+                    x_chars: 25,
+                    length_chars: 4,
+                    type: 'tag',
+                },
+                {
+                    chunk: ' ',
+                    line: 0,
+                    x_chars: 29,
+                    length_chars: 1,
+                    type: 'task',
+                },
+                {
+                    chunk: '_italic_',
+                    line: 0,
+                    x_chars: 30,
+                    length_chars: 8,
+                    type: 'bold_italic',
+                },
+                {
+                    chunk: ' word3.',
+                    line: 0,
+                    x_chars: 38,
+                    length_chars: 7,
+                    type: 'task',
+                },
+                {
+                    chunk: 'word4',
+                    line: 1,
+                    x_chars: 0,
+                    length_chars: 5,
+                    type: null,
+                },
+                {
+                    chunk: '.',
+                    line: 1,
+                    x_chars: 5,
+                    length_chars: 1,
+                    type: 'period',
+                },
+                {
+                    chunk: '_italic_',
+                    line: 1,
+                    x_chars: 7,
+                    length_chars: 8,
+                    type: 'bold_italic',
+                },
+            ],
+            totalLines: 2,
             empty: false,
         };
         const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');

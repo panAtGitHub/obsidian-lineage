@@ -1,6 +1,6 @@
 import {
     calculateChunkPositions,
-    ChunkType,
+    ElementName,
 } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/shapes/helpers/calculate-chunk-positions';
 import {
     CHAR_WIDTH_CPX,
@@ -18,7 +18,7 @@ export type WordBlock = {
     x_px: number;
     width_px: number;
     empty: boolean;
-    chunkType: ChunkType | null;
+    chunkType: ElementName | null;
 };
 
 type State = { nextLineOffset: number; depth: number; lines: MinimapLine[] };
