@@ -57,8 +57,7 @@ type ElementMeta = {
 type State = {
     element: MinimapElement;
     elementMeta: ElementMeta | null;
-    currentCharacterName: ElementName | null;
-
+    closingTagLength: number;
     x: number;
     lineNumber: number;
     // highlight/task/bullet point
@@ -126,7 +125,7 @@ export const calculateChunkPositions = (
         },
         elementMeta: null,
         parentElementMeta: null,
-        currentCharacterName: null,
+        closingTagLength: 0,
         x: 0,
         lineNumber: 0,
     };
@@ -148,13 +147,11 @@ export const calculateChunkPositions = (
             if (state.elementMeta?.noSpaces) {
                 state.elementMeta = null;
             }
-            state.currentCharacterName = null;
         } else if (
             !state.elementMeta ||
             state.elementMeta?.scope !== ElementScope.full_line
         ) {
             const elementName = charToElementName[character];
-            state.currentCharacterName = elementName;
             if (elementName) {
                 const nextCharacter = content[i + 1];
                 // heading
@@ -243,7 +240,9 @@ export const calculateChunkPositions = (
                             scope: ElementScope.character,
                         };
                     }
-                } else {
+                }
+                // double tag blocks
+                else {
                     const isHighlight = character === '=';
                     const isDoubleCharacterTag =
                         (isHighlight && nextCharacter === '=') ||
@@ -262,7 +261,9 @@ export const calculateChunkPositions = (
                         const isClosingTag =
                             state.elementMeta?.elementName === elementName;
                         if (isClosingTag) {
-                            state.elementMeta = null;
+                            state.closingTagLength = isDoubleCharacterTag
+                                ? 2
+                                : 1;
                         } else {
                             const scope = isHighlight
                                 ? ElementScope.multi_line
@@ -289,7 +290,7 @@ export const calculateChunkPositions = (
         }
         // fallback to highlight/task/bullet-point types
         else if (
-            !state.currentCharacterName &&
+            state.closingTagLength === 0 &&
             !state.elementMeta &&
             state.parentElementMeta
         ) {
@@ -372,7 +373,18 @@ export const calculateChunkPositions = (
         } else {
             state.element.chunk += character;
         }
-
+        if (state.closingTagLength > 0) {
+            state.closingTagLength--;
+            // end of the element
+            if (state.closingTagLength === 0) {
+                if (state.parentElementMeta) {
+                    state.elementMeta = state.parentElementMeta;
+                    state.parentElementMeta = null;
+                } else {
+                    state.elementMeta = null;
+                }
+            }
+        }
         state.x++;
     }
     state.element.length_chars = state.element.chunk.length;

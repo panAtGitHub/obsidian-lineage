@@ -1420,6 +1420,46 @@ describe('calculate-chunk-position', () => {
         const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
         expect(actual).toEqual(output);
     });
+
+    test('case: bold at the end of highlight', () => {
+        const input = '==word1 **bold**== word2';
+        const output = {
+            chunks: [
+                {
+                    chunk: '==word1 ',
+                    line: 0,
+                    x_chars: 0,
+                    length_chars: 8,
+                    type: 'highlight',
+                },
+                {
+                    chunk: '**bold**',
+                    line: 0,
+                    x_chars: 8,
+                    length_chars: 8,
+                    type: 'bold_italic',
+                },
+                {
+                    chunk: '==',
+                    line: 0,
+                    x_chars: 16,
+                    length_chars: 2,
+                    type: 'highlight',
+                },
+                {
+                    chunk: 'word2',
+                    line: 0,
+                    x_chars: 19,
+                    length_chars: 5,
+                    type: null,
+                },
+            ],
+            totalLines: 1,
+            empty: false,
+        };
+        const actual = calculateChunkPositions(input, N_CHARS_PER_LINE, '', '');
+        expect(actual).toEqual(output);
+    });
 });
 
 describe('performance-test: calculate-chunk-position', () => {
