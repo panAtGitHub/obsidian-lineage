@@ -1,6 +1,6 @@
 import { Column } from 'src/stores/document/document-state-type';
 import { updateActiveNode } from 'src/stores/view/reducers/document/helpers/update-active-node';
-import { findNextActiveNode } from 'src/lib/tree-utils/find/find-next-active-node';
+import { findNodeToJumpTo } from 'src/lib/tree-utils/find/find-node-to-jump-to';
 import { DocumentViewState, ViewState } from 'src/stores/view/view-state-type';
 import { updateSelectionState } from 'src/stores/view/reducers/document/helpers/update-selection-state';
 
@@ -25,10 +25,10 @@ export const jumpToNode = (
     action: JumpToNodeAction,
     columns: Column[],
 ) => {
-    const nextNode = findNextActiveNode(
+    const nextNode = findNodeToJumpTo(
         columns,
         documentViewState.activeNode,
-        action,
+        action.payload.target,
     );
     if (nextNode) {
         updateSelectionState(

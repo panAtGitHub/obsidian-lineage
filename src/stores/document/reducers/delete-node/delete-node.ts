@@ -3,9 +3,9 @@ import { LineageDocument } from 'src/stores/document/document-state-type';
 import { deleteChildNodes } from 'src/lib/tree-utils/delete/delete-child-nodes';
 import { isLastRootNode } from 'src/lib/tree-utils/assert/is-last-root-node';
 import invariant from 'tiny-invariant';
-import { findNextActiveNode } from 'src/lib/tree-utils/find/find-next-active-node';
 import { deleteNodeById } from 'src/lib/tree-utils/delete/delete-node-by-id';
-import { lang } from 'src/lang/lang';
+import { insertFirstNode } from 'src/lib/tree-utils/insert/insert-first-node';
+import { findNextNodeAfterDeletion } from 'src/lib/tree-utils/find/find-next-node-after-deletion';
 
 export type DeleteNodeAction = {
     type: 'DOCUMENT/DELETE_NODE';
@@ -26,23 +26,20 @@ export const deleteNode = (
     const nodes: string[] = isSelection ? [...selectedNodes] : [nodeId];
 
     let nextNode: string | undefined = undefined;
-    for (const nodeId of nodes) {
-        const lastNode = isLastRootNode(document.columns, nodeId);
-        if (lastNode) {
-            if (isSelection) break;
-            else throw new Error(lang.error_delete_last_node);
+    for (let i = 0; i < nodes.length; i++) {
+        const nodeId = nodes[i];
+        if (
+            i === nodes.length - 1 &&
+            !isLastRootNode(document.columns, nodeId)
+        ) {
+            nextNode = findNextNodeAfterDeletion(document.columns, nodeId);
         }
-
-        nextNode = findNextActiveNode(document.columns, nodeId, {
-            type: 'DOCUMENT/DELETE_NODE',
-            payload: {
-                activeNodeId: nodeId,
-            },
-        });
-        invariant(nextNode);
         deleteChildNodes(document, nodeId);
         deleteNodeById(document.columns, document.content, nodeId);
         cleanAndSortColumns(document);
+    }
+    if (!nextNode) {
+        nextNode = insertFirstNode(document.columns, document.content);
     }
     invariant(nextNode);
     return nextNode;
