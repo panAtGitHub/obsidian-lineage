@@ -16,6 +16,19 @@ export const lazyVerticalScrollingMode = (
         } else {
             actions.push({ action: '20/active-node/vertical/reveal' });
         }
+    } else if (
+        action.type === 'WORKSPACE/RESIZE' ||
+        action.type === 'WORKSPACE/ACTIVE_LEAF_CHANGE' ||
+        action.type === 'view/left-sidebar/toggle' ||
+        action.type === 'view/left-sidebar/set-width'
+    ) {
+        actions.push({ action: '20/active-node/vertical/reveal' });
+        actions.push({
+            action: '30/parents/vertical/align-with-active-node',
+        });
+        actions.push({
+            action: '40/children/vertical/align-with-active-node',
+        });
     } else {
         actions.push({ action: '20/active-node/vertical/reveal' });
         const previousActiveBranch = context.previousActiveBranch;
