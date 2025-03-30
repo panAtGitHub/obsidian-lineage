@@ -14,6 +14,7 @@ import { InactiveCardOpacity } from 'src/view/actions/settings/components/inacti
 import { ActiveBranchColor } from 'src/view/actions/settings/components/active-branch-color';
 import { AlwaysShowCardButtons } from 'src/view/actions/settings/components/always-show-card-buttons';
 import { ControlsBarButtons } from 'src/view/actions/settings/components/controls-bar-buttons/controls-bar-buttons';
+import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-font-size';
 
 export const renderSettings = (element: HTMLElement) => {
     const view = getView();
@@ -29,6 +30,7 @@ export const renderSettings = (element: HTMLElement) => {
         ActiveBranchColor(element, settingsStore);
         InactiveCardOpacity(element, settingsStore);
         FontSize(element, settingsStore);
+        HeadingsFontSize(element, settingsStore);
         new Setting(element).setHeading().setName(lang.settings_layout);
         CardWidth(element, settingsStore);
         CardsGap(element, settingsStore);

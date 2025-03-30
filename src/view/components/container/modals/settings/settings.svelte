@@ -12,7 +12,7 @@
     .setting-items {
         display: flex;
         flex-direction: column;
-        padding: 20px;
+        padding: 5px 20px;
         width: 500px;
         overflow-y:auto;
         & .setting-item {

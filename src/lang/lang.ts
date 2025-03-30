@@ -226,6 +226,7 @@ export const lang = {
     settings_theme_active_branch_bg: 'Active branch background color',
     settings_theme_active_branch_color: 'Active branch text color',
     settings_appearance_font_size: 'Font size',
+    settings_appearance_headings_font_size: 'Headings font size (em)',
     settings_appearance_inactive_node_opacity: 'Inactive cards opacity',
 
     // layout

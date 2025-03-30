@@ -48,6 +48,7 @@ export type Settings = {
     };
     view: {
         fontSize: number;
+        h1FontSize_em: number;
         theme: Theme;
         cardWidth: number;
         cardsGap: number;

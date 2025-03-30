@@ -18,10 +18,12 @@ import { attachCheckboxListener } from 'src/stores/view/subscriptions/effects/ch
 import { watchViewSize } from 'src/stores/view/subscriptions/effects/view-size/watch-view-size';
 import { applyInactiveNodeOpacity } from 'src/stores/view/subscriptions/effects/css-variables/apply-inactive-node-opacity';
 import { loadCollapsedSectionsFromSettings } from 'src/stores/view/subscriptions/actions/view/load-collapsed-sections-from-settings';
+import { applyHeadingsFontSize } from 'src/stores/view/subscriptions/effects/css-variables/apply-headings-font-size';
 
 const applySettingsToView = (view: LineageView) => {
     const state = view.plugin.settings.getValue();
     applyFontSize(view, state.view.fontSize);
+    applyHeadingsFontSize(view, state.view.h1FontSize_em);
     applyInactiveNodeOpacity(view, state.view.theme.inactiveNodeOpacity);
     applyCssColor(view, 'containerBg');
     applyCssColor(view, 'activeBranchBg');

@@ -10,6 +10,7 @@ import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-cont
 import { applyCardIndentationWidth } from 'src/stores/view/subscriptions/effects/css-variables/apply-card-indentation-width';
 import { applyInactiveNodeOpacity } from 'src/stores/view/subscriptions/effects/css-variables/apply-inactive-node-opacity';
 import { getUsedHotkeys } from 'src/obsidian/helpers/get-used-hotkeys';
+import { applyHeadingsFontSize } from 'src/stores/view/subscriptions/effects/css-variables/apply-headings-font-size';
 
 export const onPluginSettingsUpdate = (
     view: LineageView,
@@ -20,6 +21,8 @@ export const onPluginSettingsUpdate = (
     const type = action.type;
     if (type === 'SET_FONT_SIZE') {
         applyFontSize(view, state.view.fontSize);
+    } else if (type === 'settings/view/set-h1-font-size') {
+        applyHeadingsFontSize(view, state.view.h1FontSize_em);
     } else if (type === 'SET_CONTAINER_BG') {
         applyCssColor(view, 'containerBg');
     } else if (type === 'SET_ACTIVE_BRANCH_BG') {

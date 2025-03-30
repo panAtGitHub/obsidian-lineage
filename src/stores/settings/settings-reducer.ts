@@ -64,6 +64,12 @@ export type SettingsActions =
           };
       }
     | {
+          type: 'settings/view/set-h1-font-size';
+          payload: {
+              fontSize_em: number;
+          };
+      }
+    | {
           type: 'SET_CONTAINER_BG';
           payload: {
               backgroundColor: string | undefined;
@@ -285,6 +291,8 @@ const updateState = (store: Settings, action: SettingsActions) => {
         store.hotkeys.customHotkeys = action.payload.customHotkeys;
     } else if (action.type === 'SET_FONT_SIZE') {
         store.view.fontSize = action.payload.fontSize;
+    } else if (action.type === 'settings/view/set-h1-font-size') {
+        store.view.h1FontSize_em = action.payload.fontSize_em;
     } else if (action.type === 'SET_CONTAINER_BG') {
         store.view.theme.containerBg = action.payload.backgroundColor;
     } else if (action.type === 'SET_ACTIVE_BRANCH_BG') {
