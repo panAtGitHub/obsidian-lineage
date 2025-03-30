@@ -70,7 +70,7 @@ export const droppable = (node: HTMLElement) => {
                     position: getDropPosition(event, targetCard) as Direction,
                 },
             });
-        } else {
+        } else if (!view.viewStore.getValue().document.editing.activeNodeId) {
             documentStore.dispatch({
                 type: 'DOCUMENT/PASTE_NODE',
                 payload: {
