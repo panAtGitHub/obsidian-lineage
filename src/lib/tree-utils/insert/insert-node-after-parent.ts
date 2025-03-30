@@ -3,7 +3,7 @@ import { findNodeColumnAndParent } from 'src/lib/tree-utils/find/find-node-colum
 import { findGroupByNodeId } from 'src/lib/tree-utils/find/find-group-by-node-id';
 import { SilentError } from 'src/lib/errors/errors';
 
-export const insertParentSibling = (
+export const insertNodeAfterParent = (
     document: Pick<LineageDocument, 'columns'>,
     nodeId: string,
     newNodeId: string,
@@ -20,5 +20,12 @@ export const insertParentSibling = (
     const parentGroup = findGroupByNodeId(document.columns, parentId);
 
     if (!parentGroup) throw new Error('could not find group of parent node');
-    parentGroup.nodes = [...parentGroup.nodes, newNodeId];
+
+    parentGroup.nodes = parentGroup.nodes.reduce((nodes, nodeId) => {
+        nodes.push(nodeId);
+        if (nodeId === parentId) {
+            nodes.push(newNodeId);
+        }
+        return nodes;
+    }, [] as string[]);
 };
