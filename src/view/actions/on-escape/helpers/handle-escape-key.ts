@@ -19,6 +19,16 @@ export const handleEscapeKey = (view: LineageView) => {
             },
         });
         return true;
+    } else if (value.document.pendingConfirmation.deleteNode.size > 0) {
+        viewStore.dispatch({
+            type: 'view/confirmation/reset/delete-node',
+        });
+        return true;
+    } else if (selection.size > 0) {
+        viewStore.dispatch({
+            type: 'DOCUMENT/CLEAR_SELECTION',
+        });
+        return true;
     } else if (search.query) {
         viewStore.dispatch({
             type: 'SEARCH/SET_QUERY',
@@ -27,19 +37,9 @@ export const handleEscapeKey = (view: LineageView) => {
             },
         });
         return true;
-    } else if (value.document.pendingConfirmation.deleteNode.size > 0) {
-        viewStore.dispatch({
-            type: 'view/confirmation/reset/delete-node',
-        });
-        return true;
     } else if (search.showInput) {
         viewStore.dispatch({
             type: 'SEARCH/TOGGLE_INPUT',
-        });
-        return true;
-    } else if (selection.size > 0) {
-        viewStore.dispatch({
-            type: 'DOCUMENT/CLEAR_SELECTION',
         });
         return true;
     }
