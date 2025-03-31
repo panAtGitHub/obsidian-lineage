@@ -20,6 +20,7 @@ const stateEvents = new Set<ActionType>([
     'view/set-active-node/search',
     'DOCUMENT/NAVIGATE_USING_KEYBOARD',
     'DOCUMENT/JUMP_TO_NODE',
+    'view/selection/select-all',
 ]);
 
 const editMainSplitEvents = new Set<ActionType>([

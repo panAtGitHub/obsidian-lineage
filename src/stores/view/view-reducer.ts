@@ -27,6 +27,7 @@ import { toggleCollapseAllNodes } from 'src/stores/view/reducers/outline/toggle-
 import { collapseNode } from 'src/stores/view/reducers/outline/helpers/collapse-node';
 import { expandParentsOfActiveNode } from 'src/stores/view/reducers/outline/expand-parents-of-active-node';
 import { LineageDocument } from 'src/stores/document/document-state-type';
+import { selectAllNodes } from 'src/stores/view/reducers/selection/select-all-nodes';
 
 const updateDocumentState = (
     state: ViewState,
@@ -149,6 +150,8 @@ const updateDocumentState = (
         toggleFuzzySearch(state);
     } else if (action.type === 'DOCUMENT/CLEAR_SELECTION') {
         resetSelectionState(state.document);
+    } else if (action.type === 'view/selection/select-all') {
+        selectAllNodes(state.document, context.columns);
     } else if (action.type === 'NAVIGATION/SELECT_NEXT_NODE') {
         navigateActiveNode(state.document, state, action);
     } else if (action.type === 'view/pinned-nodes/set-active-node') {

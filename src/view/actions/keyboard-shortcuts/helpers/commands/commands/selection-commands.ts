@@ -4,6 +4,23 @@ export const selectionCommands = () => {
     const commands: DefaultViewCommand[] = [];
     commands.push(
         {
+            name: 'select_all_nodes',
+            callback: (view, e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                view.viewStore.dispatch({
+                    type: 'view/selection/select-all',
+                });
+            },
+            hotkeys: [
+                {
+                    key: 'a',
+                    modifiers: ['Mod'],
+                    editorState: 'editor-off',
+                },
+            ],
+        },
+        {
             name: 'extend_select_up',
             callback: (view, event) => {
                 event.preventDefault();

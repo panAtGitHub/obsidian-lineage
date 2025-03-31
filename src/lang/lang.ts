@@ -58,12 +58,12 @@ export const lang = {
     cm_copy: 'Copy',
     cm_copy_branches: 'Copy branches',
     cm_copy_branch: 'Copy branch',
-    cm_copy_branches_wo_formatting: 'Copy branches without formatting',
-    cm_copy_branch_wo_formatting: 'Copy branch without formatting',
+    cm_copy_branches_wo_formatting: 'Copy branches as plain text',
+    cm_copy_branch_wo_formatting: 'Copy branch as plain text',
     cm_copy_section_wo_subitems: 'Copy sections without sub-items',
     cm_copy_sections_wo_subitems: 'Copy section without sub-items',
     hk_copy_node: 'Copy branch',
-    hk_copy_node_unformatted: 'Copy branch without formatting',
+    hk_copy_node_unformatted: 'Copy branch as plain text',
     hk_copy_node_without_subitems: 'Copy without subitems',
     cm_copy_link_to_block: 'Copy link to block',
     hkg_clipboard: 'Clipboard',
@@ -172,6 +172,7 @@ export const lang = {
     hk_extend_select_to_start_of_column: 'Extend selection to start of column',
     hk_extend_select_to_end_of_column: 'Extend selection to end of column',
     hkg_selection: 'Selection',
+    hk_select_all: 'Select all cards',
 
     // navigate spatially
     hk_navigate_to_next_node: 'Select next card',
@@ -218,7 +219,7 @@ export const lang = {
         'Always center active card vertically',
     cmd_toggle_horizontal_scrolling_mode: `Toggle 'always center active card horizontally'`,
     cmd_toggle_vertical_scrolling_mode: `Toggle 'always center active card vertically'`,
-    card_btn_scroll_to_reveal: 'Scroll to reveal',
+    card_btn_scroll_to_reveal: 'Reveal',
     hkg_scrolling: 'Align branch',
 
     // theme
@@ -279,7 +280,7 @@ export const lang = {
     // rules
     modals_rules_add_rule: 'New rule',
     modals_rules_no_rules: 'No rules',
-    controls_rules: 'Style rules',
+    controls_rules: 'Card style rules',
     modals_rules_matches: 'Number of matches',
     modals_rules_drag_handle: 'Change priority',
     modals_rules_tab_global_rules: 'Global rules',

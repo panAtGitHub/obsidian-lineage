@@ -45,11 +45,11 @@ const staticZoomOptions: ZoomOption[] = [
 
 const dynamicZoomOptions = [
     {
-        label: 'Fit document height into view',
+        label: 'Fit document height',
         scale: fitDocumentHeightIntoView,
     },
     {
-        label: 'Fit active branch into view',
+        label: 'Fit active branch',
         scale: fitBranchIntoView,
     },
 ];

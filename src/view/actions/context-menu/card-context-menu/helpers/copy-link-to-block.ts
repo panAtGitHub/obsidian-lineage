@@ -45,7 +45,7 @@ export const copyLinkToBlock = async (
         });
         const link = `[[${fileName}#^${output.blockId}]]`;
         await navigator.clipboard.writeText(link);
-        new Notice('Link copied to clipboard');
+        new Notice('Copied');
     } else {
         new Notice('Could not copy link to clipboard');
     }
