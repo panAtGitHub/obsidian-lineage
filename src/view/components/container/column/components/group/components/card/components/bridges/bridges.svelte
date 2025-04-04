@@ -50,7 +50,7 @@
     }
 
     .active-parent-bridge-left {
-        width: 12px;
+        width: 7px;
         left: -12px;
         background-color: var(--bg-color);
     }
