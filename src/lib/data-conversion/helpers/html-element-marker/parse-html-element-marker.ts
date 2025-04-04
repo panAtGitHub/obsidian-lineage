@@ -1,6 +1,7 @@
-export const htmlCommentRegex = /<span data-section="((\d\.?)*(\d))"\s*\/>/;
+export const htmlElementRegex =
+    /<span data-section="((\d\.?)*(\d))"\s*(\/>|><\/span>)/;
 export const parseHtmlElementMarker = (line: string) => {
-    const results = htmlCommentRegex.exec(line);
+    const results = htmlElementRegex.exec(line);
     if (results) {
         const result = results[1];
         const split = result.split('.');

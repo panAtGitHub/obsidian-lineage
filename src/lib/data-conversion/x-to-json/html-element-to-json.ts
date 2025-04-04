@@ -1,7 +1,7 @@
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
 import { lang } from 'src/lang/lang';
 import {
-    htmlCommentRegex,
+    htmlElementRegex,
     parseHtmlElementMarker,
 } from 'src/lib/data-conversion/helpers/html-element-marker/parse-html-element-marker';
 import {
@@ -24,7 +24,7 @@ export const htmlElementToJson = (text: string) => {
             const isASibling = parent === currentParentNumber;
 
             const newNode = {
-                content: line.replace(htmlCommentRegex, ''),
+                content: line.replace(htmlElementRegex, ''),
                 children: [],
             };
             map[full] = newNode;

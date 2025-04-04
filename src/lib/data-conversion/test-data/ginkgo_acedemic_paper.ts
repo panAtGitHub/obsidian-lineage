@@ -673,8 +673,7 @@ After a couple of "passes" of expanding, you will end up with your complete, and
 Here's a (somewhat dated) video which might help.
 <iframe width="256" height="144" src="//www.youtube.com/embed/J4prcx0jZ9M?rel=0" frameborder="0" allowfullscreen></iframe>`;
 
-const mdWithHtmlElement = `<span data-section="1"/>
-
+const mdWithHtmlElement = `<span data-section="1"></span>
 # Title: **Statement** of your core result or finding.
 Try to make your title an assertive statement, such as:
 - "Changes in cytoplasmic volume are sufficient to drive spindle scaling." 
@@ -686,8 +685,7 @@ Rule of thumb: if your title would look weird with a period at the end, it is pr
 
 Don't do [this](http://www.phdcomics.com/comics/archive/phd053106s.gif).
 
-<span data-section="1.1"/>
-
+<span data-section="1.1"></span>
 # Abstract
 Try to tell a *story* here, no matter what your field. You are writing for human beings, not computers. What's the area, what's the problem you are trying to understand. How? What have you found?
 
@@ -701,8 +699,7 @@ Try to tell a *story* here, no matter what your field. You are writing for human
 
 ###### (This is a word count footer. We don't have automatic word counts yet, so I use is [this Chrome extension](https://chrome.google.com/webstore/detail/word-count/pnngehidikgomgfjbpffonkeimgbpjlh))
 
-<span data-section="1.1.1"/>
-
+<span data-section="1.1.1"></span>
 ## Introduction - "The Setup"
 ### [In field X, we still don't understand Y & Z.]
 
@@ -712,15 +709,13 @@ Also, answer the harsh but important question: *Who cares*?
 
 In writing this, you can start general, but make sure clearly define the "before" state of the world's knowledge for the *specific area* this paper is addressing.
 
-<span data-section="1.1.1.1"/>
-
+<span data-section="1.1.1.1"></span>
 ### Intro - Assertive Statement 1
 
 Here you can expand on your introduction. To guide your writing, title this card with assertive statements:
 Instead of "Problem Description", be direct: "The problem is that X doesn't do Y."
 
-<span data-section="1.1.1.1.1"/>
-
+<span data-section="1.1.1.1.1"></span>
 # Introduction
 
 <span data-section="1.1.1.1.2"/>[You can write your actual paper here in this column. Then choosing "Export column 5" to Word or Markdown will help you move it to your final platform.]
@@ -731,41 +726,35 @@ Instead of "Problem Description", be direct: "The problem is that X doesn't do Y
 
 <span data-section="1.1.1.1.4"/>...
 
-<span data-section="1.1.1.2"/>
-
+<span data-section="1.1.1.2"></span>
 ### Intro - Assertive Statement 2
 
 <span data-section="1.1.1.2.1"/>...
 
 <span data-section="1.1.1.2.2"/>...
 
-<span data-section="1.1.1.3"/>
-
+<span data-section="1.1.1.3"></span>
 ### Intro - Assertive Statement 3
 
 <span data-section="1.1.1.3.1"/>...
 
 <span data-section="1.1.1.3.2"/>...
 
-<span data-section="1.1.2"/>
-
+<span data-section="1.1.2"></span>
 ## Materials & Methods - "The Characters"
 ### [We have here method A, B, and our new method C.]
 You have established the core question(s) of your research. Now introduce the tools you are going to  use to understand it.
 
-<span data-section="1.1.2.1"/>
-
+<span data-section="1.1.2.1"></span>
 ## Method A
 More details on the method, experiment design, etc.
 
 Remember that these are cards, so you can drag and drop them to rearrange if necessary.
 
-<span data-section="1.1.2.1.1"/>
-
+<span data-section="1.1.2.1.1"></span>
 # Methods
 
-<span data-section="1.1.2.1.2"/>
-
+<span data-section="1.1.2.1.2"></span>
 ### Method A
 
 <span data-section="1.1.2.1.2.1"/>Some other note. For example:
@@ -778,21 +767,18 @@ Remember that these are cards, so you can drag and drop them to rearrange if nec
 
 <span data-section="1.1.2.1.4"/>...
 
-<span data-section="1.1.2.2"/>
-
+<span data-section="1.1.2.2"></span>
 ## Method B
 More details on the method, experiment design, etc.
 
-<span data-section="1.1.2.2.1"/>
-
+<span data-section="1.1.2.2.1"></span>
 ### Method B...
 
 <span data-section="1.1.2.2.2"/>...
 
 <span data-section="1.1.2.2.3"/>...
 
-<span data-section="1.1.2.3"/>
-
+<span data-section="1.1.2.3"></span>
 ## Method C
 More details on the method, experiment design, etc.
 
@@ -801,16 +787,14 @@ If you need a checklist to make sure you address all points, go ahead:
 [ ] What temperature?
 [ ] For how long?
 
-<span data-section="1.1.2.3.1"/>
-
+<span data-section="1.1.2.3.1"></span>
 ### Method C
 
 <span data-section="1.1.2.3.2"/>...
 
 <span data-section="1.1.2.3.3"/>...
 
-<span data-section="1.1.3"/>
-
+<span data-section="1.1.3"></span>
 ## Results
 What happened (objectively)?
 
@@ -818,15 +802,13 @@ Do not interpret, simply state the facts.
 
 Let's be honest: the first thing most of us do when skimming a paper is look at the figures. If your key results can be presented in figures, then start with that, and structure your paper around that.
 
-<span data-section="1.1.3.1"/>
-
+<span data-section="1.1.3.1"></span>
 ## Key Result
 You can add figures if you'd like:
 
 ![](https://dl.dropboxusercontent.com/s/gieldum0s47m25v/1-plot.jpg)
 
-<span data-section="1.1.3.1.1"/>
-
+<span data-section="1.1.3.1.1"></span>
 # Results
 
 <span data-section="1.1.3.1.2"/>Final text for results goes here
@@ -840,28 +822,24 @@ Any subcards will follow.
 
 <span data-section="1.1.3.2.1"/>Other results
 
-<span data-section="1.1.4"/>
-
+<span data-section="1.1.4"></span>
 ## Discussion
 Results are objective, but science isn't about listing data, it's about extracting meaning from what we observe.
 
 What do your results tell you about the core problem you were investigating?
 
-<span data-section="1.1.5"/>
-
+<span data-section="1.1.5"></span>
 ## Conclusion
 Bring it back to the big picture. How do your results fit into the current body of knowledge?
 
 Most importantly, how can these results help you [ask better questions](http://www.youtube.com/watch?v=nq0_zGzSc8g#t=493)?
 
-<span data-section="1.1.5.1"/>
-
+<span data-section="1.1.5.1"></span>
 ## Conclusion (further detail)
 
 Expand on your conclusion summary, and add more details to it.
 
-<span data-section="1.1.5.1.1"/>
-
+<span data-section="1.1.5.1.1"></span>
 # Conclusion
 
 <span data-section="1.1.5.1.2"/>Final text for conclusion goes here
@@ -870,8 +848,7 @@ Expand on your conclusion summary, and add more details to it.
 
 <span data-section="1.1.5.1.4"/>cards as you like.
 
-<span data-section="1.1.6"/>
-
+<span data-section="1.1.6"></span>
 ## References
 We don't have bibliography support yet, but we do have "named links" so you can refer to specific links by name rather than retyping it each time.
 
@@ -880,8 +857,7 @@ We don't have bibliography support yet, but we do have "named links" so you can 
 [prl2010]: http://arxiv.org/abs/1311.3007
 [dnaRef]: http://biorxiv.org/content/early/2013/11/07/000026
 
-<span data-section="1.1.6.1"/>
-
+<span data-section="1.1.6.1"></span>
 ## List
 Or you can simply list your references here:
 
@@ -889,8 +865,7 @@ Or you can simply list your references here:
 1. some other ref. Numbering fixes itself automatically.
 2. A third ref.
 
-<span data-section="1.1.6.1.1"/>
-
+<span data-section="1.1.6.1.1"></span>
 # References
 
 <span data-section="1.1.6.1.2"/>Some reference by J. Doe
@@ -899,8 +874,7 @@ Or you can simply list your references here:
 
 <span data-section="1.1.6.1.3"/>Some other reference
 
-<span data-section="1.2"/>
-
+<span data-section="1.2"></span>
 ## How to use this template
 The idea here is to start at the far left, and clarify what the core of what you want to say is *first*, and then expand on it by moving to the right, one column at a time.
 

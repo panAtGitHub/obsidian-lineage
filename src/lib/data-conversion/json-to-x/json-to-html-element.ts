@@ -1,6 +1,9 @@
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
 import { level } from 'src/lib/data-conversion/helpers/html-comment-marker/create-html-comment-marker';
-import { createHtmlElementMarker } from 'src/lib/data-conversion/helpers/html-element-marker/create-html-element-marker';
+import {
+    collapsedSpanMarker,
+    expandedSpanMarker,
+} from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
 
 export const jsonToHtmlElement = (
     tree: TreeNode[],
@@ -15,34 +18,33 @@ export const jsonToHtmlElement = (
 
         let content = node.content.trimStart();
 
-        const marker = createHtmlElementMarker(parentNumber, index);
+        const expandedSpan = expandedSpanMarker(parentNumber, index);
         if (content.match(/^#+ /)) {
             // an additional '\n' is needed as a workaround for a bug in obsidian
-            content = `${marker}\n\n${content}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.match(/^#[^\s#\uFEFF\u200B]+/)) {
-            // BOM (\uFEFF) and zero-width spaces (\u200B) are matched to avoid issues with emojis
-            const tag = content.match(/^#[^\s#\uFEFF\u200B]+/)?.[0];
-            content = `${tag}${marker}${content.slice(tag!.length)}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.startsWith('>')) {
-            content = `${marker}\n${content}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.match(/^[-*+]\s\[.\]\s/)) {
             // tasks
-            const taskPrefix = content.match(/^[-*+]\s\[.\]\s/)?.[0];
-            content = `${taskPrefix}${marker}${content.slice(taskPrefix!.length).trim()}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.match(/^[-*+]\s/)) {
-            const bullet = content.match(/^[-*+]\s/)?.[0];
-            content = `${bullet}${marker}${content.slice(bullet!.length).trim()}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.match(/^\d+\.\s/)) {
             // numbered list
-            const number = content.match(/^\d+\.\s/)?.[0];
-            content = `${number} ${marker}${content.slice(number!.length).trim()}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.startsWith('```')) {
-            content = `${marker}\n${content}`;
+            content = `${expandedSpan}\n${content}`;
         } else if (content.startsWith('|')) {
             // table
-            content = `${marker}\n\n${content}`;
+            content = `${expandedSpan}\n\n${content}`;
+        } else if (content.startsWith('[[')) {
+            // wikilink
+            content = `${expandedSpan}\n${content}`;
         } else {
-            content = `${marker}${content}`;
+            const collapsedSpan = collapsedSpanMarker(parentNumber, index);
+            content = `${collapsedSpan}${content}`;
         }
 
         text += content;
