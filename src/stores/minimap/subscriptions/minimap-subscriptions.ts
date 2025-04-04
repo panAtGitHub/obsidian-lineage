@@ -4,12 +4,15 @@ import { onMinimapStateUpdate } from 'src/stores/minimap/subscriptions/on-minima
 import { minimapWorker } from 'src/workers/worker-instances';
 
 export const minimapSubscriptions = (view: LineageView) => {
+    const localState: { previousScrollPosition: number } = {
+        previousScrollPosition: 0,
+    };
     const unsub = view.minimapStore!.subscribe(
         (viewState, action, initialRun) => {
             if (initialRun) {
                 onMinimapMount(view);
             } else if (action) {
-                onMinimapStateUpdate(view, action, viewState);
+                onMinimapStateUpdate(view, action, viewState, localState);
             }
         },
     );

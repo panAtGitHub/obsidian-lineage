@@ -11,7 +11,7 @@ export const updateVisibleRange = async (view: LineageView) => {
         type: 'minimap/set/scroll-position',
         payload: {
             canvasId: canvasId,
-            scroll_position_cpx: state.scrollInfo.scrollPosition_cpx,
+            scroll_position_cpx: state.scrollbar.scrollPosition_cpx,
         },
     });
 

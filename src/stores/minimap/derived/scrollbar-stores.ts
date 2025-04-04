@@ -16,13 +16,13 @@ export const calculateThumbHeightDpx = (state: ScrollInfo) => {
 
 export const ScrollThumbHeightStore = (view: LineageView) => {
     return derived(view.getMinimapStore(), (state) => {
-        return calculateThumbHeightDpx(state.scrollInfo);
+        return calculateThumbHeightDpx(state.scrollbar);
     });
 };
 
 export const ScrollThumbPositionStore = (view: LineageView) => {
     return derived(view.getMinimapStore(), (_state) => {
-        const state = _state.scrollInfo;
+        const state = _state.scrollbar;
         const indicatorHeight_dpx = calculateThumbHeightDpx(state);
         if (indicatorHeight_dpx === 0) return 0;
 
@@ -36,6 +36,6 @@ export const ScrollThumbPositionStore = (view: LineageView) => {
 
 export const MinimapScrollOffsetStore = (view: LineageView) =>
     derived(view.getMinimapStore(), (state) => {
-        const offset = cpx_to_dpx(state.scrollInfo.scrollPosition_cpx);
+        const offset = cpx_to_dpx(state.scrollbar.scrollPosition_cpx);
         return offset > 0 ? -1 * offset : offset;
     });

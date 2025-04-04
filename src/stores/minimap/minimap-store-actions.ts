@@ -13,9 +13,9 @@ export type MinimapStoreAction =
           };
       }
     | {
-          type: 'minimap/set-scroll-position';
+          type: 'minimap/mouse-wheel-scroll';
           payload: {
-              position_cpx: number;
+              delta_y_dpx: number;
           };
       }
     | {

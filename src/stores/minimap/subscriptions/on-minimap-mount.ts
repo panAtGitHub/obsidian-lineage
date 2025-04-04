@@ -14,8 +14,6 @@ export const onMinimapMount = async (view: LineageView) => {
     setMinimapDom(view);
     initializeMinimapWorker(view);
     setMinimapActiveNode(view);
+    setClientHeight(view);
     await drawDocument(view);
-    setTimeout(() => {
-        setClientHeight(view);
-    }, 400);
 };
