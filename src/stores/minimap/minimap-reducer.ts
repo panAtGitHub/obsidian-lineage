@@ -9,6 +9,11 @@ const updateDocumentState = (
 ) => {
     if (action.type === 'minimap/set-card-ranges') {
         state.ranges.cards = action.payload.ranges;
+        const newDocumentHeight =
+            state.scrollbar.totalDrawnHeight_cpx !== action.payload.height_cpx;
+        if (newDocumentHeight) {
+            state.scrollbar.scrollPosition_cpx = 0;
+        }
         state.scrollbar.totalDrawnHeight_cpx = action.payload.height_cpx;
         deriveScrollPosition(state);
     } else if (action.type === 'minimap/set-active-node') {
