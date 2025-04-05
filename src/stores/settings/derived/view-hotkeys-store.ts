@@ -154,11 +154,11 @@ export const FilteredHotkeysStore = (view: LineageView) =>
             } else array = hotkeys.hotkeys;
             return {
                 hotkeys: groupArrayByProperty(array, 'group', {
-                    [lang.hkg_create_cards]: [],
-                    [lang.hkg_edit_cards]: [],
-                    [lang.hkg_move_cards]: [],
-                    [lang.hkg_merge_cards]: [],
-                    [lang.hkg_delete_cards]: [],
+                    [lang.hkg_create_nodes]: [],
+                    [lang.hkg_edit_nodes]: [],
+                    [lang.hkg_move_nodes]: [],
+                    [lang.hkg_merge_nodes]: [],
+                    [lang.hkg_delete_nodes]: [],
                     [lang.hkg_clipboard]: [],
                     [lang.hkg_navigation]: [],
                     [lang.hkg_selection]: [],

@@ -13,7 +13,7 @@ export const LinkPaneType = (
         lang.settings_general_link_behavior,
     );
     setting.setDesc(
-        `Press '${isMacLike ? 'cmd' : 'control'}' to use the other option`,
+        `Hold '${isMacLike ? 'cmd' : 'control'}' to use the other option`,
     );
     setting.addDropdown((cb) => {
         const value = settingsState.general.linkPaneType;

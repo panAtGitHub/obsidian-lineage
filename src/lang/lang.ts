@@ -15,44 +15,44 @@ export const lang = {
     ocm_new_document: 'New document',
     ocm_import_from_gingko: 'Import from Gingko',
 
-    // add cards
-    hk_add_below_and_split: 'Add card below and split at cursor',
-    card_btn_add_card_below: 'Add card below',
-    hk_add_above_and_split: 'Add card above and split at cursor',
-    card_btn_add_card_above: 'Add card above',
-    hk_add_parent_sibling: 'Add card after parent',
-    hk_add_child_and_split: 'Add child card and split at cursor',
-    card_btn_add_child_card: 'Add child card',
-    hkg_create_cards: 'Create cards',
-    modals_snapshots_created_card: 'Created card ',
+    // add sections
+    hk_add_below_and_split: 'Add section after and split at cursor',
+    card_btn_add_node_below: 'Add section after',
+    hk_add_above_and_split: 'Add section before and split at cursor',
+    card_btn_add_node_above: 'Add section before',
+    hk_add_parent_sibling: 'Add section after parent',
+    hk_add_child_and_split: 'Add subsection and split at cursor',
+    card_btn_add_child_node: 'Add subsection',
+    hkg_create_nodes: 'Create',
+    modals_snapshots_created_node: 'Created section ',
 
     // edit
     settings_general_maintain_edit_mode: 'Maintain editing mode',
     settings_general_maintain_edit_mode_desc:
         'Maintain editing mode when switching to a different card using the mouse or keyboard',
     card_btn_edit: 'Edit',
-    hk_enable_edit_mode: 'Edit card',
+    hk_enable_edit_mode: 'Edit section',
     hk_enable_edit_mode_and_place_cursor_at_start:
-        'Edit card and place cursor at the start',
+        'Edit section and place cursor at the start',
     hk_enable_edit_mode_and_place_cursor_at_end:
-        'Edit card and place cursor at the end',
-    hkg_edit_cards: 'Edit cards',
-    modals_snapshots_updated_card: 'Updated card ',
+        'Edit section and place cursor at the end',
+    hkg_edit_nodes: 'Edit',
+    modals_snapshots_updated_node: 'Updated section ',
     modal_hk_editor_state_on: 'Enable only when the editor is active',
     modal_hk_editor_state_off: 'Enable only when the editor is inactive',
     modal_hk_editor_state_both: 'Enable regardless of the editor state',
 
     // save
     card_btn_save: 'Save',
-    hk_save_changes: 'Save changes and exit card',
+    hk_save_changes: 'Save changes and exit editor',
     hk_disable_edit_mode: 'Cancel changes',
 
     // delete
     card_btn_delete: 'Delete',
-    hk_delete_card: 'Delete card',
-    error_delete_last_node: 'Cannot delete this card',
-    hkg_delete_cards: 'Delete cards',
-    modals_snapshots_deleted_card: 'Deleted card ',
+    hk_delete_section: 'Delete section',
+    error_delete_last_node: 'Cannot delete this section',
+    hkg_delete_nodes: 'Delete',
+    modals_snapshots_deleted_section: 'Deleted section ',
 
     // clipboard
     cm_copy: 'Copy',
@@ -60,23 +60,23 @@ export const lang = {
     cm_copy_branch: 'Copy branch',
     cm_copy_branches_wo_formatting: 'Copy branches as plain text',
     cm_copy_branch_wo_formatting: 'Copy branch as plain text',
-    cm_copy_section_wo_subitems: 'Copy sections without sub-items',
-    cm_copy_sections_wo_subitems: 'Copy section without sub-items',
+    cm_copy_node_wo_subitems: 'Copy sections',
+    cm_copy_nodes_wo_subitems: 'Copy section',
     hk_copy_node: 'Copy branch',
     hk_copy_node_unformatted: 'Copy branch as plain text',
-    hk_copy_node_without_subitems: 'Copy without subitems',
+    hk_copy_node_without_subitems: 'Copy section',
     cm_copy_link_to_block: 'Copy link to block',
     toolbar_copy_search_results: 'Copy search results',
     toolbar_copy_search_results_wo_subitems:
         'Copy search results without sub-items',
     toolbar_cut_search_results: 'Cut search results',
     hkg_clipboard: 'Clipboard',
-    modals_snapshots_cut_card: 'Cut card ',
+    modals_snapshots_cut_section: 'Cut section ',
     cm_cut: 'Cut',
     hk_cut_node: 'Cut branch',
     cm_paste: 'Paste',
     hk_paste_node: 'Paste branch',
-    modals_snapshots_pasted_card: 'Pasted card ',
+    modals_snapshots_pasted_section: 'Pasted section ',
     error_cant_paste: 'Paste command failed. Try pasting directly into a card',
     /*hk_notice_copy: (
         size: number,
@@ -102,27 +102,27 @@ export const lang = {
     cm_merge_below: 'Merge with branch below',
     hk_merge_with_node_above: 'Merge with branch above',
     hk_merge_with_node_below: 'Merge with branch below',
-    error_hk_cant_merge_multiple_nodes: 'Cannot merge multiple cards',
-    hkg_merge_cards: 'Merge cards',
-    modals_snapshots_merged_card: 'Merged card ',
+    error_hk_cant_merge_multiple_nodes: 'Cannot merge multiple branches',
+    hkg_merge_nodes: 'Merge',
+    modals_snapshots_merged_node: 'Merged section ',
 
     // move
     hk_move_node_up: 'Move branch up',
     hk_move_node_down: 'Move branch down',
     hk_move_node_right: 'Move branch right',
     hk_move_node_left: 'Move branch left',
-    hkg_move_cards: 'Move cards',
-    modals_snapshots_moved_card: 'Moved branch ',
+    hkg_move_nodes: 'Move',
+    modals_snapshots_moved_node: 'Moved section ',
 
     // dnd
-    modals_snapshots_dropped_card: 'Dropped card ',
+    modals_snapshots_dropped_node: 'Dropped section ',
 
     // split
-    cm_split_card: 'Split card',
-    error_cm_cant_split_card_that_has_children:
-        'Cannot split a card that has children',
-    error_cm_cant_split_card_identical: 'The result is the same as the input',
-    modals_snapshots_split_card: 'Split card ',
+    cm_split_node: 'Split section',
+    error_cm_cant_split_node_that_has_children:
+        'Cannot split a section that has sub-items',
+    error_cm_cant_split_node_identical: 'The result is the same as the input',
+    modals_snapshots_split_node: 'Split section ',
 
     // undo
     controls_history: 'History',
@@ -137,21 +137,20 @@ export const lang = {
     cmd_extract_branch: 'Extract branch to a new document',
     cm_extract_branch: 'Extract branch',
     cm_extract_section: 'Extract section',
-    modals_snapshots_extracted_card: 'Extracted card ',
+    modals_snapshots_extracted_node: 'Extracted section ',
 
     // export
     cm_export_document: 'Export document',
     cm_export_selection: 'Export',
     cm_export_section: 'Export section',
-    cm_export_branch_with_subitems: 'Export branch with sub-items',
-    cm_export_branch_wo_subitems: 'Export section without sub-items',
-    cmd_export_branches_with_subitems: 'Export branches with sub-items',
-    cmd_export_sections_wo_subitems: 'Export sections without sub-items',
+    cm_export_branch_with_subitems: 'Export branch',
+    cm_export_branch_wo_subitems: 'Export section',
+    cmd_export_branches_with_subitems: 'Export branches',
+    cmd_export_nodes_wo_subitems: 'Export sections',
 
     // document format
     settings_general_default_format: 'Default format',
     cm_document_format: 'Document format',
-    settings_general_default_format_desc: 'Applies to new documents',
     settings_format_html_elements: 'HTML elements (experimental)',
     settings_format_html_comments: 'HTML comments',
     settings_format_outline: 'Outline',
@@ -165,7 +164,7 @@ export const lang = {
 
     // search
     tlb_search_toggle: 'Toggle search input',
-    tlb_search_show_all_cards: 'Show all cards',
+    tlb_search_show_all_nodes: 'Show all sections',
     tlb_search_fuzzy_search: 'Fuzzy search',
     tlb_search_previous_result: 'Previous result',
     tlb_search_next_result: 'Next result',
@@ -181,11 +180,11 @@ export const lang = {
     hk_extend_select_to_start_of_column: 'Extend selection to start of column',
     hk_extend_select_to_end_of_column: 'Extend selection to end of column',
     hkg_selection: 'Selection',
-    hk_select_all: 'Select all cards',
+    hk_select_all: 'Select all sections',
 
     // navigate spatially
-    hk_navigate_to_next_node: 'Select next card',
-    hk_navigate_to_previous_node: 'Select previous card',
+    hk_navigate_to_next_node: 'Select next section',
+    hk_navigate_to_previous_node: 'Select previous section',
     hk_go_up: 'Go up',
     hk_go_down: 'Go down',
     hk_go_right: 'Go right',
@@ -194,7 +193,7 @@ export const lang = {
     hk_go_to_end_of_group: 'Go to end of group',
     hk_go_to_beginning_of_column: 'Go to start of column',
     hk_go_to_end_of_column: 'Go to end of column',
-    hk_select_parent: 'Select parent card',
+    hk_select_parent: 'Select parent section',
     hkg_navigation: 'Navigation',
     hk_select_previous_sibling: 'Select previous sibling',
     hk_select_next_sibling: 'Select next sibling',
@@ -220,7 +219,7 @@ export const lang = {
     hk_scroll_right: 'Scroll right',
     hk_scroll_up: 'Scroll up',
     hk_scroll_down: 'Scroll down',
-    hk_align_branch: 'Align active branch',
+    hk_align_branch: 'Center active branch',
 
     controls_toggle_scrolling_mode_horizontal:
         'Always center active card horizontally',
@@ -229,7 +228,7 @@ export const lang = {
     cmd_toggle_horizontal_scrolling_mode: `Toggle 'always center active card horizontally'`,
     cmd_toggle_vertical_scrolling_mode: `Toggle 'always center active card vertically'`,
     card_btn_scroll_to_reveal: 'Reveal',
-    hkg_scrolling: 'Align branch',
+    hkg_scrolling: 'Scroll',
 
     // theme
     settings_theme_bg: 'Background color',
@@ -248,13 +247,12 @@ export const lang = {
 
     // outline
     settings_layout_indentation_width: 'Card indentation',
-    settings_layout_indentation_width_desc: "Applicable in 'outline mode'",
     controls_single_column: 'Outline mode',
     hk_toggle_outline_mode: `Toggle outline mode`,
-    card_btn_collapse_card: 'Collapse',
-    card_btn_expand_card: 'Expand',
-    hk_outline_toggle_collapse: 'Collapse/expand card',
-    hk_outline_toggle_collapse_all: 'Collapse/expand all cards',
+    card_btn_collapse_node: 'Collapse',
+    card_btn_expand_node: 'Expand',
+    hk_outline_toggle_collapse: 'Collapse/expand section',
+    hk_outline_toggle_collapse_all: 'Collapse/expand all sections',
     hkg_outline: 'Outline',
 
     // toolbar
@@ -266,8 +264,6 @@ export const lang = {
     controls_gap_between_cards: 'Space between cards',
     cmd_space_between_cards: `Toggle 'space between cards'`,
     settings_layout_space_between_cards: 'Space between cards',
-    settings_layout_space_between_cards_desc:
-        'Applicable when spaces are enabled',
 
     // sidebar
     toolbar_toggle_left_sidebar: 'Left sidebar',
@@ -275,16 +271,16 @@ export const lang = {
     cmd_toggle_minimap: 'Toggle document minimap',
     cmd_toggle_left_sidebar: 'Toggle left sidebar',
 
-    // recent cards
-    sidebar_tab_recent_cards: 'Recent cards',
-    sidebar_no_recent_cards: 'No recent cards',
+    // recent sections
+    sidebar_tab_recent_nodes: 'Recently selected sections',
+    sidebar_no_recent_nodes: 'No recent sections',
 
-    // pin cards
+    // pin sections
     cm_unpin_from_left_sidebar: 'Unpin from left sidebar',
     cm_pin_in_left_sidebar: 'Pin in left sidebar',
-    cmd_toggle_pin_in_left_sidebar: `Toggle 'pin card in left sidebar'`,
-    sidebar_tab_pinned_cards: 'Pinned cards',
-    sidebar_no_pinned_cards: 'No pinned cards',
+    cmd_toggle_pin_in_left_sidebar: `Toggle 'pin section in left sidebar'`,
+    sidebar_tab_pinned_nodes: 'Pinned sections',
+    sidebar_no_pinned_nodes: 'No pinned sections',
 
     // rules
     modals_rules_add_rule: 'New rule',
@@ -298,12 +294,12 @@ export const lang = {
     modals_rules_rule_cm_move_to_global: 'Move to global rules',
 
     // sort
-    cmd_sort_child_cards_asc: 'Sort child cards: ascending order',
-    cmd_sort_child_cards_desc: 'Sort child cards: descending order',
-    cm_sort_child: 'Sort child cards',
-    cm_sort_child_cards_asc: 'Ascending order',
-    cm_sort_child_cards_desc: 'Descending order',
-    modals_snapshots_sorted_child_cards: 'Sorted child cards of card ',
+    cmd_sort_child_nodes_asc: 'Sort subsections: ascending order',
+    cmd_sort_child_nodes_desc: 'Sort subsections: descending order',
+    cm_sort_child: 'Sort subsections',
+    cm_sort_child_nodes_asc: 'Ascending order',
+    cm_sort_child_nodes_desc: 'Descending order',
+    modals_snapshots_sorted_child_nodes: 'Sorted subsections of section ',
 
     // settings
     controls_settings: 'Settings',

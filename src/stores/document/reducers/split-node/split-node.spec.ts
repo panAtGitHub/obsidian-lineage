@@ -233,7 +233,7 @@ describe('split node', () => {
         } as const;
 
         expect(() => splitNode(input, action)).toThrow(
-            lang.error_cm_cant_split_card_that_has_children,
+            lang.error_cm_cant_split_node_that_has_children,
         );
         expect(compareDocuments(input, inputClone)).toBe(true);
     });
@@ -326,7 +326,7 @@ describe('split node', () => {
         } as const;
 
         expect(() => splitNode(input, action)).toThrow(
-            lang.error_cm_cant_split_card_identical,
+            lang.error_cm_cant_split_node_identical,
         );
         expect(compareDocuments(input, inputClone)).toBe(true);
     });

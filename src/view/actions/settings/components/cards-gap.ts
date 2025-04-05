@@ -19,7 +19,6 @@ export const CardsGap = (
         },
         valueSelector: (settingsState) => settingsState.view.cardsGap,
         label: lang.settings_layout_space_between_cards,
-        desc: lang.settings_layout_space_between_cards_desc,
         max: 500,
         min: 0,
         step: 10,

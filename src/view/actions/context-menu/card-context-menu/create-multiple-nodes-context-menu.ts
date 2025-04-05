@@ -26,7 +26,7 @@ export const createMultipleNodesContextMenu = (view: LineageView) => {
                         copyActiveBranchesToClipboard(view, false, false),
                 },
                 {
-                    title: lang.cm_copy_section_wo_subitems,
+                    title: lang.cm_copy_node_wo_subitems,
                     icon: 'file-text',
                     action: () => copyActiveNodesToClipboard(view, false),
                 },
@@ -53,7 +53,7 @@ export const createMultipleNodesContextMenu = (view: LineageView) => {
                     action: () => exportSelection(view, true),
                 },
                 {
-                    title: lang.cmd_export_sections_wo_subitems,
+                    title: lang.cmd_export_nodes_wo_subitems,
                     icon: 'file-text',
                     action: () => exportSelection(view, false),
                 },

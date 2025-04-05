@@ -71,7 +71,7 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
-        name: lang.cm_split_card,
+        name: lang.cm_split_node,
         icon: customIcons.split.name,
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
@@ -83,7 +83,7 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
-        name: lang.cmd_sort_child_cards_asc,
+        name: lang.cmd_sort_child_nodes_asc,
         icon: 'sort-asc',
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
@@ -100,7 +100,7 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
-        name: lang.cmd_sort_child_cards_desc,
+        name: lang.cmd_sort_child_nodes_desc,
         icon: 'sort-desc',
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
@@ -177,7 +177,7 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
-        name: lang.cmd_export_sections_wo_subitems,
+        name: lang.cmd_export_nodes_wo_subitems,
         icon: 'file-text',
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);

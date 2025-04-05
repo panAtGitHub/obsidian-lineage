@@ -11,7 +11,6 @@ export const DefaultDocumentFormat = (
     const setting = new Setting(element).setName(
         lang.settings_general_default_format,
     );
-    setting.setDesc(lang.settings_general_default_format_desc);
     setting.addDropdown((cb) => {
         const value = settingsState.general.defaultDocumentFormat;
 

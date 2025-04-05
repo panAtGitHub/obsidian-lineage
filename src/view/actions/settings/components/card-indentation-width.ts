@@ -19,7 +19,6 @@ export const CardIndentationWidth = (
         },
         valueSelector: (settingsState) =>
             settingsState.view.nodeIndentationWidth,
-        desc: lang.settings_layout_indentation_width_desc,
         label: lang.settings_layout_indentation_width,
         max: 1000,
         min: 0,

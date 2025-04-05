@@ -26,11 +26,11 @@ export const createSingleNodeContextMenuItems = (
 ) => {
     const menuItems: MenuItemObject[] = [
         {
-            title: lang.cm_split_card,
+            title: lang.cm_split_node,
             icon: customIcons.split.name,
             action: () => {
                 if (hasChildren) {
-                    new Notice(lang.error_cm_cant_split_card_that_has_children);
+                    new Notice(lang.error_cm_cant_split_node_that_has_children);
                 } else {
                     openSplitNodeModal(view);
                 }
@@ -42,12 +42,12 @@ export const createSingleNodeContextMenuItems = (
             disabled: !hasChildren,
             submenu: [
                 {
-                    title: lang.cm_sort_child_cards_asc,
+                    title: lang.cm_sort_child_nodes_asc,
                     icon: 'sort-asc',
                     action: () => sortChildNodes(view, activeNode, 'ascending'),
                 },
                 {
-                    title: lang.cm_sort_child_cards_desc,
+                    title: lang.cm_sort_child_nodes_desc,
                     icon: 'sort-desc',
                     action: () =>
                         sortChildNodes(view, activeNode, 'descending'),
@@ -96,7 +96,7 @@ export const createSingleNodeContextMenuItems = (
                               copyActiveBranchesToClipboard(view, false, false),
                       },
                       {
-                          title: lang.cm_copy_sections_wo_subitems,
+                          title: lang.cm_copy_nodes_wo_subitems,
                           icon: 'file-text',
                           action: () => copyActiveNodesToClipboard(view, false),
                       },

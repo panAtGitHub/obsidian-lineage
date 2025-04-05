@@ -5,7 +5,7 @@ export type CommandName = keyof typeof hotkeysLang;
 export type GroupName = keyof typeof hotkeyGroups;
 
 export const hotkeyGroups = {
-    [lang.hkg_create_cards]: new Set([
+    [lang.hkg_create_nodes]: new Set([
         'add_child',
         'add_below',
         'add_above',
@@ -14,24 +14,24 @@ export const hotkeyGroups = {
         'add_below_and_split',
         'add_above_and_split',
     ]),
-    [lang.hkg_edit_cards]: new Set([
+    [lang.hkg_edit_nodes]: new Set([
         'enable_edit_mode',
         'enable_edit_mode_and_place_cursor_at_start',
         'enable_edit_mode_and_place_cursor_at_end',
         'disable_edit_mode',
         'save_changes_and_exit_card',
     ]),
-    [lang.hkg_move_cards]: new Set([
+    [lang.hkg_move_nodes]: new Set([
         'move_node_up',
         'move_node_down',
         'move_node_right',
         'move_node_left',
     ]),
-    [lang.hkg_merge_cards]: new Set([
+    [lang.hkg_merge_nodes]: new Set([
         'merge_with_node_above',
         'merge_with_node_below',
     ]),
-    [lang.hkg_delete_cards]: new Set(['delete_card']),
+    [lang.hkg_delete_nodes]: new Set(['delete_card']),
     [lang.hkg_navigation]: new Set([
         'go_up',
         'go_down',

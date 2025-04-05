@@ -19,7 +19,7 @@
 
     const numberOfCharacters = snapshot.context.numberOfCharacters;
     const numberOfSections = snapshot.context.numberOfSections;
-    const sections = `${numberOfSections} card${
+    const sections = `${numberOfSections} section${
         numberOfSections === 1 ? '' : 's'
     }`;
     const chars = `${numberOfCharacters} char${numberOfCharacters === 1 ? '' : 's'}`;

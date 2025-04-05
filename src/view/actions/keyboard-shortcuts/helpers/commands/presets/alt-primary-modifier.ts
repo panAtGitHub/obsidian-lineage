@@ -71,10 +71,4 @@ export const AltPrimaryModifier: CustomHotkeys = {
             modifiers: ['Alt'],
         },
     },
-    select_all_nodes: {
-        primary: {
-            key: 'a',
-            modifiers: ['Alt'],
-        },
-    },
 };

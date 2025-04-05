@@ -8,7 +8,7 @@
 
 <div class="pane-empty">
     {variant === 'pinned'?
-        lang.sidebar_no_pinned_cards:
-        lang.sidebar_no_recent_cards
+        lang.sidebar_no_pinned_nodes:
+        lang.sidebar_no_recent_nodes
         }
 </div>

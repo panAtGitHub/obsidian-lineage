@@ -48,7 +48,7 @@
 
     {#if $search.query.length > 0}
         <div
-            aria-label={lang.tlb_search_show_all_cards}
+            aria-label={lang.tlb_search_show_all_nodes}
             class={'input-right-decorator clickable-icon' +
                 ($search.showAllNodes ? ' is-active' : '')}
             on:click={() => {

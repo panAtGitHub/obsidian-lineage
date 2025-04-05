@@ -7,7 +7,7 @@ export class StatusBar {
     private elements: {
         numberOfCards: HTMLElement;
         documentProgress: HTMLElement;
-        numberOfChildren: HTMLElement;
+        // numberOfChildren: HTMLElement;
     };
 
     constructor(public plugin: Lineage) {
@@ -18,15 +18,15 @@ export class StatusBar {
         this.container = this.plugin.addStatusBarItem();
         this.elements = {
             numberOfCards: this.container.createDiv(),
-            numberOfChildren: this.container.createDiv(),
+            // numberOfChildren: this.container.createDiv(),
             documentProgress: this.container.createDiv(),
         };
         this.elements.numberOfCards.style.marginRight = '5px';
-        this.elements.numberOfChildren.style.marginRight = '5px';
+        // this.elements.numberOfChildren.style.marginRight = '5px';
         this.elements.documentProgress.ariaLabel =
             'Progress through the document';
-        this.elements.documentProgress.ariaLabel =
-            'Total number of child cards';
+        // this.elements.numberOfChildren.ariaLabel =
+        //     'Total number of subsections';
         this.plugin.registerEvent(
             this.plugin.app.workspace.on('active-leaf-change', (x) => {
                 const visible = Boolean(x && x.view instanceof LineageView);
@@ -52,7 +52,7 @@ export class StatusBar {
             view.documentStore.getValue().document.content,
         ).length;
         this.elements.numberOfCards.setText(
-            cards + ' card' + (cards === 1 ? '' : 's'),
+            cards + ' section' + (cards === 1 ? '' : 's'),
         );
     };
     updateProgressIndicatorAndChildCount = async (view: LineageView) => {
@@ -63,16 +63,16 @@ export class StatusBar {
             activeNode,
         });
         this.elements.documentProgress.setText(result.progress + ' %');
-        const totalChildCount = result.totalChildCount;
-        if (totalChildCount > 0) {
-            this.elements.numberOfChildren.setText(
-                totalChildCount +
-                    ' child card' +
-                    (totalChildCount === 1 ? '' : 's'),
-            );
-            this.setElementVisibility(this.elements.numberOfChildren, true);
-        } else {
-            this.setElementVisibility(this.elements.numberOfChildren, false);
-        }
+        /* const totalChildCount = result.totalChildCount;
+         if (totalChildCount > 0) {
+             this.elements.numberOfChildren.setText(
+                 totalChildCount +
+                     ' subsection' +
+                     (totalChildCount === 1 ? '' : 's'),
+             );
+             this.setElementVisibility(this.elements.numberOfChildren, true);
+         } else {
+             this.setElementVisibility(this.elements.numberOfChildren, false);
+         }*/
     };
 }

@@ -11,7 +11,7 @@
 <div>
     {#if !$mode}
         <p class="mod-warning">
-            This card's content does not match any splitting pattern
+            This section does not match any splitting pattern
         </p>
     {/if}
 </div>
