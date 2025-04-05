@@ -1,0 +1,21 @@
+import { LineageView } from 'src/view/view';
+import { openFileInExistingRightTabGroup } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/open-file-in-existing-right-tab-group';
+import { getLinkPaneType } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/block-link/handle-global-block-link';
+
+export const handleFileLink = (
+    view: LineageView,
+    link: string,
+    modKey: boolean,
+) => {
+    const path = view.file?.path;
+    if (!link || !path) return;
+    const paneType = getLinkPaneType(view, modKey);
+    if (paneType === 'tab') {
+        view.plugin.app.workspace.openLinkText(link, path, 'tab');
+    } else {
+        const success = openFileInExistingRightTabGroup(view, link, path);
+        if (!success) {
+            view.plugin.app.workspace.openLinkText(link, path, 'split');
+        }
+    }
+};

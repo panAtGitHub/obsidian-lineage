@@ -41,6 +41,7 @@ export type LeftSidebarTab = 'pinned-cards' | 'recent-cards';
 
 export type RulesTab = 'global-rules' | 'document-rules';
 
+export type LinkPaneType = 'split' | 'tab';
 export type Settings = {
     documents: Record<string, DocumentPreferences>;
     hotkeys: {
@@ -69,6 +70,7 @@ export type Settings = {
     };
     general: {
         defaultDocumentFormat: LineageDocumentFormat;
+        linkPaneType: LinkPaneType;
     };
     styleRules: {
         documents: { [path: string]: { rules: StyleRule[] } };

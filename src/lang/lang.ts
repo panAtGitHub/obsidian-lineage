@@ -303,6 +303,11 @@ export const lang = {
     settings_layout: 'Layout',
     settings_reset: 'Reset',
 
+    // general settings
+    settings_general_link_split: 'Open in a new split',
+    settings_general_link_tab: 'Open in a new tab',
+    settings_general_link_behavior: 'Default link behavior',
+
     // hotkeys
     modals_hk_input_placeholder: 'Filter',
     modals_hk_editor_cancel: 'Cancel',

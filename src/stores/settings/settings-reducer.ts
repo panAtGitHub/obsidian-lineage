@@ -3,6 +3,7 @@ import {
     DocumentPreferences,
     LeftSidebarTab,
     LineageDocumentFormat,
+    LinkPaneType,
     RulesTab,
     Settings,
     ViewType,
@@ -187,6 +188,12 @@ export type SettingsActions =
           payload: {
               id: ToolbarButton;
               hide: boolean;
+          };
+      }
+    | {
+          type: 'settings/general/set-link-pane-type';
+          payload: {
+              position: LinkPaneType;
           };
       };
 
@@ -452,6 +459,8 @@ const updateState = (store: Settings, action: SettingsActions) => {
         }
     } else if (action.type === 'settings/style-rules/set-active-tab') {
         store.styleRules.settings.activeTab = action.payload.tab;
+    } else if (action.type === 'settings/general/set-link-pane-type') {
+        store.general.linkPaneType = action.payload.position;
     } else if (action.type.startsWith('settings/style-rules')) {
         updateStyleRules(store, action);
     }

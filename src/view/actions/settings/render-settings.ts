@@ -15,12 +15,14 @@ import { ActiveBranchColor } from 'src/view/actions/settings/components/active-b
 import { AlwaysShowCardButtons } from 'src/view/actions/settings/components/always-show-card-buttons';
 import { ControlsBarButtons } from 'src/view/actions/settings/components/controls-bar-buttons/controls-bar-buttons';
 import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-font-size';
+import { LinkPaneType } from 'src/view/actions/settings/components/link-pane-type';
 
 export const renderSettings = (element: HTMLElement) => {
     const view = getView();
     const settingsStore = view.plugin.settings;
     const render = () => {
         DefaultDocumentFormat(element, settingsStore);
+        LinkPaneType(element, settingsStore);
         MaintainEditMode(element, settingsStore);
         AlwaysShowCardButtons(element, settingsStore);
         ControlsBarButtons(element, view);

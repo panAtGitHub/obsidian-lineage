@@ -37,6 +37,7 @@ export const DEFAULT_SETTINGS = (): Settings => ({
     },
     general: {
         defaultDocumentFormat: 'sections',
+        linkPaneType: 'tab',
     },
     styleRules: {
         documents: {},
