@@ -8,7 +8,7 @@ import { pasteNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/
 import { openSplitNodeModal } from 'src/view/modals/split-node-modal/open-split-node-modal';
 import { customIcons } from 'src/helpers/load-custom-icons';
 import { copyLinkToBlock } from 'src/view/actions/context-menu/card-context-menu/helpers/copy-link-to-block';
-import { exportColumn } from 'src/view/actions/context-menu/card-context-menu/helpers/export-column';
+import { exportSelection } from 'src/view/actions/context-menu/card-context-menu/helpers/export-selection';
 import {
     MenuItemObject,
     renderContextMenu,
@@ -181,10 +181,21 @@ export const showCardContextMenu = (event: MouseEvent, view: LineageView) => {
             disabled: multipleNodesAreSelected || isInSidebar,
         },
         {
-            title: lang.cm_export_column,
+            title: lang.cm_export_selection,
             icon: 'file-text',
-            action: () => exportColumn(view),
-            disabled: multipleNodesAreSelected || isInSidebar,
+            disabled: isInSidebar,
+            submenu: [
+                {
+                    title: lang.cm_export_with_subitems,
+                    icon: 'file-text',
+                    action: () => exportSelection(view, true),
+                },
+                {
+                    title: lang.cm_export_wo_subitems,
+                    icon: 'file-text',
+                    action: () => exportSelection(view, false),
+                },
+            ],
         },
     ];
 

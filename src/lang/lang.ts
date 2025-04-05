@@ -140,7 +140,11 @@ export const lang = {
 
     // export
     cm_export_document: 'Export document',
-    cm_export_column: 'Export column',
+    cm_export_selection: 'Export selection',
+    cm_export_with_subitems: 'With sub-items',
+    cm_export_wo_subitems: 'Without sub-items',
+    cmd_export_selection_with_subitems: 'Export selection with sub-items',
+    cmd_export_selection_wo_subitems: 'Export selection without sub-items',
 
     // document format
     settings_general_default_format: 'Default format',
