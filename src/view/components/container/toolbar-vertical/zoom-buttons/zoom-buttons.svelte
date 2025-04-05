@@ -22,15 +22,27 @@
         );
     }
 
+    let clearSavedZoomTimeoutRef: ReturnType<typeof setTimeout> | null = null;
+    const clearSavedZoomValue = () => {
+        if (clearSavedZoomTimeoutRef) clearTimeout(clearSavedZoomTimeoutRef);
+        zoomValueBeforeReset = -1;
+    };
+    const saveZoomValue = () => {
+        clearSavedZoomValue();
+        zoomValueBeforeReset = get(zoomLevelStore(view));
+        clearSavedZoomTimeoutRef = setTimeout(() => {
+            zoomValueBeforeReset = -1;
+        }, 1000 * 120);
+    };
     const restoreZoom = () => {
         if (get(showUndoRestZoomButton)) {
             view.plugin.settings.dispatch({
                 type: 'UI/CHANGE_ZOOM_LEVEL',
                 payload: { value: zoomValueBeforeReset },
             });
-            zoomValueBeforeReset = -1;
+            clearSavedZoomValue();
         } else {
-            zoomValueBeforeReset = get(zoomLevelStore(view));
+            saveZoomValue();
             view.plugin.settings.dispatch({
                 type: 'UI/CHANGE_ZOOM_LEVEL',
                 payload: { value: 1 },
@@ -114,8 +126,5 @@
         flex-direction: column;
         position: absolute;
         z-index: 2;
-
     }
-
-
 </style>
