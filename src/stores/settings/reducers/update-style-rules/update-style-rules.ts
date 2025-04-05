@@ -9,6 +9,7 @@ import { fixConditionTypes } from 'src/stores/settings/reducers/update-style-rul
 import { handleDND } from 'src/stores/settings/reducers/update-style-rules/handle-dnd';
 import invariant from 'tiny-invariant';
 import { insertItemAtIndex } from 'src/helpers/array-helpers/insert-item-at-index';
+import { getTheme } from 'src/obsidian/helpers/get-theme';
 
 export type MoveNodePayload = {
     documentPath: string;
@@ -107,8 +108,8 @@ export const updateStyleRules = (
                 enabled: true,
             },
             style: {
-                color: '#fff',
-                styleVariant: 'left-border',
+                color: getTheme() === 'light' ? '#b2ccf5' : '#274462',
+                styleVariant: 'background-color',
             },
             priority: 0,
         };
