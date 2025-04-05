@@ -78,11 +78,6 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
                         icon: customIcons.alignV,
                         id: 'center-active-node-v',
                     },
-                ],
-            },
-            {
-                id: 'display',
-                buttons: [
                     {
                         label: lang.controls_single_column,
                         onClick: h.toggleOutlineMode,

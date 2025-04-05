@@ -8,8 +8,6 @@ import { DefaultDocumentFormat } from 'src/view/actions/settings/components/defa
 import { CardsGap } from 'src/view/actions/settings/components/cards-gap';
 import { CardIndentationWidth } from 'src/view/actions/settings/components/card-indentation-width';
 import { MaintainEditMode } from 'src/view/actions/settings/components/maintain-edit-mode';
-import { Setting } from 'obsidian';
-import { lang } from 'src/lang/lang';
 import { InactiveCardOpacity } from 'src/view/actions/settings/components/inactive-card-opacity';
 import { ActiveBranchColor } from 'src/view/actions/settings/components/active-branch-color';
 import { AlwaysShowCardButtons } from 'src/view/actions/settings/components/always-show-card-buttons';
@@ -17,32 +15,36 @@ import { ControlsBarButtons } from 'src/view/actions/settings/components/control
 import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-font-size';
 import { LinkPaneType } from 'src/view/actions/settings/components/link-pane-type';
 
-export const renderSettings = (element: HTMLElement) => {
+export type SettingsTab = 'General' | 'Appearance' | 'Layout';
+export const renderSettings = (element: HTMLElement, tab: SettingsTab) => {
     const view = getView();
     const settingsStore = view.plugin.settings;
-    const render = () => {
-        DefaultDocumentFormat(element, settingsStore);
-        LinkPaneType(element, settingsStore);
-        MaintainEditMode(element, settingsStore);
-        AlwaysShowCardButtons(element, settingsStore);
-        ControlsBarButtons(element, view);
-        new Setting(element).setHeading().setName(lang.settings_appearance);
-        BackgroundColor(element, settingsStore);
-        ActiveBranchBackground(element, settingsStore);
-        ActiveBranchColor(element, settingsStore);
-        InactiveCardOpacity(element, settingsStore);
-        FontSize(element, settingsStore);
-        HeadingsFontSize(element, settingsStore);
-        new Setting(element).setHeading().setName(lang.settings_layout);
-        CardWidth(element, settingsStore);
-        CardsGap(element, settingsStore);
-        CardIndentationWidth(element, settingsStore);
-        LimitCardHeight(element, settingsStore);
+    const render = (tab: SettingsTab) => {
+        element.empty();
+        if (tab === 'General') {
+            DefaultDocumentFormat(element, settingsStore);
+            LinkPaneType(element, settingsStore);
+            MaintainEditMode(element, settingsStore);
+            AlwaysShowCardButtons(element, settingsStore);
+            ControlsBarButtons(element, view);
+        } else if (tab === 'Appearance') {
+            BackgroundColor(element, settingsStore);
+            ActiveBranchBackground(element, settingsStore);
+            ActiveBranchColor(element, settingsStore);
+            InactiveCardOpacity(element, settingsStore);
+            FontSize(element, settingsStore);
+            HeadingsFontSize(element, settingsStore);
+        } else if (tab === 'Layout') {
+            CardWidth(element, settingsStore);
+            CardsGap(element, settingsStore);
+            CardIndentationWidth(element, settingsStore);
+            LimitCardHeight(element, settingsStore);
+        }
     };
-    render();
+    render(tab);
     return {
-        update: () => {
-            render();
+        update: (tab: SettingsTab) => {
+            render(tab);
         },
     };
 };
