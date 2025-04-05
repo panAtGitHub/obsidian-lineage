@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'vitest';
-import { removeDuplicatesFromArray } from 'src/helpers/remove-duplicates-from-array';
+import { describe, expect, test } from 'vitest';
+import { removeDuplicatesFromArray } from 'src/helpers/array-helpers/remove-duplicates-from-array';
 
 describe('remove duplicates from array', () => {
     test('case 1', () => {

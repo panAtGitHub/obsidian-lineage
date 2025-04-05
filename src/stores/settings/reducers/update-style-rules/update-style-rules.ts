@@ -8,6 +8,7 @@ import { Settings } from 'src/stores/settings/settings-type';
 import { fixConditionTypes } from 'src/stores/settings/reducers/update-style-rules/helpers/fix-condition-types';
 import { handleDND } from 'src/stores/settings/reducers/update-style-rules/handle-dnd';
 import invariant from 'tiny-invariant';
+import { insertItemAtIndex } from 'src/helpers/array-helpers/insert-item-at-index';
 
 export type MoveNodePayload = {
     documentPath: string;
@@ -60,6 +61,13 @@ export type StyleRulesAction =
       }
     | {
           type: 'settings/style-rules/toggle-global';
+          payload: {
+              documentPath: string;
+              id: string;
+          };
+      }
+    | {
+          type: 'settings/style-rules/duplicate-rule';
           payload: {
               documentPath: string;
               id: string;
@@ -193,5 +201,18 @@ export const updateStyleRules = (
                 rule,
             ];
         }
+    } else if (action.type === 'settings/style-rules/duplicate-rule') {
+        const index = rulesContainer.rules.findIndex(
+            (r) => r.id === action.payload.id,
+        );
+        const rule = rulesContainer.rules[index];
+        rulesContainer.rules = insertItemAtIndex(
+            rulesContainer.rules,
+            {
+                ...rule,
+                id: id.styleRule(),
+            },
+            index + 1,
+        );
     }
 };

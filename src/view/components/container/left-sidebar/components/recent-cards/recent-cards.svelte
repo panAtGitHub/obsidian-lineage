@@ -10,7 +10,7 @@
         scrollCardIntoView
     } from 'src/view/components/container/left-sidebar/components/recent-cards/helpers/scroll-card-into-view';
     import NoItems from '../no-items/no-items.svelte';
-    import { removeDuplicatesFromArray } from 'src/helpers/remove-duplicates-from-array';
+    import { removeDuplicatesFromArray } from 'src/helpers/array-helpers/remove-duplicates-from-array';
     import { navigationHistoryStore } from 'src/stores/view/derived/navigation-history-store';
     import { PendingConfirmationStore } from 'src/stores/view/derived/pending-confirmation';
     import { NodeStylesStore } from 'src/stores/view/derived/style-rules';
