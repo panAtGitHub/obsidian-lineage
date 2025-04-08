@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant';
 import { getActiveView } from '../../../getters/lineage-view/card/get-active-view';
 
-const SELECTOR = `div[aria-label="${'Show all cards'}"]`;
+const SELECTOR = `div[aria-label="${'Show all sections'}"]`;
 
 export const toggleShowAllSearchResults = async () => {
     const view = await getActiveView();

@@ -6,9 +6,9 @@ import {
 import { delay, SHORT } from '../../../general/delay';
 import { __obsidian__ } from '../../../getters/obsidian/load-obsidian';
 
-export const SEL_CREATE_CARD_BELOW = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add card below"]`;
-export const SEL_CREATE_CARD_ABOVE = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add card above"]`;
-export const SEL_CREATE_CARD_CHILD = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add child card"]`;
+export const SEL_CREATE_CARD_BELOW = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add section after"]`;
+export const SEL_CREATE_CARD_ABOVE = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add section before"]`;
+export const SEL_CREATE_CARD_CHILD = `${LINEAGE_CARD_ACTIVE} button[aria-label="Add sub-section"]`;
 
 const buttonSelectors = {
     above: SEL_CREATE_CARD_ABOVE,
