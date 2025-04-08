@@ -84,8 +84,8 @@ export const onDocumentStateUpdate = (
     if (!container || !view.isViewOfFile) return;
 
     if (e.content || structuralChange) {
-        const maybeViewIsClosing = !view.isActive;
-        view.saveDocument(maybeViewIsClosing);
+        const debouncedSave = type === 'DOCUMENT/MOVE_NODE';
+        view.saveDocument(debouncedSave);
     }
 
     if (e.content || structuralChange) {

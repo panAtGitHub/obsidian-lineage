@@ -46,7 +46,6 @@ import { MinimapStoreAction } from 'src/stores/minimap/minimap-store-actions';
 import { StyleRulesProcessor } from 'src/stores/view/subscriptions/effects/style-rules/style-rules-processor';
 import { AlignBranch } from 'src/stores/view/subscriptions/effects/align-branch/align-branch';
 import { lang } from 'src/lang/lang';
-import { logger } from 'src/helpers/logger';
 import { DebouncedMinimapEffects } from 'src/stores/minimap/subscriptions/effects/debounced-minimap-effects';
 import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/document/update-frontmatter';
 import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document/load-full-document';
@@ -71,7 +70,7 @@ export class LineageView extends TextFileView {
     id: string;
     zoomFactor: number;
     minimapDom: MinimapDomElements | null = null;
-
+    private hasDebouncedSave = false;
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();
     private activeFilePath: null | string;
     constructor(
@@ -120,20 +119,6 @@ export class LineageView extends TextFileView {
         if (!this.activeFilePath && this.file) {
             this.activeFilePath = this.file?.path;
             this.loadInitialData();
-        } else if (this.file && data.trim().length === 0) {
-            this.plugin.app.vault.adapter
-                .read(this.file.path)
-                .then((content) => {
-                    if (content.trim().length !== 0) {
-                        throw new Error(lang.error_set_empty_data);
-                    } else {
-                        this.data = data;
-                        this.debouncedLoadDocumentToStore();
-                    }
-                })
-                .catch((error) => {
-                    logger.error('Error reading file:', error);
-                });
         } else {
             this.data = data;
             this.debouncedLoadDocumentToStore();
@@ -141,6 +126,11 @@ export class LineageView extends TextFileView {
     }
 
     async onUnloadFile() {
+        if (this.hasDebouncedSave && this.data.length) {
+            this.save();
+            this.hasDebouncedSave = false;
+        }
+
         if (this.component) {
             this.component.$destroy();
         }
@@ -201,7 +191,7 @@ export class LineageView extends TextFileView {
         onPluginError(error, location, action);
     };
 
-    saveDocument = async (immediate = false) => {
+    saveDocument = async (debounced = false) => {
         invariant(this.file);
         const state = clone(this.documentStore.getValue());
         const data: string =
@@ -212,10 +202,24 @@ export class LineageView extends TextFileView {
                 throw new Error(lang.error_save_empty_data);
             }
             this.data = data;
-            if (immediate) await this.save();
-            else this.requestSave();
+            if (debounced) {
+                this.debouncedSave();
+            } else {
+                this.requestSave();
+            }
+            this.hasDebouncedSave = debounced;
         }
     };
+
+    private debouncedSave = debounce(
+        () => {
+            if (!this.hasDebouncedSave) return;
+            this.save();
+            this.hasDebouncedSave = false;
+        },
+        8000,
+        true,
+    );
 
     private loadInitialData = async () => {
         invariant(this.file);
