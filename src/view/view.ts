@@ -49,6 +49,7 @@ import { lang } from 'src/lang/lang';
 import { DebouncedMinimapEffects } from 'src/stores/minimap/subscriptions/effects/debounced-minimap-effects';
 import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/document/update-frontmatter';
 import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document/load-full-document';
+import { refreshActiveViewOfDocument } from 'src/stores/plugin/actions/refresh-active-view-of-document';
 
 export const LINEAGE_VIEW_TYPE = 'lineage';
 
@@ -138,6 +139,7 @@ export class LineageView extends TextFileView {
         for (const s of this.onDestroyCallbacks) {
             s();
         }
+        refreshActiveViewOfDocument(this);
     }
 
     clear(): void {

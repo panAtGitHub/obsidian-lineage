@@ -1,7 +1,6 @@
 import Lineage from 'src/main';
-import { LINEAGE_VIEW_TYPE, LineageView } from 'src/view/view';
+import { LineageView } from 'src/view/view';
 import { removeStaleDocuments } from 'src/stores/plugin/subscriptions/effects/remove-stale-documents/remove-stale-documents';
-import { MarkdownView } from 'obsidian';
 
 export const onWorkspaceEvent = (plugin: Lineage) => {
     const onActiveLeafChangeRef = plugin.app.workspace.on(
@@ -15,19 +14,6 @@ export const onWorkspaceEvent = (plugin: Lineage) => {
                         path: view.file?.path,
                         viewId: view.id,
                     },
-                });
-            } else if (view instanceof MarkdownView) {
-                const views: [string, string][] = plugin.app.workspace
-                    .getLeavesOfType(LINEAGE_VIEW_TYPE)
-                    .map((leaf) =>
-                        leaf.view instanceof LineageView && leaf.view.file
-                            ? [leaf.view.id, leaf.view.file.path]
-                            : null,
-                    )
-                    .filter((x) => x) as [string, string][];
-                plugin.store.dispatch({
-                    type: 'plugin/documents/refresh-active-view-of-document',
-                    payload: { views },
                 });
             }
             plugin.store.dispatch({
