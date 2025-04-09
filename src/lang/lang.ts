@@ -180,7 +180,7 @@ export const lang = {
     hk_extend_select_to_end_of_group: 'Extend selection to end of group',
     hk_extend_select_to_start_of_column: 'Extend selection to start of column',
     hk_extend_select_to_end_of_column: 'Extend selection to end of column',
-    hkg_selection: 'Selection',
+    hkg_selection: 'Select',
     hk_select_all: 'Select all sections',
 
     // navigate spatially
@@ -195,7 +195,7 @@ export const lang = {
     hk_go_to_beginning_of_column: 'Go to start of column',
     hk_go_to_end_of_column: 'Go to end of column',
     hk_select_parent: 'Select parent section',
-    hkg_navigation: 'Navigation',
+    hkg_navigation: 'Navigate',
     hk_select_previous_sibling: 'Select previous sibling',
     hk_select_next_sibling: 'Select next sibling',
 

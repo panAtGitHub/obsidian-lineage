@@ -70,7 +70,6 @@ export class LineageView extends TextFileView {
     id: string;
     zoomFactor: number;
     minimapDom: MinimapDomElements | null = null;
-    private hasDebouncedSave = false;
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();
     private activeFilePath: null | string;
     constructor(
@@ -121,16 +120,11 @@ export class LineageView extends TextFileView {
             this.loadInitialData();
         } else {
             this.data = data;
-            this.debouncedLoadDocumentToStore();
+            if (this.isViewOfFile) this.debouncedLoadDocumentToStore();
         }
     }
 
     async onUnloadFile() {
-        if (this.hasDebouncedSave && this.data.length) {
-            this.save();
-            this.hasDebouncedSave = false;
-        }
-
         if (this.component) {
             this.component.$destroy();
         }
@@ -191,7 +185,7 @@ export class LineageView extends TextFileView {
         onPluginError(error, location, action);
     };
 
-    saveDocument = async (debounced = false) => {
+    saveDocument = async () => {
         invariant(this.file);
         const state = clone(this.documentStore.getValue());
         const data: string =
@@ -202,24 +196,9 @@ export class LineageView extends TextFileView {
                 throw new Error(lang.error_save_empty_data);
             }
             this.data = data;
-            if (debounced) {
-                this.debouncedSave();
-            } else {
-                this.requestSave();
-            }
-            this.hasDebouncedSave = debounced;
+            this.requestSave();
         }
     };
-
-    private debouncedSave = debounce(
-        () => {
-            if (!this.hasDebouncedSave) return;
-            this.save();
-            this.hasDebouncedSave = false;
-        },
-        8000,
-        true,
-    );
 
     private loadInitialData = async () => {
         invariant(this.file);

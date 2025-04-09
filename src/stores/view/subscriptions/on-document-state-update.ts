@@ -84,8 +84,7 @@ export const onDocumentStateUpdate = (
     if (!container || !view.isViewOfFile) return;
 
     if (e.content || structuralChange) {
-        const debouncedSave = type === 'DOCUMENT/MOVE_NODE';
-        view.saveDocument(debouncedSave);
+        view.saveDocument();
     }
 
     if (e.content || structuralChange) {
