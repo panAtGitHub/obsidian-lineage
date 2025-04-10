@@ -4,7 +4,6 @@ import { lang } from 'src/lang/lang';
 import { copyActiveBranchesToClipboard } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/copy-active-branches-to-clipboard';
 import { copyActiveNodesToClipboard } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/copy-active-nodes-to-clipboard';
 import { cutNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/cut-node';
-import { pasteNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/paste-node';
 import { exportSelection } from 'src/view/actions/context-menu/card-context-menu/helpers/export-selection';
 
 export const createMultipleNodesContextMenu = (view: LineageView) => {
@@ -36,11 +35,6 @@ export const createMultipleNodesContextMenu = (view: LineageView) => {
             title: lang.cm_cut,
             icon: 'scissors',
             action: () => cutNode(view),
-        },
-        {
-            title: lang.cm_paste,
-            icon: 'paste',
-            action: () => pasteNode(view),
         },
         { type: 'separator' },
         {

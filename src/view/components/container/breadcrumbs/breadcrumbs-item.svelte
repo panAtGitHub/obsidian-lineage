@@ -38,7 +38,7 @@
         height: 30px;
         color: var(--text-muted);
         cursor: pointer;
-        padding: 2px 8px;
+        padding: 2px 6px;
         max-width: 350px;
         white-space: nowrap;
         overflow: hidden;
@@ -50,8 +50,12 @@
     .breadcrumbs-item:hover {
         background-color: var(--interactive-hover);
     }
+
+    .breadcrumbs-item:first-child {
+        padding-left: 8px;
+    }
     .breadcrumbs-item:last-child {
-        border-bottom: none;
+        padding-right: 8px;
     }
 
     .section-number{
