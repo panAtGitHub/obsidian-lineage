@@ -211,7 +211,7 @@ export class LineageView extends TextFileView {
         } else {
             this.createStore();
         }
-        this.loadDocumentToStore(true);
+        this.loadDocumentToStore();
         if (!this.inlineEditor) {
             this.inlineEditor = new InlineEditor(this);
             await this.inlineEditor.onload();
@@ -250,15 +250,14 @@ export class LineageView extends TextFileView {
             ].documentStore;
     };
 
-    private loadDocumentToStore = (isInitialLoad = false) => {
+    private loadDocumentToStore = () => {
         const { body, frontmatter } = extractFrontmatter(this.data);
 
         const documentState = this.documentStore.getValue();
         const viewState = this.viewStore.getValue();
+        const isEmptyStore = documentState.history.items.length === 0;
         const format = getOrDetectDocumentFormat(this, body);
-        const existingBody = isInitialLoad
-            ? ''
-            : stringifyDocument(documentState.document, format);
+        const existingBody = stringifyDocument(documentState.document, format);
 
         const bodyHasChanged = existingBody !== body;
         const frontmatterHasChanged =
@@ -270,18 +269,16 @@ export class LineageView extends TextFileView {
         const activeSection = activeNode
             ? documentState.sections.id_section[activeNode]
             : null;
-        if (isInitialLoad) {
+        if (bodyHasChanged && !isEditing) {
             loadFullDocument(this, body, frontmatter, format, activeSection);
-            if (!maybeGetDocumentFormat(this)) {
-                setDocumentFormat(this.plugin, this.file!.path, format);
-            }
-        } else if (bodyHasChanged && !isEditing) {
-            loadFullDocument(this, body, frontmatter, format, activeSection);
-            if (this.isActive && existingBody) {
+            if (this.isActive && existingBody && !isEmptyStore) {
                 new Notice('Document changed externally');
             }
         } else if (frontmatterHasChanged) {
             updateFrontmatter(this, frontmatter);
+        }
+        if (isEmptyStore && !maybeGetDocumentFormat(this)) {
+            setDocumentFormat(this.plugin, this.file!.path, format);
         }
     };
 
