@@ -1,9 +1,6 @@
 import { LineageView } from 'src/view/view';
 import { ViewStoreAction } from 'src/stores/view/view-store-actions';
-import {
-    getViewEventType,
-    ViewEventType,
-} from 'src/stores/view/helpers/get-view-event-type';
+import { getViewEventType } from 'src/stores/view/helpers/get-view-event-type';
 import { updateSearchResults } from 'src/stores/view/subscriptions/actions/update-search-results';
 import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
 import { persistActiveNodeInPluginSettings } from 'src/stores/view/subscriptions/actions/persist-active-node-in-plugin-settings';
@@ -23,9 +20,7 @@ export const onViewStateUpdate = (
 
     const type = action.type;
 
-    const e: ViewEventType | null = getViewEventType(
-        type as ViewStoreAction['type'],
-    );
+    const e = getViewEventType(type);
 
     const activeNodeChange = e.activeNode || e.activeNodeHistory;
     const activeNodeHasChanged =
@@ -55,7 +50,7 @@ export const onViewStateUpdate = (
     // effects
     if (
         e.search ||
-        e.editMainSplit ||
+        e.mainEditor ||
         action.type === 'view/update-active-branch?source=document' ||
         (activeNodeChange && activeNodeHasChanged)
     ) {

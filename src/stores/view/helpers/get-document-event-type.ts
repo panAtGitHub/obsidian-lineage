@@ -1,37 +1,5 @@
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
 
-const contentEvents = new Set<ActionType>([
-    'document/update-node-content',
-    'document/format-headings',
-]);
-
-const createAndDelete = new Set<ActionType>([
-    'document/add-node',
-    'document/delete-node',
-    'document/merge-node',
-    'document/file/load-from-disk',
-    'document/extract-node',
-    'document/split-node',
-]);
-
-const dropAndMoveEvents = new Set<ActionType>([
-    'document/drop-node',
-    'document/move-node',
-    'document/sort-direct-child-nodes',
-]);
-
-const historyEvents = new Set<ActionType>([
-    'document/history/select-next-snapshot',
-    'document/history/select-previous-snapshot',
-    'document/history/select-snapshot',
-]);
-const clipboardEvents = new Set<ActionType>([
-    'document/paste-node',
-    'document/cut-node',
-]);
-
-const cachedResults: { [key: string]: DocumentEventType } = {};
-
 export type DocumentEventType = {
     content?: boolean;
     dropOrMove?: boolean;
@@ -39,23 +7,41 @@ export type DocumentEventType = {
     changeHistory?: boolean;
     clipboard?: boolean;
 };
+
 type ActionType = DocumentStoreAction['type'];
+
+const eventTypesDictionary: Partial<Record<ActionType, DocumentEventType>> = {
+    'document/update-node-content': { content: true },
+    'document/format-headings': { content: true },
+
+    'document/add-node': { createOrDelete: true },
+    'document/delete-node': { createOrDelete: true },
+    'document/merge-node': { createOrDelete: true },
+    'document/file/load-from-disk': { createOrDelete: true },
+    'document/extract-node': { createOrDelete: true },
+    'document/split-node': { createOrDelete: true },
+
+    'document/drop-node': { dropOrMove: true },
+    'document/move-node': { dropOrMove: true },
+    'document/sort-direct-child-nodes': { dropOrMove: true },
+
+    'document/history/select-next-snapshot': { changeHistory: true },
+    'document/history/select-previous-snapshot': { changeHistory: true },
+    'document/history/select-snapshot': { changeHistory: true },
+
+    'document/paste-node': { clipboard: true },
+    'document/cut-node': { clipboard: true },
+} as const;
+
+const documentEventTypes = new Map(Object.entries(eventTypesDictionary)) as Map<
+    ActionType,
+    DocumentEventType
+>;
+
+const none = {};
+
 export const getDocumentEventType = (type: ActionType): DocumentEventType => {
-    if (cachedResults[type]) {
-        return cachedResults[type];
-    }
-
-    let result: DocumentEventType | null = null;
-    if (contentEvents.has(type)) result = { content: true };
-    else if (createAndDelete.has(type)) result = { createOrDelete: true };
-    else if (dropAndMoveEvents.has(type)) result = { dropOrMove: true };
-    else if (historyEvents.has(type)) result = { changeHistory: true };
-    else if (clipboardEvents.has(type)) result = { clipboard: true };
-    if (!result) result = {};
-
-    cachedResults[type] = result;
-
-    return result;
+    return documentEventTypes.get(type) || none;
 };
 
 export const STRUCTURE_AND_CONTENT = new Set<DocumentStoreAction['type']>([

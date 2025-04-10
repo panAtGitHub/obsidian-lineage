@@ -1,9 +1,6 @@
 import { LineageView } from 'src/view/view';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
-import {
-    DocumentEventType,
-    getDocumentEventType,
-} from 'src/stores/view/helpers/get-document-event-type';
+import { getDocumentEventType } from 'src/stores/view/helpers/get-document-event-type';
 import { setActiveNode } from 'src/stores/view/subscriptions/actions/set-active-node';
 import { enableEditMode } from 'src/stores/view/subscriptions/actions/enable-edit-mode';
 import { removeObsoleteNavigationItems } from 'src/stores/view/subscriptions/actions/remove-obsolete-navigation-items';
@@ -25,9 +22,7 @@ export const onDocumentStateUpdate = (
     viewStore.setContext(documentState.document);
     const type = action.type;
 
-    const e: DocumentEventType | null = getDocumentEventType(
-        type as DocumentStoreAction['type'],
-    );
+    const e = getDocumentEventType(type);
     if (type === 'document/file/load-from-disk') {
         // needed when the file was modified externally
         // to prevent saving a node with an obsolete node-id
