@@ -15,17 +15,17 @@ export const fitBranchIntoView = async (view: LineageView) => {
     let result = 1;
 
     const parents = Array.from(
-        view.containerEl.querySelectorAll('.active-parent'),
+        view.container.querySelectorAll('.active-parent'),
     ) as HTMLElement[];
 
-    const activeNode = view.containerEl.querySelector(
+    const activeNode = view.container.querySelector(
         '.active-node',
     ) as HTMLElement;
     const children = Array.from(
-        view.containerEl.querySelectorAll('.active-child'),
+        view.container.querySelectorAll('.active-child'),
     ) as HTMLElement[];
     const siblings = Array.from(
-        view.containerEl.querySelectorAll('.active-sibling'),
+        view.container.querySelectorAll('.active-sibling'),
     ) as HTMLElement[];
 
     const combinedRect = getCombinedBoundingClientRect([
@@ -35,12 +35,9 @@ export const fitBranchIntoView = async (view: LineageView) => {
         ...children,
     ]);
 
-    const heightScale =
-        view.container.getBoundingClientRect().height /
-        (combinedRect.height + 100);
-    const widthScale =
-        view.container.getBoundingClientRect().width /
-        (combinedRect.width + 100);
+    const boundingClientRect = view.container.getBoundingClientRect();
+    const heightScale = boundingClientRect.height / (combinedRect.height + 100);
+    const widthScale = boundingClientRect.width / (combinedRect.width + 100);
 
     result = Math.min(heightScale, widthScale);
 
