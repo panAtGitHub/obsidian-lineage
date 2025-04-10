@@ -3,7 +3,7 @@ import {
     MenuItemObject,
     renderContextMenu,
 } from 'src/obsidian/context-menu/render-context-menu';
-import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
 import { lang } from 'src/lang/lang';
 import { setDocumentFormat } from 'src/stores/settings/actions/set-document-format';
 import { exportDocument } from 'src/obsidian/commands/helpers/export-document/export-document';
@@ -15,7 +15,7 @@ export const showViewContextMenu = (event: MouseEvent, view: LineageView) => {
     const file = view.file;
     if (!file) return;
 
-    const format = getDocumentFormat(view);
+    const format = getPersistedDocumentFormat(view);
     const isOutline = format === 'outline';
     const isHtmlElement = format === 'html-element';
     const isHtmlComments = format === 'sections';

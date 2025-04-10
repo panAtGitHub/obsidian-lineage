@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getView } from '../../../../../../../context';
     import { ActiveStatus } from 'src/view/components/container/column/components/group/components/active-status.enum';
-    import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+    import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
     import {
         findSectionPosition
     } from 'src/view/components/container/column/components/group/components/card/components/card-buttons/helpers/find-section-position';
@@ -27,7 +27,7 @@
     const openFile = async () => {
         if (!view.file) return;
 
-        const format = getDocumentFormat(view);
+        const format = getPersistedDocumentFormat(view);
         const i =
             format === 'sections'
                 ? findSectionPosition(view, nodeId)

@@ -31,10 +31,8 @@ import invariant from 'tiny-invariant';
 import { customIcons } from 'src/helpers/load-custom-icons';
 
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
-import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
 import { stringifyDocument } from 'src/view/helpers/stringify-document';
-import { getOrDetectDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-or-detect-document-format';
-import { maybeGetDocumentFormat } from 'src/obsidian/events/workspace/helpers/maybe-get-document-format';
 import { setDocumentFormat } from 'src/stores/settings/actions/set-document-format';
 import { toggleObsidianViewType } from 'src/obsidian/events/workspace/effects/toggle-obsidian-view-type';
 import { DocumentSearch } from 'src/stores/view/subscriptions/effects/document-search/document-search';
@@ -50,6 +48,8 @@ import { DebouncedMinimapEffects } from 'src/stores/minimap/subscriptions/effect
 import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/document/update-frontmatter';
 import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document/load-full-document';
 import { refreshActiveViewOfDocument } from 'src/stores/plugin/actions/refresh-active-view-of-document';
+import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-format';
+import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
 
 export const LINEAGE_VIEW_TYPE = 'lineage';
 
@@ -191,7 +191,7 @@ export class LineageView extends TextFileView {
         const state = clone(this.documentStore.getValue());
         const data: string =
             state.file.frontmatter +
-            stringifyDocument(state.document, getDocumentFormat(this));
+            stringifyDocument(state.document, getPersistedDocumentFormat(this));
         if (data !== this.data) {
             if (data.trim().length === 0) {
                 throw new Error(lang.error_save_empty_data);
@@ -211,7 +211,7 @@ export class LineageView extends TextFileView {
         } else {
             this.createStore();
         }
-        this.loadDocumentToStore();
+        this.loadDocumentToStore('view-mount');
         if (!this.inlineEditor) {
             this.inlineEditor = new InlineEditor(this);
             await this.inlineEditor.onload();
@@ -250,13 +250,13 @@ export class LineageView extends TextFileView {
             ].documentStore;
     };
 
-    private loadDocumentToStore = () => {
+    private loadDocumentToStore = (event?: 'view-mount') => {
         const { body, frontmatter } = extractFrontmatter(this.data);
 
         const documentState = this.documentStore.getValue();
         const viewState = this.viewStore.getValue();
-        const isEmptyStore = documentState.history.items.length === 0;
-        const format = getOrDetectDocumentFormat(this, body);
+        const format = this.getDocumentFormat(body);
+        const emptyStore = documentState.history.items.length === 0;
         const existingBody = stringifyDocument(documentState.document, format);
 
         const bodyHasChanged = existingBody !== body;
@@ -269,18 +269,30 @@ export class LineageView extends TextFileView {
         const activeSection = activeNode
             ? documentState.sections.id_section[activeNode]
             : null;
-        if (bodyHasChanged && !isEditing) {
+        if (emptyStore || (bodyHasChanged && !isEditing)) {
             loadFullDocument(this, body, frontmatter, format, activeSection);
-            if (this.isActive && existingBody && !isEmptyStore) {
-                new Notice('Document changed externally');
+            if (this.isActive && event !== 'view-mount') {
+                new Notice('Document updated externally');
             }
         } else if (frontmatterHasChanged) {
             updateFrontmatter(this, frontmatter);
         }
-        if (isEmptyStore && !maybeGetDocumentFormat(this)) {
-            setDocumentFormat(this.plugin, this.file!.path, format);
-        }
     };
+
+    private getDocumentFormat(body: string) {
+        let format: LineageDocumentFormat;
+        format = getPersistedDocumentFormat(this, false);
+        if (format) {
+            return format;
+        }
+
+        format =
+            detectDocumentFormat(body) ||
+            this.plugin.settings.getValue().general.defaultDocumentFormat;
+
+        setDocumentFormat(this.plugin, this.file!.path, format);
+        return format;
+    }
 
     private debouncedLoadDocumentToStore = debounce(
         this.loadDocumentToStore,

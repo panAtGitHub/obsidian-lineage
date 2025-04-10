@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { openFileInLineage } from 'src/obsidian/events/workspace/effects/open-file-in-lineage';
 import { getFileNameOfExtractedBranch } from 'src/obsidian/commands/helpers/extract-branch/helpers/get-file-name-of-extracted-branch/get-file-name-of-extracted-branch';
 import { onPluginError } from 'src/lib/store/on-plugin-error';
-import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
 import { branchToOutline } from 'src/lib/data-conversion/branch-to-x/branch-to-outline';
 import { branchToHtmlElement } from 'src/lib/data-conversion/branch-to-x/branch-to-html-element';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
@@ -34,7 +34,7 @@ export const extractBranch = async (view: LineageView) => {
             'copy',
         );
 
-        const format = getDocumentFormat(view);
+        const format = getPersistedDocumentFormat(view);
         const text =
             format === 'outline'
                 ? branchToOutline([branch])
