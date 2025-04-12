@@ -718,27 +718,27 @@ Instead of "Problem Description", be direct: "The problem is that X doesn't do Y
 <span data-section="1.1.1.1.1"></span>
 # Introduction
 
-<span data-section="1.1.1.1.2"/>[You can write your actual paper here in this column. Then choosing "Export column 5" to Word or Markdown will help you move it to your final platform.]
+<span data-section="1.1.1.1.2"></span>[You can write your actual paper here in this column. Then choosing "Export column 5" to Word or Markdown will help you move it to your final platform.]
 
-<span data-section="1.1.1.1.2.1"/>You can keep notes & comments here.
+<span data-section="1.1.1.1.2.1"></span>You can keep notes & comments here.
 
-<span data-section="1.1.1.1.3"/>...
+<span data-section="1.1.1.1.3"></span>...
 
-<span data-section="1.1.1.1.4"/>...
+<span data-section="1.1.1.1.4"></span>...
 
 <span data-section="1.1.1.2"></span>
 ### Intro - Assertive Statement 2
 
-<span data-section="1.1.1.2.1"/>...
+<span data-section="1.1.1.2.1"></span>...
 
-<span data-section="1.1.1.2.2"/>...
+<span data-section="1.1.1.2.2"></span>...
 
 <span data-section="1.1.1.3"></span>
 ### Intro - Assertive Statement 3
 
-<span data-section="1.1.1.3.1"/>...
+<span data-section="1.1.1.3.1"></span>...
 
-<span data-section="1.1.1.3.2"/>...
+<span data-section="1.1.1.3.2"></span>...
 
 <span data-section="1.1.2"></span>
 ## Materials & Methods - "The Characters"
@@ -757,15 +757,15 @@ Remember that these are cards, so you can drag and drop them to rearrange if nec
 <span data-section="1.1.2.1.2"></span>
 ### Method A
 
-<span data-section="1.1.2.1.2.1"/>Some other note. For example:
+<span data-section="1.1.2.1.2.1"></span>Some other note. For example:
 
 #Xusheng , make sure you include the voltage you used."
 
 (the # syntax makes it easier to search for & filter comments directed at a specific person).
 
-<span data-section="1.1.2.1.3"/>...
+<span data-section="1.1.2.1.3"></span>...
 
-<span data-section="1.1.2.1.4"/>...
+<span data-section="1.1.2.1.4"></span>...
 
 <span data-section="1.1.2.2"></span>
 ## Method B
@@ -774,9 +774,9 @@ More details on the method, experiment design, etc.
 <span data-section="1.1.2.2.1"></span>
 ### Method B...
 
-<span data-section="1.1.2.2.2"/>...
+<span data-section="1.1.2.2.2"></span>...
 
-<span data-section="1.1.2.2.3"/>...
+<span data-section="1.1.2.2.3"></span>...
 
 <span data-section="1.1.2.3"></span>
 ## Method C
@@ -790,9 +790,9 @@ If you need a checklist to make sure you address all points, go ahead:
 <span data-section="1.1.2.3.1"></span>
 ### Method C
 
-<span data-section="1.1.2.3.2"/>...
+<span data-section="1.1.2.3.2"></span>...
 
-<span data-section="1.1.2.3.3"/>...
+<span data-section="1.1.2.3.3"></span>...
 
 <span data-section="1.1.3"></span>
 ## Results
@@ -811,16 +811,16 @@ You can add figures if you'd like:
 <span data-section="1.1.3.1.1"></span>
 # Results
 
-<span data-section="1.1.3.1.2"/>Final text for results goes here
+<span data-section="1.1.3.1.2"></span>Final text for results goes here
 
-<span data-section="1.1.3.1.3"/>...
+<span data-section="1.1.3.1.3"></span>...
 
-<span data-section="1.1.3.1.4"/>...
+<span data-section="1.1.3.1.4"></span>...
 
-<span data-section="1.1.3.2"/>Remember these are **cards** so you can rearrange your results at will.
+<span data-section="1.1.3.2"></span>Remember these are **cards** so you can rearrange your results at will.
 Any subcards will follow.
 
-<span data-section="1.1.3.2.1"/>Other results
+<span data-section="1.1.3.2.1"></span>Other results
 
 <span data-section="1.1.4"></span>
 ## Discussion
@@ -842,11 +842,11 @@ Expand on your conclusion summary, and add more details to it.
 <span data-section="1.1.5.1.1"></span>
 # Conclusion
 
-<span data-section="1.1.5.1.2"/>Final text for conclusion goes here
+<span data-section="1.1.5.1.2"></span>Final text for conclusion goes here
 
-<span data-section="1.1.5.1.3"/>in as many
+<span data-section="1.1.5.1.3"></span>in as many
 
-<span data-section="1.1.5.1.4"/>cards as you like.
+<span data-section="1.1.5.1.4"></span>cards as you like.
 
 <span data-section="1.1.6"></span>
 ## References
@@ -868,11 +868,11 @@ Or you can simply list your references here:
 <span data-section="1.1.6.1.1"></span>
 # References
 
-<span data-section="1.1.6.1.2"/>Some reference by J. Doe
+<span data-section="1.1.6.1.2"></span>Some reference by J. Doe
 
-<span data-section="1.1.6.1.2.1"/>Notes on this reference.
+<span data-section="1.1.6.1.2.1"></span>Notes on this reference.
 
-<span data-section="1.1.6.1.3"/>Some other reference
+<span data-section="1.1.6.1.3"></span>Some other reference
 
 <span data-section="1.2"></span>
 ## How to use this template

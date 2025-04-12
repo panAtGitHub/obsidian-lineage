@@ -7,7 +7,7 @@ const mdWithHtmlElement = `<span data-section="1"></span>
 - 2
 - 3
 
-<span data-section="3"/>text
+<span data-section="3"></span>text
 
 <span data-section="4"></span>
 \`\`\`css
@@ -29,7 +29,7 @@ display: none;
 > [!info]
 > information
 
-<span data-section="8"/><!--comment -->`;
+<span data-section="8"></span><!--comment -->`;
 
 const mdWithHtmlComment = `
 <!--section: 1-->

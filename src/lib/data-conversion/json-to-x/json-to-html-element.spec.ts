@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
-import {
-    collapsedSpanMarker,
-    expandedSpanMarker,
-} from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
+import { expandedSpanMarker } from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
 import { jsonToHtmlElement } from 'src/lib/data-conversion/json-to-x/json-to-html-element';
 import { ginkgo_welcome } from 'src/lib/data-conversion/test-data/ginkgo_welcome';
 import { ginkgo_academic_paper } from 'src/lib/data-conversion/test-data/ginkgo_acedemic_paper';
@@ -21,9 +18,9 @@ describe('json to html element', () => {
             },
         ];
         const output = [
-            collapsedSpanMarker('', 1) + 'one',
+            expandedSpanMarker('', 1) + 'one',
             '',
-            collapsedSpanMarker('1', 1) + 'one > one',
+            expandedSpanMarker('1', 1) + 'one > one',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -53,17 +50,17 @@ describe('json to html element', () => {
             },
         ];
         const output = [
-            collapsedSpanMarker('', 1) + 'one',
+            expandedSpanMarker('', 1) + 'one',
             '',
-            collapsedSpanMarker('1', 1) + 'one > one',
+            expandedSpanMarker('1', 1) + 'one > one',
             '',
-            collapsedSpanMarker('1.1', 1) + 'one > one > one',
+            expandedSpanMarker('1.1', 1) + 'one > one > one',
             '',
-            collapsedSpanMarker('', 2) + 'two',
+            expandedSpanMarker('', 2) + 'two',
             '',
-            collapsedSpanMarker('2', 1) + 'two > one',
+            expandedSpanMarker('2', 1) + 'two > one',
             '',
-            collapsedSpanMarker('2.1', 1) + 'two > one > one',
+            expandedSpanMarker('2.1', 1) + 'two > one > one',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -79,16 +76,16 @@ describe('json to html element', () => {
         ];
 
         const output = [
-            collapsedSpanMarker('', 1) + '1a',
+            expandedSpanMarker('', 1) + '1a',
             '1b',
             '',
-            collapsedSpanMarker('1', 1) + '1.1a',
+            expandedSpanMarker('1', 1) + '1.1a',
             '1.1b',
             '',
-            collapsedSpanMarker('', 2) + '2a',
+            expandedSpanMarker('', 2) + '2a',
             '2b',
             '',
-            collapsedSpanMarker('', 3) + '3',
+            expandedSpanMarker('', 3) + '3',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });

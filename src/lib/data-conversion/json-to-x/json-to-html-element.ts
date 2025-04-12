@@ -1,9 +1,6 @@
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
 import { level } from 'src/lib/data-conversion/helpers/html-comment-marker/create-html-comment-marker';
-import {
-    collapsedSpanMarker,
-    expandedSpanMarker,
-} from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
+import { expandedSpanMarker } from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
 
 export const jsonToHtmlElement = (
     tree: TreeNode[],
@@ -19,19 +16,18 @@ export const jsonToHtmlElement = (
         let content = node.content.trimStart();
 
         const expandedSpan = expandedSpanMarker(parentNumber, index);
-        if (content.match(/^#+ /)) {
-            // an additional '\n' is needed as a workaround for a bug in obsidian
+        if (/^#+ /.test(content)) {
             content = `${expandedSpan}\n${content}`;
-        } else if (content.match(/^#[^\s#\uFEFF\u200B]+/)) {
+        } else if (/^#[^\s#\uFEFF\u200B]+/.test(content)) {
             content = `${expandedSpan}\n${content}`;
         } else if (content.startsWith('>')) {
             content = `${expandedSpan}\n${content}`;
-        } else if (content.match(/^[-*+]\s\[.\]\s/)) {
+        } else if (/^[-*+]\s\[.\]\s/.test(content)) {
             // tasks
             content = `${expandedSpan}\n${content}`;
-        } else if (content.match(/^[-*+]\s/)) {
+        } else if (/^[-*+]\s/.test(content)) {
             content = `${expandedSpan}\n${content}`;
-        } else if (content.match(/^\d+\.\s/)) {
+        } else if (/^\d+\.\s/.test(content)) {
             // numbered list
             content = `${expandedSpan}\n${content}`;
         } else if (content.startsWith('```')) {
@@ -39,12 +35,11 @@ export const jsonToHtmlElement = (
         } else if (content.startsWith('|')) {
             // table
             content = `${expandedSpan}\n\n${content}`;
-        } else if (content.startsWith('[[')) {
+        } else if (/^!?\[\[/.test(content)) {
             // wikilink
             content = `${expandedSpan}\n${content}`;
         } else {
-            const collapsedSpan = collapsedSpanMarker(parentNumber, index);
-            content = `${collapsedSpan}${content}`;
+            content = `${expandedSpan}${content}`;
         }
 
         text += content;
