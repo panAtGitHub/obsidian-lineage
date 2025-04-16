@@ -310,8 +310,8 @@ export const lang = {
     settings_reset: 'Reset',
 
     // general settings
-    settings_general_link_split: 'Open in a new split',
-    settings_general_link_tab: 'Open in a new tab',
+    settings_general_link_split: 'Open in new split',
+    settings_general_link_tab: 'Open in new tab',
     settings_general_link_behavior: 'Default link behavior',
 
     // hotkeys

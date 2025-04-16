@@ -26,26 +26,26 @@ type ZoomOption = {
 };
 
 const staticZoomOptions: ZoomOption[] = [
-    { label: '5%', scale: 0.05 },
-    { label: '10%', scale: 0.1 },
-    { label: '20%', scale: 0.2 },
-    { label: '30%', scale: 0.3 },
-    { label: '40%', scale: 0.4 },
-    { label: '50%', scale: 0.5 },
-    { label: '60%', scale: 0.6 },
-    { label: '70%', scale: 0.7 },
-    { label: '80%', scale: 0.8 },
-    { label: '90%', scale: 0.9 },
-    { label: '100%', scale: 1.0 },
-    { label: '125%', scale: 1.25 },
-    { label: '150%', scale: 1.5 },
-    { label: '175%', scale: 1.75 },
     { label: '200%', scale: 2.0 },
+    { label: '175%', scale: 1.75 },
+    { label: '150%', scale: 1.5 },
+    { label: '125%', scale: 1.25 },
+    { label: '100%', scale: 1.0 },
+    { label: '90%', scale: 0.9 },
+    { label: '80%', scale: 0.8 },
+    { label: '70%', scale: 0.7 },
+    { label: '60%', scale: 0.6 },
+    { label: '50%', scale: 0.5 },
+    { label: '40%', scale: 0.4 },
+    { label: '30%', scale: 0.3 },
+    { label: '20%', scale: 0.2 },
+    { label: '10%', scale: 0.1 },
+    { label: '5%', scale: 0.05 },
 ];
 
 const dynamicZoomOptions = [
     {
-        label: 'Fit document height',
+        label: 'Fit document',
         scale: fitDocumentHeightIntoView,
     },
     {
