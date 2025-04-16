@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS = (): Settings => ({
         applyGapBetweenCards: false,
         outlineMode: false,
         nodeIndentationWidth: DEFAULT_INDENTATION_WIDTH,
-        maintainEditMode: true,
+        maintainEditMode: false,
         alwaysShowCardButtons: false,
         hiddenVerticalToolbarButtons: [],
     },
