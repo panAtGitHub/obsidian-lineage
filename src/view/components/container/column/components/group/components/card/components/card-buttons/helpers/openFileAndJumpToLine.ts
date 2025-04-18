@@ -1,7 +1,7 @@
 import { MarkdownView, WorkspaceLeaf } from 'obsidian';
-import { setViewType } from 'src/obsidian/events/workspace/actions/set-view-type';
+import { setViewType } from 'src/stores/settings/actions/set-view-type';
 import { LineageView } from 'src/view/view';
-import { getExistingRightTabGroup } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/helpers/get-existing-right-tab-group';
+import { getExistingRightTabGroup } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/get-existing-right-tab-group';
 
 const getLeafFromExistingTabGroup = (view: LineageView) => {
     const rightTabGroup = getExistingRightTabGroup(view);

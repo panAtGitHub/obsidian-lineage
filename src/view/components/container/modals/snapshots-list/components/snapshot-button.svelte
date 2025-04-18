@@ -19,7 +19,7 @@
 
     const numberOfCharacters = snapshot.context.numberOfCharacters;
     const numberOfSections = snapshot.context.numberOfSections;
-    const sections = `${numberOfSections} card${
+    const sections = `${numberOfSections} section${
         numberOfSections === 1 ? '' : 's'
     }`;
     const chars = `${numberOfCharacters} char${numberOfCharacters === 1 ? '' : 's'}`;
@@ -34,7 +34,7 @@
             new Notice(lang.error_apply_snapshot_while_editing);
         else
             documentStore.dispatch({
-                type: 'HISTORY/SELECT_SNAPSHOT',
+                type: 'document/history/select-snapshot',
                 payload: { snapshotId: snapshot.id },
             });
     }}

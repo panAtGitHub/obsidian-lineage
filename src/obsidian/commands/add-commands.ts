@@ -11,9 +11,12 @@ import { openSplitNodeModal } from 'src/view/modals/split-node-modal/open-split-
 import { isEditing } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/is-editing';
 import { copyLinkToBlock } from 'src/view/actions/context-menu/card-context-menu/helpers/copy-link-to-block';
 import { extractBranch } from 'src/obsidian/commands/helpers/extract-branch/extract-branch';
-import { exportColumn } from 'src/view/actions/context-menu/card-context-menu/helpers/export-column';
+import { exportSelection } from 'src/view/actions/context-menu/card-context-menu/helpers/export-selection';
 import { exportDocument } from 'src/obsidian/commands/helpers/export-document/export-document';
 import { onPluginError } from 'src/lib/store/on-plugin-error';
+import invariant from 'tiny-invariant';
+import { sortChildNodes } from 'src/view/actions/context-menu/card-context-menu/helpers/sort-child-nodes';
+import { ejectDocument } from 'src/obsidian/commands/helpers/export-document/eject-document';
 
 const createCommands = (plugin: Lineage) => {
     const commands: (Omit<Command, 'id' | 'callback'> & {
@@ -50,7 +53,7 @@ const createCommands = (plugin: Lineage) => {
                 return Boolean(getActiveLineageView(plugin));
             }
             plugin.settings.dispatch({
-                type: 'VIEW/SCROLLING/TOGGLE_SCROLLING_MODE',
+                type: 'settings/view/toggle-horizontal-scrolling-mode',
             });
         },
     });
@@ -63,13 +66,13 @@ const createCommands = (plugin: Lineage) => {
                 return Boolean(getActiveLineageView(plugin));
             }
             plugin.settings.dispatch({
-                type: 'settings/view/scrolling/toggle-vertical-scrolling-mode',
+                type: 'settings/view/toggle-vertical-scrolling-mode',
             });
         },
     });
 
     commands.push({
-        name: lang.cm_split_card,
+        name: lang.cm_split_node,
         icon: customIcons.split.name,
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
@@ -77,6 +80,40 @@ const createCommands = (plugin: Lineage) => {
                 return Boolean(view);
             }
             openSplitNodeModal(view!);
+        },
+    });
+
+    commands.push({
+        name: lang.cmd_sort_child_nodes_asc,
+        icon: 'sort-asc',
+        checkCallback: (checking) => {
+            const view = getActiveLineageView(plugin);
+            if (checking) {
+                return Boolean(view);
+            }
+            invariant(view);
+            sortChildNodes(
+                view,
+                view.viewStore.getValue().document.activeNode,
+                'ascending',
+            );
+        },
+    });
+
+    commands.push({
+        name: lang.cmd_sort_child_nodes_desc,
+        icon: 'sort-desc',
+        checkCallback: (checking) => {
+            const view = getActiveLineageView(plugin);
+            if (checking) {
+                return Boolean(view);
+            }
+            invariant(view);
+            sortChildNodes(
+                view,
+                view.viewStore.getValue().document.activeNode,
+                'descending',
+            );
         },
     });
 
@@ -129,14 +166,26 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
-        name: lang.cm_export_column,
+        name: lang.cmd_export_branches_with_subitems,
         icon: 'file-text',
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
             if (checking) {
                 return Boolean(view);
             }
-            exportColumn(view!);
+            exportSelection(view!, true);
+        },
+    });
+
+    commands.push({
+        name: lang.cmd_export_nodes_wo_subitems,
+        icon: 'file-text',
+        checkCallback: (checking) => {
+            const view = getActiveLineageView(plugin);
+            if (checking) {
+                return Boolean(view);
+            }
+            exportSelection(view!, false);
         },
     });
 
@@ -153,6 +202,18 @@ const createCommands = (plugin: Lineage) => {
     });
 
     commands.push({
+        name: lang.cm_eject_document,
+        icon: 'file-text',
+        checkCallback: (checking) => {
+            const view = getActiveLineageView(plugin);
+            if (checking) {
+                return Boolean(view);
+            }
+            ejectDocument(view!);
+        },
+    });
+
+    commands.push({
         name: lang.cmd_toggle_minimap,
         icon: 'panel-right',
         checkCallback: (checking) => {
@@ -161,7 +222,7 @@ const createCommands = (plugin: Lineage) => {
                 return Boolean(view);
             }
             plugin.settings.dispatch({
-                type: 'VIEW/TOGGLE_MINIMAP',
+                type: 'settings/view/toggle-minimap',
             });
         },
     });

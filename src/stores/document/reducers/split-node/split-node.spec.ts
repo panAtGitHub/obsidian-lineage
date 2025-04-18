@@ -25,7 +25,7 @@ describe('split node', () => {
             },
         };
         const action = {
-            type: 'DOCUMENT/SPLIT_NODE',
+            type: 'document/split-node',
             payload: { target: 'nP3BBw00m', mode: 'headings' },
         } as const;
         const output = {
@@ -228,12 +228,12 @@ describe('split node', () => {
         };
         const inputClone = clone(input);
         const action = {
-            type: 'DOCUMENT/SPLIT_NODE',
+            type: 'document/split-node',
             payload: { target: 'nO5aXT_Tq', mode: 'headings' },
         } as const;
 
         expect(() => splitNode(input, action)).toThrow(
-            lang.error_cm_cant_split_card_that_has_children,
+            lang.error_cm_cant_split_node_that_has_children,
         );
         expect(compareDocuments(input, inputClone)).toBe(true);
     });
@@ -267,7 +267,7 @@ describe('split node', () => {
             },
         };
         const action = {
-            type: 'DOCUMENT/SPLIT_NODE',
+            type: 'document/split-node',
             payload: { target: 'nO5aXT_Tq', mode: 'headings' },
         } as const;
         const output = {
@@ -321,12 +321,12 @@ describe('split node', () => {
         };
         const inputClone = clone(input);
         const action = {
-            type: 'DOCUMENT/SPLIT_NODE',
+            type: 'document/split-node',
             payload: { target: 'nVPwysBOU', mode: 'headings' },
         } as const;
 
         expect(() => splitNode(input, action)).toThrow(
-            lang.error_cm_cant_split_card_identical,
+            lang.error_cm_cant_split_node_identical,
         );
         expect(compareDocuments(input, inputClone)).toBe(true);
     });
@@ -346,7 +346,7 @@ describe('split node', () => {
 
         const inputClone = clone(input);
         const action = {
-            type: 'DOCUMENT/SPLIT_NODE',
+            type: 'document/split-node',
             payload: { target: 'nVPwysBOU', mode: 'headings' },
         } as const;
 

@@ -4,6 +4,6 @@ import { LINEAGE_CARD_ACTIVE } from '../../../getters/lineage-view/card/get-acti
 
 export const undoChangeUsingHotkey = async () => {
     await __obsidian__.waitForSelector(LINEAGE_CARD_ACTIVE);
-    await __obsidian__.keyboard.press('Control+Shift+z');
+    await __obsidian__.keyboard.press('Control+z');
     await delay(SHORT);
 };

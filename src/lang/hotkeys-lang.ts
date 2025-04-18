@@ -8,13 +8,13 @@ export const hotkeysLang = {
     enable_edit_mode_and_place_cursor_at_end:
         lang.hk_enable_edit_mode_and_place_cursor_at_end,
     disable_edit_mode: lang.hk_disable_edit_mode,
-    add_child: lang.card_btn_add_child_card,
-    add_below: lang.card_btn_add_card_below,
-    add_above: lang.card_btn_add_card_above,
+    add_child: lang.card_btn_add_child_node,
+    add_below: lang.card_btn_add_node_below,
+    add_above: lang.card_btn_add_node_above,
     add_child_and_split: lang.hk_add_child_and_split,
     add_below_and_split: lang.hk_add_below_and_split,
     add_above_and_split: lang.hk_add_above_and_split,
-    delete_card: lang.hk_delete_card,
+    delete_card: lang.hk_delete_section,
     go_up: lang.hk_go_up,
     go_down: lang.hk_go_down,
     go_right: lang.hk_go_right,
@@ -60,4 +60,5 @@ export const hotkeysLang = {
     toggle_collapse_all: lang.hk_outline_toggle_collapse_all,
     toggle_outline_mode: lang.hk_toggle_outline_mode,
     add_parent_sibling: lang.hk_add_parent_sibling,
+    select_all_nodes: lang.hk_select_all,
 };

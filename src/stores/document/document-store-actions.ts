@@ -17,6 +17,7 @@ import { UnpinNodeAction } from 'src/stores/document/reducers/pinned-nodes/unpin
 import { RemoveStalePinnedNodesAction } from 'src/stores/document/reducers/pinned-nodes/remove-stale-pinned-nodes';
 import { LoadPinnedNodesAction } from 'src/stores/document/reducers/pinned-nodes/load-pinned-nodes';
 import { RefreshGroupParentIdsAction } from 'src/stores/document/reducers/meta/refresh-group-parent-ids';
+import { SortChildNodesAction } from 'src/stores/document/reducers/sort/sort-direct-child-nodes';
 
 export type VerticalDirection = 'up' | 'down';
 export type Direction = VerticalDirection | 'right';
@@ -26,23 +27,14 @@ export type SavedDocument = {
     position: NodePosition | null;
     frontmatter: string;
 };
-type ResetStoreAction = { type: 'RESET_STORE' };
-type SetFilePathAction = {
-    type: 'FS/SET_FILE_PATH';
-    payload: {
-        path: string | null;
-    };
-};
 
 export type DocumentStoreAction = DocumentAction | HistoryAction;
 
 export type DocumentAction =
     | LoadDocumentAction
     | CreateNodeAction
-    | ResetStoreAction
     | SetNodeContentAction
     | DropAction
-    | SetFilePathAction
     | DeleteNodeAction
     | MoveNodeAction
     | MergeNodeAction
@@ -51,13 +43,14 @@ export type DocumentAction =
     | ExtractNodeAction
     | SplitNodeAction
     | {
-          type: 'FILE/UPDATE_FRONTMATTER';
+          type: 'document/file/update-frontmatter';
           payload: {
               frontmatter: string;
           };
       }
     | PinnedNodesActions
-    | MetaActions;
+    | MetaActions
+    | SortChildNodesAction;
 
 export type HistoryAction = UndoRedoAction | SelectSnapshotAction;
 export type UndoableAction =
@@ -72,7 +65,8 @@ export type UndoableAction =
     | PasteNodeAction
     | CutNodeAction
     | ExtractNodeAction
-    | SplitNodeAction;
+    | SplitNodeAction
+    | SortChildNodesAction;
 
 export type CopyNodeAction = {
     type: 'DOCUMENT/COPY_NODE';
@@ -83,7 +77,7 @@ export type CopyNodeAction = {
 };
 
 export type CutNodeAction = {
-    type: 'DOCUMENT/CUT_NODE';
+    type: 'document/cut-node';
     payload: {
         nodeId: string;
         selectedNodes?: Set<string>;

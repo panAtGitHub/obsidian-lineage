@@ -13,33 +13,33 @@ export const handleEscapeKey = (view: LineageView) => {
         controls.showStyleRulesModal
     ) {
         viewStore.dispatch({
-            type: 'CLOSE_MODALS',
+            type: 'view/close-modals',
             payload: {
                 closeAllModals: true,
             },
         });
         return true;
+    } else if (value.document.pendingConfirmation.deleteNode.size > 0) {
+        viewStore.dispatch({
+            type: 'view/delete-node/reset-confirmation',
+        });
+        return true;
+    } else if (selection.size > 0) {
+        viewStore.dispatch({
+            type: 'view/selection/clear-selection',
+        });
+        return true;
     } else if (search.query) {
         viewStore.dispatch({
-            type: 'SEARCH/SET_QUERY',
+            type: 'view/search/set-query',
             payload: {
                 query: '',
             },
         });
         return true;
-    } else if (value.document.pendingConfirmation.deleteNode.size > 0) {
-        viewStore.dispatch({
-            type: 'view/confirmation/reset/delete-node',
-        });
-        return true;
     } else if (search.showInput) {
         viewStore.dispatch({
-            type: 'SEARCH/TOGGLE_INPUT',
-        });
-        return true;
-    } else if (selection.size > 0) {
-        viewStore.dispatch({
-            type: 'DOCUMENT/CLEAR_SELECTION',
+            type: 'view/search/toggle-input',
         });
         return true;
     }

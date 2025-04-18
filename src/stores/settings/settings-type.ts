@@ -39,13 +39,18 @@ export type DocumentPreferences = {
 
 export type LeftSidebarTab = 'pinned-cards' | 'recent-cards';
 
+export type RulesTab = 'global-rules' | 'document-rules';
+
+export type LinkPaneType = 'split' | 'tab';
+export type DocumentsPreferences = Record<string, DocumentPreferences>;
 export type Settings = {
-    documents: Record<string, DocumentPreferences>;
+    documents: DocumentsPreferences;
     hotkeys: {
         customHotkeys: CustomHotkeys;
     };
     view: {
         fontSize: number;
+        h1FontSize_em: number;
         theme: Theme;
         cardWidth: number;
         cardsGap: number;
@@ -66,8 +71,15 @@ export type Settings = {
     };
     general: {
         defaultDocumentFormat: LineageDocumentFormat;
+        linkPaneType: LinkPaneType;
     };
     styleRules: {
         documents: { [path: string]: { rules: StyleRule[] } };
+        global: {
+            rules: StyleRule[];
+        };
+        settings: {
+            activeTab: RulesTab;
+        };
     };
 };

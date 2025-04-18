@@ -22,9 +22,9 @@
         down: ChevronDown,
     };
     const label: Record<Direction, string> = {
-        "up":lang.card_btn_add_card_above,
-        "down":lang.card_btn_add_card_below,
-        "right":lang.card_btn_add_child_card
+        "up":lang.card_btn_add_node_above,
+        "down":lang.card_btn_add_node_below,
+        "right":lang.card_btn_add_child_node
     }
 </script>
 

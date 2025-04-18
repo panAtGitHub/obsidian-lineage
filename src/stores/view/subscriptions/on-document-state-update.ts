@@ -1,9 +1,6 @@
 import { LineageView } from 'src/view/view';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
-import {
-    DocumentEventType,
-    getDocumentEventType,
-} from 'src/stores/view/helpers/get-document-event-type';
+import { getDocumentEventType } from 'src/stores/view/helpers/get-document-event-type';
 import { setActiveNode } from 'src/stores/view/subscriptions/actions/set-active-node';
 import { enableEditMode } from 'src/stores/view/subscriptions/actions/enable-edit-mode';
 import { removeObsoleteNavigationItems } from 'src/stores/view/subscriptions/actions/remove-obsolete-navigation-items';
@@ -11,7 +8,6 @@ import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-cont
 import { persistPinnedNodes } from 'src/stores/view/subscriptions/actions/persist-pinned-nodes';
 import { updateStaleActivePinnedNode } from 'src/stores/view/subscriptions/actions/update-stale-active-pinned-node';
 import { setActivePinnedNode } from 'src/stores/view/subscriptions/actions/set-active-pinned-node';
-import { debouncedDrawDocument } from 'src/stores/minimap/subscriptions/effects/draw-document';
 import { updateSelectedNodes } from 'src/stores/view/subscriptions/actions/update-selected-nodes';
 
 export const onDocumentStateUpdate = (
@@ -26,10 +22,8 @@ export const onDocumentStateUpdate = (
     viewStore.setContext(documentState.document);
     const type = action.type;
 
-    const e: DocumentEventType | null = getDocumentEventType(
-        type as DocumentStoreAction['type'],
-    );
-    if (type === 'DOCUMENT/LOAD_FILE') {
+    const e = getDocumentEventType(type);
+    if (type === 'document/file/load-from-disk') {
         // needed when the file was modified externally
         // to prevent saving a node with an obsolete node-id
         view.inlineEditor.unloadNode();
@@ -52,24 +46,26 @@ export const onDocumentStateUpdate = (
         documentStore.dispatch({
             type: 'document/pinned-nodes/remove-stale-nodes',
         });
-        documentStore.dispatch({ type: 'META/REFRESH_GROUP_PARENT_IDS' });
+        documentStore.dispatch({
+            type: 'document/meta/refresh-group-parent-ids',
+        });
     }
 
-    if (structuralChange && type !== 'DOCUMENT/MOVE_NODE') {
+    if (structuralChange && type !== 'document/move-node') {
         updateSelectedNodes(view, action, e.changeHistory!);
     }
 
-    if (type === 'DOCUMENT/INSERT_NODE' && view.isActive) {
+    if (type === 'document/add-node' && view.isActive) {
         enableEditMode(viewStore, documentState);
     }
 
     if (
-        type === 'DOCUMENT/DELETE_NODE' ||
-        type === 'DOCUMENT/CUT_NODE' ||
+        type === 'document/delete-node' ||
+        type === 'document/cut-node' ||
         e.changeHistory ||
-        type === 'DOCUMENT/EXTRACT_BRANCH' ||
-        type === 'DOCUMENT/LOAD_FILE' ||
-        type === 'DOCUMENT/SPLIT_NODE'
+        type === 'document/extract-node' ||
+        type === 'document/file/load-from-disk' ||
+        type === 'document/split-node'
     ) {
         removeObsoleteNavigationItems(viewStore, documentState);
     }
@@ -85,20 +81,19 @@ export const onDocumentStateUpdate = (
     if (!container || !view.isViewOfFile) return;
 
     if (e.content || structuralChange) {
-        const maybeViewIsClosing = !view.isActive;
-        view.saveDocument(maybeViewIsClosing);
+        view.saveDocument();
     }
 
     if (e.content || structuralChange) {
         if (view.minimapStore) {
-            debouncedDrawDocument(view);
+            view.minimapEffects.drawDocument(view);
         }
 
         view.documentSearch.resetIndex();
         const query = viewStore.getValue().search.query;
         if (query) {
             view.viewStore.dispatch({
-                type: 'SEARCH/SET_QUERY',
+                type: 'view/search/set-query',
                 payload: {
                     query,
                 },

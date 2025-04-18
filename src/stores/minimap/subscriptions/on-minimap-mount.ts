@@ -5,7 +5,6 @@ import { setMinimapDom } from 'src/stores/minimap/subscriptions/effects/set-mini
 import { initializeMinimapWorker } from 'src/stores/minimap/subscriptions/effects/initialize-minimap-worker';
 import { setMinimapActiveNode } from 'src/stores/minimap/subscriptions/actions/set-minimap-active-node';
 import { drawDocument } from './effects/draw-document';
-import { refreshScrollPosition } from 'src/view/components/container/minimap/event-handlers/on-canvas-wheel';
 import { setClientHeight } from 'src/stores/minimap/subscriptions/actions/set-client-height';
 
 export const onMinimapMount = async (view: LineageView) => {
@@ -15,9 +14,6 @@ export const onMinimapMount = async (view: LineageView) => {
     setMinimapDom(view);
     initializeMinimapWorker(view);
     setMinimapActiveNode(view);
+    setClientHeight(view);
     await drawDocument(view);
-    setTimeout(() => {
-        setClientHeight(view);
-        refreshScrollPosition(view, 0);
-    }, 350);
 };

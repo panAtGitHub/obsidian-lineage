@@ -49,24 +49,19 @@ describe('delete multiple node', () => {
             selectedNodes: new Set([n1, n2, n3]),
         };
 
-        const output = {
+        const nextNode = deleteNode(input, action.nodeId, action.selectedNodes);
+        expect(nextNode).toBeDefined();
+        expect(input.columns.length).toBe(1);
+        expect(input.columns[0].groups.length).toBe(1);
+        expect(input.columns[0].groups[0].nodes.length).toBe(1);
+        expect(input).toEqual({
             columns: [
-                { id: c0, groups: [{ nodes: [n3], parentId: root }] },
-                {
-                    id: c1,
-                    groups: [{ nodes: [n3_1, n3_2, n3_3], parentId: n3 }],
-                },
+                { id: c0, groups: [{ nodes: [nextNode], parentId: root }] },
             ],
             content: {
-                [n3]: { content: '3' },
-                [n3_1]: { content: '3.1' },
-                [n3_3]: { content: '3.2' },
+                [nextNode]: { content: '' },
             },
-        };
-        expect(deleteNode(input, action.nodeId, action.selectedNodes)).toEqual(
-            n3,
-        );
-        expect(input).toEqual(output);
+        });
     });
 
     it('[n1 n2 n3] [n1_1 (n1_2 .... 3_2) n3_3]', () => {

@@ -18,10 +18,12 @@ import { attachCheckboxListener } from 'src/stores/view/subscriptions/effects/ch
 import { watchViewSize } from 'src/stores/view/subscriptions/effects/view-size/watch-view-size';
 import { applyInactiveNodeOpacity } from 'src/stores/view/subscriptions/effects/css-variables/apply-inactive-node-opacity';
 import { loadCollapsedSectionsFromSettings } from 'src/stores/view/subscriptions/actions/view/load-collapsed-sections-from-settings';
+import { applyHeadingsFontSize } from 'src/stores/view/subscriptions/effects/css-variables/apply-headings-font-size';
 
 const applySettingsToView = (view: LineageView) => {
     const state = view.plugin.settings.getValue();
     applyFontSize(view, state.view.fontSize);
+    applyHeadingsFontSize(view, state.view.h1FontSize_em);
     applyInactiveNodeOpacity(view, state.view.theme.inactiveNodeOpacity);
     applyCssColor(view, 'containerBg');
     applyCssColor(view, 'activeBranchBg');
@@ -55,7 +57,7 @@ export const onViewMount = (view: LineageView) => {
     applySettingsToView(view);
     attachHoverPreviewListener(view);
     attachWheelScrollListener(view);
-    documentStore.dispatch({ type: 'META/REFRESH_GROUP_PARENT_IDS' });
+    documentStore.dispatch({ type: 'document/meta/refresh-group-parent-ids' });
     attachCloseModalsListener(view);
     view.rulesProcessor.onRulesUpdate();
     view.zoomFactor = view.plugin.settings.getValue().view.zoomLevel;

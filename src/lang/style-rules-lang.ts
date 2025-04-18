@@ -9,10 +9,14 @@ import {
 
 export const styleRulesLang = {
     targets: {
-        self: 'Of card',
-        'direct-parent': 'Of immediate parent',
+        self: 'Of section',
+        'self-or-direct-parent': 'Of section or direct parent',
+        'self-or-any-parent': 'Of section or any parent',
+        'self-or-direct-children': 'Of section or direct child',
+        'self-or-any-children': 'Of section or any child',
+        'direct-parent': 'Of direct parent',
         'any-parent': 'Of any parent',
-        'direct-children': 'Of immediate child',
+        'direct-children': 'Of direct child',
         'any-children': 'Of any child',
     } satisfies Record<StyleRuleTarget, string>,
     operators: {

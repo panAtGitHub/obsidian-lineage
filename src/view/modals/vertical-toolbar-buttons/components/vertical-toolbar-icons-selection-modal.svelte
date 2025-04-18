@@ -5,7 +5,7 @@
     import { HiddenVerticalToolbarButtons } from '../../../../stores/settings/derived/view-settings-store';
     import Lineage from '../../../../main';
 
-    export let close :()=>void
+    export let close: () => void;
     export let plugin: Lineage;
 
     const buttons = derived(
@@ -61,7 +61,9 @@
         {/each}
     {/each}
 </div>
-<div class="modal-button-container"><button class="mod-cta" on:click={close}>Done</button></div>
+<div class="modal-button-container">
+    <button class="mod-cta" on:click={close}>Done</button>
+</div>
 
 <style>
     .buttons-list {
@@ -81,10 +83,9 @@
         border-top: 1px solid var(--background-modifier-border);
         padding: 6px 14px;
     }
-    .button-list-item:first-child{
+    .button-list-item:first-child {
         border-top: none;
     }
-
 
     .toolbar-icon-label {
         color: var(--text-normal);

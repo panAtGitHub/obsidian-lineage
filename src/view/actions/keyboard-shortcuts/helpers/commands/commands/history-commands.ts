@@ -5,16 +5,14 @@ export const historyCommands = () => {
         {
             name: 'undo_change',
             callback: (view) => {
-                const path = view.documentStore.getValue().file.path;
-                if (path)
-                    view.documentStore.dispatch({
-                        type: 'HISTORY/APPLY_PREVIOUS_SNAPSHOT',
-                    });
+                view.documentStore.dispatch({
+                    type: 'document/history/select-previous-snapshot',
+                });
             },
             hotkeys: [
                 {
                     key: 'Z',
-                    modifiers: ['Mod', 'Shift'],
+                    modifiers: ['Mod'],
                     editorState: 'editor-off',
                 },
             ],
@@ -22,15 +20,18 @@ export const historyCommands = () => {
         {
             name: 'redo_change',
             callback: (view) => {
-                const path = view.documentStore.getValue().file.path;
-                if (path)
-                    view.documentStore.dispatch({
-                        type: 'HISTORY/APPLY_NEXT_SNAPSHOT',
-                    });
+                view.documentStore.dispatch({
+                    type: 'document/history/select-next-snapshot',
+                });
             },
             hotkeys: [
                 {
                     key: 'Y',
+                    modifiers: ['Mod'],
+                    editorState: 'editor-off',
+                },
+                {
+                    key: 'Z',
                     modifiers: ['Mod', 'Shift'],
                     editorState: 'editor-off',
                 },

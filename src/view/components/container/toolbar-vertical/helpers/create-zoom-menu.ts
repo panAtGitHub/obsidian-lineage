@@ -26,30 +26,30 @@ type ZoomOption = {
 };
 
 const staticZoomOptions: ZoomOption[] = [
-    { label: '5%', scale: 0.05 },
-    { label: '10%', scale: 0.1 },
-    { label: '20%', scale: 0.2 },
-    { label: '30%', scale: 0.3 },
-    { label: '40%', scale: 0.4 },
-    { label: '50%', scale: 0.5 },
-    { label: '60%', scale: 0.6 },
-    { label: '70%', scale: 0.7 },
-    { label: '80%', scale: 0.8 },
-    { label: '90%', scale: 0.9 },
-    { label: '100%', scale: 1.0 },
-    { label: '125%', scale: 1.25 },
-    { label: '150%', scale: 1.5 },
-    { label: '175%', scale: 1.75 },
     { label: '200%', scale: 2.0 },
+    { label: '175%', scale: 1.75 },
+    { label: '150%', scale: 1.5 },
+    { label: '125%', scale: 1.25 },
+    { label: '100%', scale: 1.0 },
+    { label: '90%', scale: 0.9 },
+    { label: '80%', scale: 0.8 },
+    { label: '70%', scale: 0.7 },
+    { label: '60%', scale: 0.6 },
+    { label: '50%', scale: 0.5 },
+    { label: '40%', scale: 0.4 },
+    { label: '30%', scale: 0.3 },
+    { label: '20%', scale: 0.2 },
+    { label: '10%', scale: 0.1 },
+    { label: '5%', scale: 0.05 },
 ];
 
 const dynamicZoomOptions = [
     {
-        label: 'Fit document height into view',
+        label: 'Fit document',
         scale: fitDocumentHeightIntoView,
     },
     {
-        label: 'Fit active branch into view',
+        label: 'Fit active branch',
         scale: fitBranchIntoView,
     },
 ];
@@ -70,7 +70,7 @@ export const createZoomMenu = (props: Props) => {
             hoverZoom = newValue;
         }
         props.view.plugin.settings.dispatch({
-            type: 'UI/CHANGE_ZOOM_LEVEL',
+            type: 'settings/view/set-zoom-level',
             payload: {
                 value: newValue,
             },
@@ -111,7 +111,7 @@ export const createZoomMenu = (props: Props) => {
         menuDom.addEventListener('mouseleave', () => {
             if (hoverZoom !== lastClickedZoom) {
                 props.view.plugin.settings.dispatch({
-                    type: 'UI/CHANGE_ZOOM_LEVEL',
+                    type: 'settings/view/set-zoom-level',
                     payload: { value: lastClickedZoom },
                 });
             }
@@ -129,11 +129,12 @@ export const createZoomMenu = (props: Props) => {
     const buttonRect = (
         props.event.target as HTMLElement
     ).getBoundingClientRect();
+    const viewRect = props.view.container!.getBoundingClientRect();
     menu.showAtPosition({
         x: get(showMinimapStore(props.view))
             ? buttonRect.left - props.state.menuWidth - 10
             : buttonRect.left - 10,
-        y: buttonRect.top + buttonRect.height / 2 - props.state.menuHeight / 2,
+        y: viewRect.bottom - 10 - props.state.menuHeight,
     });
     menu.onHide(() => {
         props.state.lastMenuHideEvent_ms = Date.now();

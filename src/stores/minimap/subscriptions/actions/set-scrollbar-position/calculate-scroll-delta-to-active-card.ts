@@ -1,14 +1,10 @@
-import { dpx_to_cpx } from '../../../../../view/components/container/minimap/event-handlers/on-canvas-click';
-
 export const calculateScrollDeltaToActiveCard = (
     y_start_cpx: number,
     y_end_cpx: number,
     totalDrawnHeight_cpx: number,
     scrollPosition_cpx: number,
-    clientHeight_dpx: number,
+    containerHeight_cpx: number,
 ) => {
-    const containerHeight_cpx = dpx_to_cpx(clientHeight_dpx);
-
     const contentFitsContainer = totalDrawnHeight_cpx <= containerHeight_cpx;
     if (contentFitsContainer) {
         return null;

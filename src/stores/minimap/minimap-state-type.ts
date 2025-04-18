@@ -20,7 +20,7 @@ export type MinimapDomElements = {
 export type MinimapState = {
     activeCardId: string;
     canvasId: string;
-    scrollInfo: ScrollInfo;
+    scrollbar: ScrollInfo;
     ranges: {
         cards: CardRanges;
     };

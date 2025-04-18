@@ -192,7 +192,7 @@ test.describe('card hotkeys', () => {
         expect(await getTextsOfColumns()).toEqual([[n1]]);
 
         await deleteCardUsingHotkey();
-        expect(await getTextsOfColumns()).toEqual([[n1]]);
+        expect(await getTextsOfColumns()).toEqual([['']]);
     });
 
     test('navigation hotkeys', async () => {

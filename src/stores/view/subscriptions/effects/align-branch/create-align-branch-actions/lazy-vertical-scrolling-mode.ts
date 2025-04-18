@@ -8,7 +8,7 @@ export const lazyVerticalScrollingMode = (
 ) => {
     const actions: AlignBranchAction[] = [];
 
-    if (action.type === 'DOCUMENT/INSERT_NODE') {
+    if (action.type === 'document/add-node') {
         if (action.payload.position === 'right') {
             actions.push({
                 action: '20/active-node/vertical/align-with-parent',
@@ -16,6 +16,19 @@ export const lazyVerticalScrollingMode = (
         } else {
             actions.push({ action: '20/active-node/vertical/reveal' });
         }
+    } else if (
+        action.type === 'plugin/echo/workspace/resize' ||
+        action.type === 'plugin/echo/workspace/active-leaf-change' ||
+        action.type === 'view/left-sidebar/toggle' ||
+        action.type === 'view/left-sidebar/set-width'
+    ) {
+        actions.push({ action: '20/active-node/vertical/reveal' });
+        actions.push({
+            action: '30/parents/vertical/align-with-active-node',
+        });
+        actions.push({
+            action: '40/children/vertical/align-with-active-node',
+        });
     } else {
         actions.push({ action: '20/active-node/vertical/reveal' });
         const previousActiveBranch = context.previousActiveBranch;

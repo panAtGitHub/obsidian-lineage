@@ -9,10 +9,14 @@ import {
 
 export const targets: StyleRuleTarget[] = [
     'self',
-    'direct-parent',
+    'self-or-any-parent',
+    'self-or-any-children',
+    'self-or-direct-parent',
+    'self-or-direct-children',
     'any-parent',
-    'direct-children',
     'any-children',
+    'direct-parent',
+    'direct-children',
 ];
 
 export const stringOperators: StringOperator[] = [

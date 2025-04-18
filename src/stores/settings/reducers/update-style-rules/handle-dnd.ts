@@ -1,6 +1,6 @@
 import { StyleRule } from 'src/stores/settings/types/style-rules-types';
 import { MoveNodePayload } from 'src/stores/settings/reducers/update-style-rules/update-style-rules';
-import { moveArrayItem } from 'src/helpers/move-array-item';
+import { moveArrayItem } from 'src/helpers/array-helpers/move-array-item';
 
 export const handleDND = (
     rules: StyleRule[],

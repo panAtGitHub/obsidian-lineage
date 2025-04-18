@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getView } from '../../../../../../../context';
     import { ActiveStatus } from 'src/view/components/container/column/components/group/components/active-status.enum';
-    import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+    import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
     import {
         findSectionPosition
     } from 'src/view/components/container/column/components/group/components/card/components/card-buttons/helpers/find-section-position';
@@ -21,14 +21,13 @@
     export let nodeId: string;
     export let activeStatus: ActiveStatus | null;
     export let section: string;
-    export let hasChildren: boolean;
     export let pinned: boolean;
 
     // eslint-disable-next-line no-undef
     const openFile = async () => {
         if (!view.file) return;
 
-        const format = getDocumentFormat(view);
+        const format = getPersistedDocumentFormat(view);
         const i =
             format === 'sections'
                 ? findSectionPosition(view, nodeId)
@@ -54,7 +53,7 @@
         <Pin />
     {/if}
     <span aria-label={lang.card_btn_reveal_in_editor} on:click={openFile}>
-        {section}{#if hasChildren}.{/if}
+        {section}
     </span>
 </div>
 

@@ -1,20 +1,17 @@
 import { LineageView } from 'src/view/view';
-import { FuseResult } from 'fuse.js';
 
-const updateActiveNodeAfterSearch = (
+export const updateActiveNodeAfterSearch = (
     view: LineageView,
-    results: FuseResult<{ id: string; content: string }>[],
+    results: string[],
 ) => {
+    const activeNode = view.viewStore.getValue().document.activeNode;
     const shouldUpdateActiveNode =
-        results.length > 0 &&
-        !results.find(
-            (r) => r.item.id === view.viewStore.getValue().document.activeNode,
-        );
+        results.length > 0 && !results.find((r) => r === activeNode);
     if (shouldUpdateActiveNode) {
         view.viewStore.dispatch({
             type: 'view/set-active-node/search',
             payload: {
-                id: results[0].item.id,
+                id: results[0],
             },
         });
     }
@@ -25,21 +22,19 @@ export const updateSearchResults = (view: LineageView) => {
 
     const query = viewState.search.query;
     if (!query) return;
-    const search = view.documentSearch.search(query);
-    const results = search.map((r) => r.item.id);
+    const results = view.documentSearch.search(query);
     view.viewStore.dispatch({
-        type: 'SEARCH/SET_RESULTS',
+        type: 'view/search/set-results',
         payload: {
             results: results,
         },
     });
-    // needed in cases where the structure of the document is updated while showing search results (dnd/moving branches)
-    // in these cases, unless search results have changed, active node should be maintained
-    const newSearchResults = Array.from(results).sort().join('');
-    const previousSearchResults = Array.from(viewState.search.results)
+
+    const newSearchResults = Array.from(results.keys()).sort().join('');
+    const previousSearchResults = Array.from(viewState.search.results.keys())
         .sort()
         .join('');
     if (previousSearchResults !== newSearchResults) {
-        updateActiveNodeAfterSearch(view, search);
+        updateActiveNodeAfterSearch(view, Array.from(results.keys()));
     }
 };

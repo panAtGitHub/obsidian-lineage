@@ -36,25 +36,26 @@
     }
     .breadcrumbs-item {
         height: 30px;
-        border-bottom: 1px solid var(--background-modifier-border);
         color: var(--text-muted);
-        background-color: var(--interactive-normal);
         cursor: pointer;
-        padding: 2px 4px;
-        border-radius: var(--radius-s);
+        padding: 2px 6px;
         max-width: 350px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-size: 14px;
+        font-size: 12px;
         line-height: 25px;
     }
 
     .breadcrumbs-item:hover {
         background-color: var(--interactive-hover);
     }
+
+    .breadcrumbs-item:first-child {
+        padding-left: 8px;
+    }
     .breadcrumbs-item:last-child {
-        border-bottom: none;
+        padding-right: 8px;
     }
 
     .section-number{

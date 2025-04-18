@@ -2,7 +2,7 @@ import { createNewFile } from 'src/obsidian/events/workspace/effects/create-new-
 import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
 import { onPluginError } from 'src/lib/store/on-plugin-error';
 import { mapDocumentToText } from 'src/obsidian/commands/helpers/export-document/map-document-to-text';
-import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
 import { LineageView } from 'src/view/view';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 
@@ -22,8 +22,8 @@ export const exportDocument = async (view: LineageView) => {
             return;
         }
         const fileData = await view.plugin.app.vault.read(file);
-        const format = getDocumentFormat(view);
-        const output = mapDocumentToText(fileData, file.basename, format);
+        const format = getPersistedDocumentFormat(view);
+        const output = mapDocumentToText(fileData, format);
         const newFile = await createNewFile(
             view.plugin,
             file.parent,

@@ -11,7 +11,7 @@ import {
     ConflictingHotkeys,
     HotkeysSearchTerm,
 } from 'src/stores/view/derived/hotkeys-store';
-import { groupArrayByProperty } from 'src/helpers/group-array-by-property';
+import { groupArrayByProperty } from 'src/helpers/array-helpers/group-array-by-property';
 import { lang } from 'src/lang/lang';
 import Lineage from 'src/main';
 import { OutlineModeStore } from 'src/stores/settings/derived/view-settings-store';
@@ -154,11 +154,11 @@ export const FilteredHotkeysStore = (view: LineageView) =>
             } else array = hotkeys.hotkeys;
             return {
                 hotkeys: groupArrayByProperty(array, 'group', {
-                    [lang.hkg_create_cards]: [],
-                    [lang.hkg_edit_cards]: [],
-                    [lang.hkg_move_cards]: [],
-                    [lang.hkg_merge_cards]: [],
-                    [lang.hkg_delete_cards]: [],
+                    [lang.hkg_create_nodes]: [],
+                    [lang.hkg_edit_nodes]: [],
+                    [lang.hkg_move_nodes]: [],
+                    [lang.hkg_merge_nodes]: [],
+                    [lang.hkg_delete_nodes]: [],
                     [lang.hkg_clipboard]: [],
                     [lang.hkg_navigation]: [],
                     [lang.hkg_selection]: [],

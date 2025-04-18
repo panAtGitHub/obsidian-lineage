@@ -15,6 +15,7 @@ import { ToggleShowAllNodesAction } from 'src/stores/view/reducers/search/toggle
 import { StyleRulesResult } from 'src/stores/view/subscriptions/effects/style-rules/helpers/process-style-rules';
 import { LeftSidebarTab } from 'src/stores/settings/settings-type';
 import { ConflictingHotkeys } from 'src/obsidian/helpers/get-used-hotkeys';
+import { SelectAllNodesAction } from 'src/stores/view/reducers/selection/select-all-nodes';
 
 export type ViewStoreAction =
     | SearchAction
@@ -41,18 +42,18 @@ export type ViewUIAction =
     | ToggleHelpSidebarAction
     | ToggleHistorySidebarAction
     | ToggleSettingsSidebarAction
-    | { type: 'CLOSE_MODALS'; payload?: { closeAllModals: boolean } }
-    | { type: 'view/modals/toggle-style-rules' };
+    | { type: 'view/close-modals'; payload?: { closeAllModals: boolean } }
+    | { type: 'view/style-rules/toggle-modal' };
 
 export type ToggleEditModeAction = {
-    type: 'view/main/enable-edit';
+    type: 'view/editor/enable-main-editor';
     payload: {
         nodeId: string;
     };
 };
 
 export type DisableEditModeAction = {
-    type: 'view/main/disable-edit';
+    type: 'view/editor/disable-main-editor';
     context?: {
         modKey?: boolean;
     };
@@ -65,33 +66,33 @@ export type ViewDocumentAction =
     | SetDragCanceled
     | UpdateActiveBranchAction
     | {
-          type: 'view/confirmation/reset/disable-edit';
+          type: 'view/editor/disable/reset-confirmation';
       }
     | {
-          type: 'view/confirmation/reset/delete-node';
+          type: 'view/delete-node/reset-confirmation';
       }
     | {
-          type: 'view/confirmation/confirm/delete-node';
+          type: 'view/delete-node/confirm';
           payload: {
               id: string;
               includeSelection?: boolean;
           };
       }
     | {
-          type: 'view/confirmation/confirm/disable-edit';
+          type: 'view/editor/disable/confirm';
           payload: {
               id: string;
           };
       }
-    | { type: 'DOCUMENT/CLEAR_SELECTION' };
+    | { type: 'view/selection/clear-selection' };
 type ToggleHistorySidebarAction = {
-    type: 'UI/TOGGLE_HISTORY_SIDEBAR';
+    type: 'view/snapshots/toggle-modal';
 };
 type ToggleHelpSidebarAction = {
-    type: 'UI/TOGGLE_HELP_SIDEBAR';
+    type: 'view/hotkeys/toggle-modal';
 };
 type ToggleSettingsSidebarAction = {
-    type: 'UI/TOGGLE_SETTINGS_SIDEBAR';
+    type: 'view/settings/toggle-modal';
 };
 type SetActiveNodeAction = {
     type: `view/set-active-node/${'mouse' | 'mouse-silent' | 'search' | 'document'}`;
@@ -103,7 +104,8 @@ export type NodeSelectionAction =
     | JumpToNodeAction
     | ChangeActiveNodeAction
     | SetActiveNodeAction
-    | NodeNavigationAction;
+    | NodeNavigationAction
+    | SelectAllNodesAction;
 
 export type SidebarActions =
     | PinnedNodesActions
@@ -115,7 +117,7 @@ export type PinnedNodesActions = SetActivePinnedNodeAction;
 export type RecentNodesActions = SetActiveRecentNodeAction;
 
 export type EnableEditInSidebar = {
-    type: 'view/sidebar/enable-edit';
+    type: 'view/editor/enable-sidebar-editor';
     payload: {
         id: string;
     };
@@ -125,7 +127,7 @@ export type EnableEditInSidebar = {
 };
 
 export type DisableEditInSidebar = {
-    type: 'view/sidebar/disable-edit';
+    type: 'view/editor/disable-sidebar-editor';
     context?: {
         modKey?: boolean;
     };
@@ -182,7 +184,7 @@ export type SelectionActions = {
 };
 
 export type PersistedStateActions = {
-    type: 'view/persisted-state/load-persisted-collapsed-parents';
+    type: 'view/outline/load-persisted-collapsed-parents';
     payload: {
         collapsedIds: string[];
     };

@@ -1,5 +1,7 @@
 import { MinimapState } from 'src/stores/minimap/minimap-state-type';
 import { MinimapStoreAction } from 'src/stores/minimap/minimap-store-actions';
+import { updateScrollPosition } from 'src/stores/minimap/reducers/update-scroll-position';
+import { deriveScrollPosition } from 'src/stores/minimap/reducers/derive-scroll-position';
 
 const updateDocumentState = (
     state: MinimapState,
@@ -7,13 +9,21 @@ const updateDocumentState = (
 ) => {
     if (action.type === 'minimap/set-card-ranges') {
         state.ranges.cards = action.payload.ranges;
-        state.scrollInfo.totalDrawnHeight_cpx = action.payload.height_cpx;
+        const newDocumentHeight =
+            state.scrollbar.totalDrawnHeight_cpx !== action.payload.height_cpx;
+        if (newDocumentHeight) {
+            state.scrollbar.scrollPosition_cpx = 0;
+        }
+        state.scrollbar.totalDrawnHeight_cpx = action.payload.height_cpx;
+        deriveScrollPosition(state);
     } else if (action.type === 'minimap/set-active-node') {
         state.activeCardId = action.payload.id;
-    } else if (action.type === 'minimap/set-scroll-position') {
-        state.scrollInfo.scrollPosition_cpx = action.payload.position_cpx;
+        deriveScrollPosition(state);
     } else if (action.type === 'minimap/set-container-height') {
-        state.scrollInfo.containerHeight_cpx = action.payload.height_cpx;
+        state.scrollbar.containerHeight_cpx = action.payload.height_cpx;
+        deriveScrollPosition(state);
+    } else if (action.type === 'minimap/mouse-wheel-scroll') {
+        updateScrollPosition(state, action.payload.delta_y_dpx);
     }
 };
 export const minimapReducer = (

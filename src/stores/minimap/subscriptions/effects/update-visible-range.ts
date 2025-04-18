@@ -1,9 +1,8 @@
 import { LineageView } from 'src/view/view';
 import { minimapWorker } from 'src/workers/worker-instances';
 import { cpx_to_dpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
-import { debounce } from 'obsidian';
 
-const updateVisibleRange = async (view: LineageView) => {
+export const updateVisibleRange = async (view: LineageView) => {
     const minimapStore = view.getMinimapStore();
     const state = minimapStore.getValue();
     const canvasId = state.canvasId;
@@ -12,7 +11,7 @@ const updateVisibleRange = async (view: LineageView) => {
         type: 'minimap/set/scroll-position',
         payload: {
             canvasId: canvasId,
-            scroll_position_cpx: state.scrollInfo.scrollPosition_cpx,
+            scroll_position_cpx: state.scrollbar.scrollPosition_cpx,
         },
     });
 
@@ -32,5 +31,3 @@ const updateVisibleRange = async (view: LineageView) => {
         });
     }
 };
-
-export const debouncedUpdateVisibleRange = debounce(updateVisibleRange, 16);

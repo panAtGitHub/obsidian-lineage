@@ -224,7 +224,7 @@ export class InlineEditor {
         const content = this.getContent();
         const viewState = this.view.viewStore.getValue();
         this.view.documentStore.dispatch({
-            type: 'DOCUMENT/SET_NODE_CONTENT',
+            type: 'document/update-node-content',
             payload: {
                 nodeId: nodeId,
                 content: content,
@@ -236,6 +236,9 @@ export class InlineEditor {
     };
 
     fixVimWhenZooming = () => {
+        const viewState = this.view.viewStore.getValue();
+        if (viewState.document.editing.isInSidebar) return;
+
         const unsub = fixVimCursorWhenZooming(this.view);
         if (unsub) {
             this.subscriptions.add(unsub);

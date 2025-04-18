@@ -34,7 +34,7 @@ export class SplitNodeModal extends Modal {
         super(props.plugin.app);
     }
     open = () => {
-        this.setTitle('Choose how to split this card');
+        this.setTitle('Choose how to split this section');
         this.initState();
         new Content({
             target: this.contentEl,

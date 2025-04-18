@@ -21,6 +21,8 @@
     export let results: string[] | undefined;
 
     const view = getView();
+
+
 </script>
 
 <div
@@ -39,7 +41,7 @@
     </div>
     <RuleInfo {rule} {results} />
     <RuleEditor {rule} />
-    <RuleStyleEditor {rule}/>
+    <RuleStyleEditor {rule} />
     <RuleActions {rule} />
 </div>
 

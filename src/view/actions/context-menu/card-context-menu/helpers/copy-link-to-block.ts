@@ -34,7 +34,7 @@ export const copyLinkToBlock = async (
     if (output) {
         const fileName = file.basename;
         view.documentStore.dispatch({
-            type: 'DOCUMENT/SET_NODE_CONTENT',
+            type: 'document/update-node-content',
             payload: {
                 content: output.text,
                 nodeId: activeNode,
@@ -45,7 +45,7 @@ export const copyLinkToBlock = async (
         });
         const link = `[[${fileName}#^${output.blockId}]]`;
         await navigator.clipboard.writeText(link);
-        new Notice('Link copied to clipboard');
+        new Notice('Copied');
     } else {
         new Notice('Could not copy link to clipboard');
     }

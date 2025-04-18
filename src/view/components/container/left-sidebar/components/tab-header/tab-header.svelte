@@ -20,17 +20,15 @@
 <div class="sidebar-tabs-header">
     <div class="tab-header-buttons">
         <ClickableIcon
-            hasEnabledItems={false}
             isActive={$activeTab==="pinned-cards"}
-            label={lang.sidebar_tab_pinned_cards}
+            label={lang.sidebar_tab_pinned_nodes}
             onClick={() => setActiveTab("pinned-cards")}
         >
             <Pin class="svg-icon" />
         </ClickableIcon>
         <ClickableIcon
-            hasEnabledItems={false}
             isActive={$activeTab==="recent-cards"}
-            label={lang.sidebar_tab_recent_cards}
+            label={lang.sidebar_tab_recent_nodes}
             onClick={() => setActiveTab("recent-cards")}
         >
             <Clock class="svg-icon" />

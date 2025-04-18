@@ -10,20 +10,20 @@ import {
     ViewDocumentAction,
     ViewStoreAction,
 } from 'src/stores/view/view-store-actions';
-import { SettingsActions } from 'src/stores/settings/settings-reducer';
-import { DocumentsStoreAction } from 'src/stores/documents/documents-store-actions';
+import { PluginStoreActions } from 'src/stores/plugin/plugin-store-actions';
 import { waitForActiveNodeToStopMoving } from 'src/lib/align-element/helpers/wait-for-active-node-to-stop-moving';
 import { createContext } from 'src/stores/view/subscriptions/effects/align-branch/helpers/create-context';
 import { SilentError } from 'src/lib/errors/errors';
 import { actionPriority } from 'src/stores/view/subscriptions/effects/align-branch/constants/action-priority';
 import { logger } from 'src/helpers/logger';
+import { SettingsActions } from 'src/stores/settings/settings-store-actions';
 
 export type PluginAction =
     | DocumentStoreAction
     | ViewDocumentAction
     | ViewStoreAction
     | SettingsActions
-    | DocumentsStoreAction
+    | PluginStoreActions
     | { type: 'view/life-cycle/mount' }
     | { type: 'view/align-branch/center-node' }
     | { type: 'view/align-branch/reveal-node' };

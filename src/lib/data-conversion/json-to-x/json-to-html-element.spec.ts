@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
-import { createHtmlElementMarker } from 'src/lib/data-conversion/helpers/html-element-marker/create-html-element-marker';
+import { expandedSpanMarker } from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
 import { jsonToHtmlElement } from 'src/lib/data-conversion/json-to-x/json-to-html-element';
 import { ginkgo_welcome } from 'src/lib/data-conversion/test-data/ginkgo_welcome';
 import { ginkgo_academic_paper } from 'src/lib/data-conversion/test-data/ginkgo_acedemic_paper';
@@ -18,9 +18,9 @@ describe('json to html element', () => {
             },
         ];
         const output = [
-            createHtmlElementMarker('', 1) + 'one',
+            expandedSpanMarker('', 1) + 'one',
             '',
-            createHtmlElementMarker('1', 1) + 'one > one',
+            expandedSpanMarker('1', 1) + 'one > one',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -50,17 +50,17 @@ describe('json to html element', () => {
             },
         ];
         const output = [
-            createHtmlElementMarker('', 1) + 'one',
+            expandedSpanMarker('', 1) + 'one',
             '',
-            createHtmlElementMarker('1', 1) + 'one > one',
+            expandedSpanMarker('1', 1) + 'one > one',
             '',
-            createHtmlElementMarker('1.1', 1) + 'one > one > one',
+            expandedSpanMarker('1.1', 1) + 'one > one > one',
             '',
-            createHtmlElementMarker('', 2) + 'two',
+            expandedSpanMarker('', 2) + 'two',
             '',
-            createHtmlElementMarker('2', 1) + 'two > one',
+            expandedSpanMarker('2', 1) + 'two > one',
             '',
-            createHtmlElementMarker('2.1', 1) + 'two > one > one',
+            expandedSpanMarker('2.1', 1) + 'two > one > one',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -76,16 +76,16 @@ describe('json to html element', () => {
         ];
 
         const output = [
-            createHtmlElementMarker('', 1) + '1a',
+            expandedSpanMarker('', 1) + '1a',
             '1b',
             '',
-            createHtmlElementMarker('1', 1) + '1.1a',
+            expandedSpanMarker('1', 1) + '1.1a',
             '1.1b',
             '',
-            createHtmlElementMarker('', 2) + '2a',
+            expandedSpanMarker('', 2) + '2a',
             '2b',
             '',
-            createHtmlElementMarker('', 3) + '3',
+            expandedSpanMarker('', 3) + '3',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -130,13 +130,17 @@ describe('json to html element', () => {
         ];
 
         const output = [
-            '- [x] ' + createHtmlElementMarker('', 1) + 'task',
+            expandedSpanMarker('', 1),
+            '- [x] task',
             '',
-            '- [ ] ' + createHtmlElementMarker('1', 1) + 'sub task',
+            expandedSpanMarker('1', 1),
+            '- [ ] sub task',
             '',
-            '* [x] ' + createHtmlElementMarker('', 2) + '[[task]]',
+            expandedSpanMarker('', 2),
+            '* [x] [[task]]',
             '',
-            '+ [/] ' + createHtmlElementMarker('', 3) + '[[task]]',
+            expandedSpanMarker('', 3),
+            '+ [/] [[task]]',
         ];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
@@ -149,7 +153,7 @@ describe('json to html element', () => {
             },
         ];
 
-        const output = ['#🙄' + createHtmlElementMarker('', 1) + ' text'];
+        const output = [expandedSpanMarker('', 1), '#🙄 text'];
         expect(jsonToHtmlElement(input)).toEqual(output.join('\n'));
     });
 

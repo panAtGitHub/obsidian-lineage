@@ -1,7 +1,7 @@
 import { ViewState } from 'src/stores/view/view-state-type';
 
 export type SetSearchQueryAction = {
-    type: 'SEARCH/SET_QUERY';
+    type: 'view/search/set-query';
     payload: {
         query: string;
     };
@@ -9,7 +9,7 @@ export type SetSearchQueryAction = {
 
 export const setSearchQuery = (state: ViewState, query: string) => {
     state.search.query = query;
-    if (!query) state.search.results = new Set();
+    if (!query) state.search.results = new Map();
     state.search.searching = query.length > 0;
     state.search = { ...state.search };
 };

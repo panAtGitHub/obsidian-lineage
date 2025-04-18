@@ -7,7 +7,7 @@ import invariant from 'tiny-invariant';
 import { Direction } from 'src/stores/document/document-store-actions';
 
 export type PasteNodeAction = {
-    type: 'DOCUMENT/PASTE_NODE';
+    type: 'document/paste-node';
     payload: {
         targetNodeId: string;
         text: string;
@@ -38,6 +38,6 @@ export const pasteNode = (
     invariant(nextNode);
     return {
         nextNode,
-        rootNodes: branches.map((b) => b.nodeId),
+        rootNodes: branches.map((b) => b.nodeId).reverse(),
     };
 };

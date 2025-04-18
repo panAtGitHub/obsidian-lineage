@@ -5,10 +5,10 @@ import { findGroupByNodeId } from 'src/lib/tree-utils/find/find-group-by-node-id
 import { LineageDocument } from 'src/stores/document/document-state-type';
 import invariant from 'tiny-invariant';
 import { id } from 'src/helpers/id';
-import { insertParentSibling } from 'src/lib/tree-utils/insert/insert-parent-sibling';
+import { insertNodeAfterParent } from 'src/lib/tree-utils/insert/insert-node-after-parent';
 
 export type CreateNodeAction = {
-    type: 'DOCUMENT/INSERT_NODE';
+    type: 'document/add-node';
     payload: {
         position: AllDirections;
         activeNodeId: string;
@@ -29,7 +29,7 @@ export const insertNode = (
     } else if (position === 'right-last') {
         insertChild(document, activeNodeId, newNodeId, false);
     } else if (position === 'left') {
-        insertParentSibling(document, activeNodeId, newNodeId);
+        insertNodeAfterParent(document, activeNodeId, newNodeId);
     } else {
         const columnIndex = findNodeColumn(document.columns, activeNodeId);
         const column = document.columns[columnIndex];

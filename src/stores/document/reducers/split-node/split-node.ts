@@ -8,7 +8,7 @@ import { splitText } from 'src/stores/document/reducers/split-node/helpers/split
 
 export type SplitNodeMode = 'headings' | 'outline' | 'blocks';
 export type SplitNodeAction = {
-    type: 'DOCUMENT/SPLIT_NODE';
+    type: 'document/split-node';
     payload: {
         target: string;
         mode: SplitNodeMode;
@@ -24,10 +24,10 @@ export const splitNode = (
     if (!content?.content) throw new SilentError('empty node');
     const sections = splitText(content?.content, action.payload.mode);
     if (sections === content.content)
-        throw new Error(lang.error_cm_cant_split_card_identical);
+        throw new Error(lang.error_cm_cant_split_node_identical);
     const childGroup = findChildGroup(document.columns, targetNode);
     if (childGroup)
-        throw new Error(lang.error_cm_cant_split_card_that_has_children);
+        throw new Error(lang.error_cm_cant_split_node_that_has_children);
 
     const result = pasteNode(document, {
         payload: {

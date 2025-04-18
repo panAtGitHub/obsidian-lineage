@@ -30,14 +30,12 @@ import { id } from 'src/helpers/id';
 import invariant from 'tiny-invariant';
 import { customIcons } from 'src/helpers/load-custom-icons';
 
-import { setViewType } from 'src/obsidian/events/workspace/actions/set-view-type';
-import { getDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-document-format';
+import { setViewType } from 'src/stores/settings/actions/set-view-type';
+import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
 import { stringifyDocument } from 'src/view/helpers/stringify-document';
-import { getOrDetectDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-or-detect-document-format';
-import { maybeGetDocumentFormat } from 'src/obsidian/events/workspace/helpers/maybe-get-document-format';
-import { setDocumentFormat } from 'src/obsidian/events/workspace/actions/set-document-format';
+import { setDocumentFormat } from 'src/stores/settings/actions/set-document-format';
 import { toggleObsidianViewType } from 'src/obsidian/events/workspace/effects/toggle-obsidian-view-type';
-import { DocumentSearch } from 'src/view/helpers/document-search';
+import { DocumentSearch } from 'src/stores/view/subscriptions/effects/document-search/document-search';
 import {
     MinimapDomElements,
     MinimapState,
@@ -46,7 +44,12 @@ import { MinimapStoreAction } from 'src/stores/minimap/minimap-store-actions';
 import { StyleRulesProcessor } from 'src/stores/view/subscriptions/effects/style-rules/style-rules-processor';
 import { AlignBranch } from 'src/stores/view/subscriptions/effects/align-branch/align-branch';
 import { lang } from 'src/lang/lang';
-import { logger } from 'src/helpers/logger';
+import { DebouncedMinimapEffects } from 'src/stores/minimap/subscriptions/effects/debounced-minimap-effects';
+import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/document/update-frontmatter';
+import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document/load-full-document';
+import { refreshActiveViewOfDocument } from 'src/stores/plugin/actions/refresh-active-view-of-document';
+import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-format';
+import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
 
 export const LINEAGE_VIEW_TYPE = 'lineage';
 
@@ -59,6 +62,7 @@ export class LineageView extends TextFileView {
     documentStore: DocumentStore;
     viewStore: ViewStore;
     minimapStore: MinimapStore | null;
+    minimapEffects: DebouncedMinimapEffects;
     container: HTMLElement | null;
     inlineEditor: InlineEditor;
     documentSearch: DocumentSearch;
@@ -67,7 +71,6 @@ export class LineageView extends TextFileView {
     id: string;
     zoomFactor: number;
     minimapDom: MinimapDomElements | null = null;
-
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();
     private activeFilePath: null | string;
     constructor(
@@ -91,6 +94,7 @@ export class LineageView extends TextFileView {
         this.documentSearch = new DocumentSearch(this);
         this.rulesProcessor = new StyleRulesProcessor(this);
         this.alignBranch = new AlignBranch(this);
+        this.minimapEffects = new DebouncedMinimapEffects();
     }
 
     get isActive() {
@@ -102,8 +106,7 @@ export class LineageView extends TextFileView {
     get isViewOfFile() {
         const path = this.file?.path;
         return path
-            ? this.id ===
-                  this.plugin.documents.getValue().documents[path]?.viewId
+            ? this.id === this.plugin.store.getValue().documents[path]?.viewId
             : false;
     }
 
@@ -115,23 +118,9 @@ export class LineageView extends TextFileView {
         if (!this.activeFilePath && this.file) {
             this.activeFilePath = this.file?.path;
             this.loadInitialData();
-        } else if (this.file && data.trim().length === 0) {
-            this.plugin.app.vault.adapter
-                .read(this.file.path)
-                .then((content) => {
-                    if (content.trim().length !== 0) {
-                        throw new Error(lang.error_set_empty_data);
-                    } else {
-                        this.data = data;
-                        this.debouncedLoadDocumentToStore();
-                    }
-                })
-                .catch((error) => {
-                    logger.error('Error reading file:', error);
-                });
         } else {
             this.data = data;
-            this.debouncedLoadDocumentToStore();
+            if (this.isViewOfFile) this.debouncedLoadDocumentToStore();
         }
     }
 
@@ -150,6 +139,7 @@ export class LineageView extends TextFileView {
         for (const s of this.onDestroyCallbacks) {
             s();
         }
+        refreshActiveViewOfDocument(this);
     }
 
     clear(): void {
@@ -170,21 +160,6 @@ export class LineageView extends TextFileView {
 
     async onOpen() {}
 
-    /*private destroyStore = () => {
-	   const leavesOfType = this.plugin.app.workspace
-		   .getLeavesOfType(FILE_VIEW_TYPE)
-		   .filter(
-			   (l) =>
-				   l.view instanceof LineageView &&
-				   l.view.file?.path === this.activeFilePath &&
-				   l.view !== this,
-		   );
-	   if (leavesOfType.length === 0) {
-		   this.store.dispatch({ type: 'RESET_STORE' });
-		   if (this.file) delete stores[this.file.path];
-	   }
-   };*/
-
     async onClose() {
         return this.onUnloadFile();
     }
@@ -194,10 +169,10 @@ export class LineageView extends TextFileView {
         location,
         action,
     ) => {
-        if (action && action.type === 'DOCUMENT/LOAD_FILE') {
+        if (action && action.type === 'document/file/load-from-disk') {
             if (this.file) {
-                this.plugin.documents.dispatch({
-                    type: 'DOCUMENTS/DELETE_DOCUMENT',
+                this.plugin.store.dispatch({
+                    type: 'plugin/documents/unregister-document-store',
                     payload: { path: this.file.path },
                 });
                 setViewType(this.plugin, this.file.path, 'markdown');
@@ -211,33 +186,32 @@ export class LineageView extends TextFileView {
         onPluginError(error, location, action);
     };
 
-    saveDocument = async (immediate = false) => {
+    saveDocument = async () => {
         invariant(this.file);
         const state = clone(this.documentStore.getValue());
         const data: string =
             state.file.frontmatter +
-            stringifyDocument(state.document, getDocumentFormat(this));
+            stringifyDocument(state.document, getPersistedDocumentFormat(this));
         if (data !== this.data) {
             if (data.trim().length === 0) {
                 throw new Error(lang.error_save_empty_data);
             }
             this.data = data;
-            if (immediate) await this.save();
-            else this.requestSave();
+            this.requestSave();
         }
     };
 
     private loadInitialData = async () => {
         invariant(this.file);
 
-        const fileHasAStore =
-            this.plugin.documents.getValue().documents[this.file.path];
+        const pluginState = this.plugin.store.getValue();
+        const fileHasAStore = pluginState.documents[this.file.path];
         if (fileHasAStore) {
             this.useExistingStore();
         } else {
             this.createStore();
         }
-        this.loadDocumentToStore(true);
+        this.loadDocumentToStore('view-mount');
         if (!this.inlineEditor) {
             this.inlineEditor = new InlineEditor(this);
             await this.inlineEditor.onload();
@@ -258,18 +232,12 @@ export class LineageView extends TextFileView {
     private createStore = () => {
         invariant(this.file);
 
-        this.plugin.documents.dispatch({
-            type: 'DOCUMENTS/ADD_DOCUMENT',
+        this.plugin.store.dispatch({
+            type: 'plugin/documents/register-new-document-store',
             payload: {
                 path: this.file.path,
                 documentStore: this.documentStore,
                 viewId: this.id,
-            },
-        });
-        this.documentStore.dispatch({
-            type: 'FS/SET_FILE_PATH',
-            payload: {
-                path: this.file.path,
             },
         });
     };
@@ -277,61 +245,54 @@ export class LineageView extends TextFileView {
     private useExistingStore = () => {
         if (!this.file) return;
         this.documentStore =
-            this.plugin.documents.getValue().documents[
+            this.plugin.store.getValue().documents[
                 this.file.path
             ].documentStore;
     };
 
-    private loadDocumentToStore = (isInitialLoad = false) => {
-        const { data, frontmatter } = extractFrontmatter(this.data);
+    private loadDocumentToStore = (event?: 'view-mount') => {
+        const { body, frontmatter } = extractFrontmatter(this.data);
 
-        const state = this.documentStore.getValue();
-        const format = getOrDetectDocumentFormat(this, data);
-        const existingData = stringifyDocument(state.document, format);
-        const bodyHasChanged = existingData !== data;
+        const documentState = this.documentStore.getValue();
+        const viewState = this.viewStore.getValue();
+        const format = this.getDocumentFormat(body);
+        const emptyStore = documentState.history.items.length === 0;
+        const existingBody = stringifyDocument(documentState.document, format);
+
+        const bodyHasChanged = existingBody !== body;
         const frontmatterHasChanged =
-            !bodyHasChanged && frontmatter !== state.file.frontmatter;
-        if (!existingData || bodyHasChanged || frontmatterHasChanged) {
-            const isEditing =
-                this.viewStore.getValue().document.editing.activeNodeId;
-            if (frontmatterHasChanged && !isInitialLoad) {
-                this.documentStore.dispatch({
-                    type: 'FILE/UPDATE_FRONTMATTER',
-                    payload: {
-                        frontmatter,
-                    },
-                });
-            } else if (!isEditing) {
-                const activeNode =
-                    this.viewStore.getValue().document.activeNode;
-                const activeSection = activeNode
-                    ? this.documentStore.getValue().sections.id_section[
-                          activeNode
-                      ]
-                    : null;
-                this.documentStore.dispatch({
-                    payload: {
-                        document: { data: data, frontmatter, position: null },
-                        format,
-                        activeSection,
-                    },
-                    type: 'DOCUMENT/LOAD_FILE',
-                });
-                if (
-                    this.isActive &&
-                    !isInitialLoad &&
-                    existingData &&
-                    bodyHasChanged
-                ) {
-                    new Notice('Document reloaded due to external changes');
-                }
-                if (!maybeGetDocumentFormat(this)) {
-                    invariant(this.file);
-                    setDocumentFormat(this.plugin, this.file.path, format);
-                }
+            frontmatter !== documentState.file.frontmatter;
+
+        const isEditing = Boolean(viewState.document.editing.activeNodeId);
+
+        const activeNode = viewState.document.activeNode;
+        const activeSection = activeNode
+            ? documentState.sections.id_section[activeNode]
+            : null;
+        if (emptyStore || (bodyHasChanged && !isEditing)) {
+            loadFullDocument(this, body, frontmatter, format, activeSection);
+            if (this.isActive && event !== 'view-mount') {
+                new Notice('Document updated externally');
             }
+        } else if (frontmatterHasChanged) {
+            updateFrontmatter(this, frontmatter);
         }
     };
+
+    private getDocumentFormat(body: string) {
+        let format: LineageDocumentFormat;
+        format = getPersistedDocumentFormat(this, false);
+        if (format) {
+            return format;
+        }
+
+        format =
+            detectDocumentFormat(body) ||
+            this.plugin.settings.getValue().general.defaultDocumentFormat;
+
+        setDocumentFormat(this.plugin, this.file!.path, format);
+        return format;
+    }
 
     private debouncedLoadDocumentToStore = debounce(
         this.loadDocumentToStore,

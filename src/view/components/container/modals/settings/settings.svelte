@@ -1,50 +1,43 @@
 <script lang="ts">
-    import { renderSettings } from '../../../../actions/settings/render-settings';
+    import { renderSettings, SettingsTab } from '../../../../actions/settings/render-settings';
+    import VerticalTabHeader from './vertical-tab-header.svelte';
+    import { ActiveSettingsTabStore } from 'src/view/components/container/modals/settings/active-settings-tab-store';
+
+    const setActiveTab = (tab: SettingsTab) => {
+        ActiveSettingsTabStore.set(tab);
+    };
 </script>
 
 <div class="lineage-modal" id="lineage-view-settings" tabindex="0">
-    <div class="setting-items" use:renderSettings></div>
+    <div class="lineage-vertical-tabs-container">
+        <VerticalTabHeader {setActiveTab} activeTab={$ActiveSettingsTabStore} />
+        <div
+            class="lineage-vertical-tab-content"
+            use:renderSettings={$ActiveSettingsTabStore}
+        ></div>
+    </div>
 </div>
 
 <style>
-
-
-    .setting-items {
+    .lineage-vertical-tabs-container {
         display: flex;
+    }
+    .lineage-vertical-tab-content {
+        height: auto;
+        display: grid;
         flex-direction: column;
-        padding: 20px;
         width: 500px;
-        overflow-y:auto;
-        & .setting-item {
-            padding: 10px 0;
-        }
+        overflow-y: auto;
+        padding-top: var(--size-4-8);
+        padding-bottom: var(--size-4-12);
+        padding-inline-start: var(--size-4-12);
+        padding-inline-end: var(--size-4-12);
 
-        & .setting-item-heading {
-            margin-top: 22px;
-
-            & .setting-item-name {
-                font-size: 17px;
-            }
+        grid-template-areas: 'main';
+        & > div {
+            grid-area: main;
         }
     }
-    @media (max-width: 720px) {
-        .setting-items{
-            width:initial;
-        }
-    }
-    :global(.is-mobile) {
 
-        & .setting-items {
-            padding: 5px 10px;
-        }
-        & :global(.setting-item) {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        & :global(.setting-item-control) {
-            width: 100%;
-            justify-content: center;
-        }
-    }
+
 </style>

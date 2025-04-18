@@ -8,37 +8,69 @@ import { DefaultDocumentFormat } from 'src/view/actions/settings/components/defa
 import { CardsGap } from 'src/view/actions/settings/components/cards-gap';
 import { CardIndentationWidth } from 'src/view/actions/settings/components/card-indentation-width';
 import { MaintainEditMode } from 'src/view/actions/settings/components/maintain-edit-mode';
-import { Setting } from 'obsidian';
-import { lang } from 'src/lang/lang';
 import { InactiveCardOpacity } from 'src/view/actions/settings/components/inactive-card-opacity';
 import { ActiveBranchColor } from 'src/view/actions/settings/components/active-branch-color';
 import { AlwaysShowCardButtons } from 'src/view/actions/settings/components/always-show-card-buttons';
 import { ControlsBarButtons } from 'src/view/actions/settings/components/controls-bar-buttons/controls-bar-buttons';
+import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-font-size';
+import { LinkPaneType } from 'src/view/actions/settings/components/link-pane-type';
+import { LineageView } from 'src/view/view';
 
-export const renderSettings = (element: HTMLElement) => {
-    const view = getView();
+export type SettingsTab = 'General' | 'Appearance' | 'Layout';
+type Tab = { element: HTMLDivElement; name: SettingsTab };
+
+const setVisibleTab = (tabs: Tab[], activeTab: SettingsTab) => {
+    for (const tab of tabs) {
+        if (tab.name === activeTab) {
+            tab.element.style.visibility = 'visible';
+        } else {
+            tab.element.style.visibility = 'hidden';
+        }
+    }
+};
+
+const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
     const settingsStore = view.plugin.settings;
-    const render = () => {
-        DefaultDocumentFormat(element, settingsStore);
-        MaintainEditMode(element, settingsStore);
-        AlwaysShowCardButtons(element, settingsStore);
-        ControlsBarButtons(element, view);
-        new Setting(element).setHeading().setName(lang.settings_appearance);
-        BackgroundColor(element, settingsStore);
-        ActiveBranchBackground(element, settingsStore);
-        ActiveBranchColor(element, settingsStore);
-        InactiveCardOpacity(element, settingsStore);
-        FontSize(element, settingsStore);
-        new Setting(element).setHeading().setName(lang.settings_layout);
-        CardWidth(element, settingsStore);
-        CardsGap(element, settingsStore);
-        CardIndentationWidth(element, settingsStore);
-        LimitCardHeight(element, settingsStore);
-    };
-    render();
+    const generalTab = activeDocument.createElement('div');
+    const appearanceTab = activeDocument.createElement('div');
+    const layoutTab = activeDocument.createElement('div');
+
+    tabs.push({ element: generalTab, name: 'General' });
+    tabs.push({ element: appearanceTab, name: 'Appearance' });
+    tabs.push({ element: layoutTab, name: 'Layout' });
+
+    // general
+    DefaultDocumentFormat(generalTab, settingsStore);
+    LinkPaneType(generalTab, settingsStore);
+    MaintainEditMode(generalTab, settingsStore);
+    AlwaysShowCardButtons(generalTab, settingsStore);
+    ControlsBarButtons(generalTab, view);
+
+    // appearance
+    BackgroundColor(appearanceTab, settingsStore);
+    ActiveBranchBackground(appearanceTab, settingsStore);
+    ActiveBranchColor(appearanceTab, settingsStore);
+    InactiveCardOpacity(appearanceTab, settingsStore);
+    FontSize(appearanceTab, settingsStore);
+    HeadingsFontSize(appearanceTab, settingsStore);
+
+    // layout
+    CardWidth(layoutTab, settingsStore);
+    CardsGap(layoutTab, settingsStore);
+    CardIndentationWidth(layoutTab, settingsStore);
+    LimitCardHeight(layoutTab, settingsStore);
+
+    element.append(generalTab, appearanceTab, layoutTab);
+};
+
+export const renderSettings = (element: HTMLElement, tab: SettingsTab) => {
+    const tabs: Tab[] = [];
+    const view = getView();
+    render(view, element, tabs);
+    setVisibleTab(tabs, tab);
     return {
-        update: () => {
-            render();
+        update: (tab: SettingsTab) => {
+            setVisibleTab(tabs, tab);
         },
     };
 };

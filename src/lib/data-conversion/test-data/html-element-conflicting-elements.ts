@@ -1,33 +1,35 @@
-const mdWithHtmlElement = `# <span data-section="1"/>heading 1
+const mdWithHtmlElement = `<span data-section="1"></span>
+# heading 1
 # heading 2
 
-- <span data-section="2"/>1
+<span data-section="2"></span>
+- 1
 - 2
 - 3
 
-<span data-section="3"/>text
+<span data-section="3"></span>text
 
-<span data-section="4"/>
+<span data-section="4"></span>
 \`\`\`css
 svg{
 display: none;
 }
 \`\`\`
 
-<span data-section="5"/>
+<span data-section="5"></span>
 > quote
 
-<span data-section="6"/>
+<span data-section="6"></span>
 
 | a   | b   |
 | --- | --- |
 | 1   | 2   |
 
-<span data-section="7"/>
+<span data-section="7"></span>
 > [!info]
 > information
 
-<span data-section="8"/><!--comment -->`;
+<span data-section="8"></span><!--comment -->`;
 
 const mdWithHtmlComment = `
 <!--section: 1-->

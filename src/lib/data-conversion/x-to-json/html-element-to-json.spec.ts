@@ -2,16 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { ginkgo_welcome } from 'src/lib/data-conversion/test-data/ginkgo_welcome';
 import { ginkgo_academic_paper } from 'src/lib/data-conversion/test-data/ginkgo_acedemic_paper';
 import { htmlElementToJson } from 'src/lib/data-conversion/x-to-json/html-element-to-json';
-import { createHtmlElementMarker } from 'src/lib/data-conversion/helpers/html-element-marker/create-html-element-marker';
+import { collapsedSpanMarker } from 'src/lib/data-conversion/helpers/html-element-marker/collapsed-span-marker';
 
 describe('html element to json', () => {
     it('case', () => {
         let index = 1;
         let index2 = 1;
         const input = [
-            'one' + createHtmlElementMarker('', index++),
-            'one > two' + createHtmlElementMarker('1', index2++),
-            'two' + createHtmlElementMarker('', index++),
+            'one' + collapsedSpanMarker('', index++),
+            'one > two' + collapsedSpanMarker('1', index2++),
+            'two' + collapsedSpanMarker('', index++),
         ];
 
         const output = [

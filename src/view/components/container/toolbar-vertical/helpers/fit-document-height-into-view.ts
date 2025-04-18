@@ -8,11 +8,11 @@ export const fitDocumentHeightIntoView = async (view: LineageView) => {
     invariant(view.container);
     const initialZoomLevel = get(zoomLevelStore(view));
     view.plugin.settings.dispatch({
-        type: 'UI/CHANGE_ZOOM_LEVEL',
+        type: 'settings/view/set-zoom-level',
         payload: { value: 1 },
     });
     const columns = Array.from(
-        view.containerEl.querySelectorAll('.column'),
+        view.container.querySelectorAll('.column'),
     ) as HTMLElement[];
     let result = 1;
     if (columns.length) {
@@ -27,16 +27,15 @@ export const fitDocumentHeightIntoView = async (view: LineageView) => {
         const width = getCombinedBoundingClientRect(columns).width;
 
         // eslint-disable-next-line no-undef
-        const heightScale =
-            view.container.getBoundingClientRect().height / (height + 100);
-        const widthScale =
-            view.container.getBoundingClientRect().width / (width + 100);
+        const boundingClientRect = view.container.getBoundingClientRect();
+        const heightScale = boundingClientRect.height / (height + 100);
+        const widthScale = boundingClientRect.width / (width + 100);
 
         result = Math.min(heightScale, widthScale);
     }
     // restore zoom level
     view.plugin.settings.dispatch({
-        type: 'UI/CHANGE_ZOOM_LEVEL',
+        type: 'settings/view/set-zoom-level',
         payload: { value: initialZoomLevel },
     });
     return result;

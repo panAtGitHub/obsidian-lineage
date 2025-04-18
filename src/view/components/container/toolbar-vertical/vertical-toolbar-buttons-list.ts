@@ -4,17 +4,10 @@ import { derived } from 'svelte/store';
 import { ToolbarButton } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons';
 import { lang } from 'src/lang/lang';
 import {
-    HistoryIcon,
     Keyboard,
-    Minus as ZoomOut,
     Palette,
     PanelRightInactive as PanelRight,
-    Plus as ZoomIn,
-    Redo2 as RedoIcon,
-    RotateCcw,
-    ScanSearch,
     Settings,
-    Undo2 as UndoIcon,
 } from 'lucide-svelte';
 import { CustomIcon, customIcons } from 'src/helpers/load-custom-icons';
 import { VerticalToolbarActions } from 'src/view/components/container/toolbar-vertical/vertical-toolbar-actions';
@@ -29,11 +22,7 @@ export type ToolbarButtonsGroup = {
     }[];
 };
 
-export const VerticalToolbarButtonsList = (
-    view: LineageView,
-    restoreZoom: () => void,
-    showZoomPopupMenu: (event: MouseEvent) => void,
-) => {
+export const VerticalToolbarButtonsList = (view: LineageView) => {
     const hiddenControlsBarButtons = HiddenVerticalToolbarButtons(view.plugin);
     const h = new VerticalToolbarActions(view);
 
@@ -89,11 +78,6 @@ export const VerticalToolbarButtonsList = (
                         icon: customIcons.alignV,
                         id: 'center-active-node-v',
                     },
-                ],
-            },
-            {
-                id: 'display',
-                buttons: [
                     {
                         label: lang.controls_single_column,
                         onClick: h.toggleOutlineMode,
@@ -105,58 +89,6 @@ export const VerticalToolbarButtonsList = (
                         onClick: h.toggleGap,
                         icon: customIcons.gap,
                         id: 'space-between-cards',
-                    },
-                ],
-            },
-            {
-                id: 'history',
-                buttons: [
-                    {
-                        label: lang.controls_history,
-                        onClick: h.toggleSnapshotsModal,
-                        icon: HistoryIcon,
-                        id: 'snapshots-list',
-                    },
-                    {
-                        label: lang.controls_history_undo,
-                        onClick: h.handlePreviousClick,
-                        icon: UndoIcon,
-                        id: 'undo',
-                    },
-                    {
-                        label: lang.controls_history_redo,
-                        onClick: h.handleNextClick,
-                        icon: RedoIcon,
-                        id: 'redo',
-                    },
-                ],
-            },
-            {
-                id: 'zoom',
-                buttons: [
-                    {
-                        label: lang.controls_zoom_in,
-                        onClick: h.zoomIn,
-                        icon: ZoomIn,
-                        id: 'zoom-in',
-                    },
-                    {
-                        label: lang.controls_zoom_reset,
-                        onClick: restoreZoom,
-                        icon: RotateCcw,
-                        id: 'zoom-reset',
-                    },
-                    {
-                        label: lang.controls_zoom_presets,
-                        onClick: showZoomPopupMenu,
-                        icon: ScanSearch,
-                        id: 'zoom-presets',
-                    },
-                    {
-                        label: lang.controls_zoom_out,
-                        onClick: h.zoomOut,
-                        icon: ZoomOut,
-                        id: 'zoom-out',
                     },
                 ],
             },

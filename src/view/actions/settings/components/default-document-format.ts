@@ -11,7 +11,6 @@ export const DefaultDocumentFormat = (
     const setting = new Setting(element).setName(
         lang.settings_general_default_format,
     );
-    setting.setDesc(lang.settings_general_default_format_desc);
     setting.addDropdown((cb) => {
         const value = settingsState.general.defaultDocumentFormat;
 
@@ -23,7 +22,7 @@ export const DefaultDocumentFormat = (
             .setValue(value)
             .onChange((value) => {
                 settingsStore.dispatch({
-                    type: 'GENERAL/SET_DEFAULT_DOCUMENT_FORMAT',
+                    type: 'settings/general/set-default-document-format',
                     payload: {
                         format: value as LineageDocumentFormat,
                     },

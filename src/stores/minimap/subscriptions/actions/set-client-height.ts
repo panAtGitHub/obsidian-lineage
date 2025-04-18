@@ -1,11 +1,23 @@
 import { LineageView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { dpx_to_cpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
+import { delay } from 'src/helpers/delay';
 
-export const setClientHeight = (view: LineageView) => {
+const getActiveView = async (view: LineageView) => {
+    for (let i = 0; i < 10; i++) {
+        const activeView =
+            view.plugin.app.workspace.getActiveViewOfType(LineageView);
+        if (activeView) {
+            return activeView;
+        } else {
+            await delay(500);
+        }
+    }
+};
+
+export const setClientHeight = async (view: LineageView) => {
     /* dom height of inactive views is 0*/
-    const activeView =
-        view.plugin.app.workspace.getActiveViewOfType(LineageView);
+    const activeView = await getActiveView(view);
     if (!activeView) return;
     const minimapContainer =
         activeView.getMinimapDom().scrollIndicator.parentElement;

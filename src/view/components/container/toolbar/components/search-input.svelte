@@ -13,7 +13,7 @@
         e: Event & { currentTarget: EventTarget & HTMLInputElement },
     ) => {
         viewStore.dispatch({
-            type: 'SEARCH/SET_QUERY',
+            type: 'view/search/set-query',
             payload: {
                 query: e.currentTarget.value,
             },
@@ -24,7 +24,7 @@
 <div class="search-input-wrapper search-input-container">
     <input
         autofocus={true}
-        class={"search-input search-input-element"+($search.query&& $search.results.size===0?' no-results':'')}
+        class={"search-input search-input-element"+($search.query && $search.results.size===0 && !$search.searching?' no-results':'')}
         enterkeyhint="search"
         on:input={onInput}
         placeholder={'search'}
@@ -37,7 +37,7 @@
         class="search-input-clear-button"
         on:click={() => {
             viewStore.dispatch({
-                type: 'SEARCH/SET_QUERY',
+                type: 'view/search/set-query',
                 payload: {
                     query: '',
                 },
@@ -48,12 +48,12 @@
 
     {#if $search.query.length > 0}
         <div
-            aria-label={lang.tlb_search_show_all_cards}
+            aria-label={lang.tlb_search_show_all_nodes}
             class={'input-right-decorator clickable-icon' +
                 ($search.showAllNodes ? ' is-active' : '')}
             on:click={() => {
                 viewStore.dispatch({
-                    type: 'search/toggle-show-all-nodes',
+                    type: 'search/view/toggle-show-all-nodes',
                 });
             }}
             style="right: 28px"
@@ -67,10 +67,10 @@
             ($search.fuzzySearch ? ' is-active' : '')}
         on:click={() => {
             viewStore.dispatch({
-                type: 'SEARCH/TOGGLE_FUZZY_MODE',
+                type: 'view/search/toggle-fuzzy-mode',
             });
             viewStore.dispatch({
-                type: 'SEARCH/SET_QUERY',
+                type: 'view/search/set-query',
                 payload: {
                     query: viewStore.getValue().search.query,
                 },
