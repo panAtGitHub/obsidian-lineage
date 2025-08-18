@@ -157,6 +157,10 @@ export class InlineEditor {
             containerEl: this.containerEl,
             app: this.view.plugin.app,
             workspace,
+            history: {
+                backHistory: [],
+                forwardHistory: [],
+            },
         } as never) as InlineMarkdownView;
         this.inlineView.save = noop;
         this.inlineView.requestSave = this.invokeAndDeleteOnChangeSubscriptions;
