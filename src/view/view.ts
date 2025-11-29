@@ -1,9 +1,13 @@
 import {
+    BlockSubpathResult,
+    HeadingSubpathResult,
     debounce,
     IconName,
     Notice,
     TextFileView,
     WorkspaceLeaf,
+    resolveSubpath,
+    stripHeading,
 } from 'obsidian';
 
 import Component from './components/container/main.svelte';
@@ -50,6 +54,8 @@ import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document
 import { refreshActiveViewOfDocument } from 'src/stores/plugin/actions/refresh-active-view-of-document';
 import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-format';
 import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
+import { parseHtmlCommentMarker } from 'src/lib/data-conversion/helpers/html-comment-marker/parse-html-comment-marker';
+import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
 
 export const LINEAGE_VIEW_TYPE = 'lineage';
 
@@ -71,6 +77,7 @@ export class LineageView extends TextFileView {
     id: string;
     zoomFactor: number;
     minimapDom: MinimapDomElements | null = null;
+    private pendingEphemeralState: unknown = null;
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();
     private activeFilePath: null | string;
     constructor(
@@ -164,6 +171,24 @@ export class LineageView extends TextFileView {
         return this.onUnloadFile();
     }
 
+    async setEphemeralState(state: unknown) {
+        super.setEphemeralState(state);
+        if (!state) return;
+        const documentLoaded =
+            this.documentStore.getValue().document.columns.length > 0;
+        if (!documentLoaded) {
+            this.pendingEphemeralState = state;
+            return;
+        }
+        if (typeof (state as { subpath?: string }).subpath === 'string') {
+            await this.handleSubpathJump(
+                (state as { subpath: string }).subpath,
+            );
+        } else if (typeof (state as { line?: number }).line === 'number') {
+            await this.handleLineJump((state as { line: number }).line);
+        }
+    }
+
     onViewStoreError: OnError<DocumentStoreAction | ViewStoreAction> = (
         error,
         location,
@@ -227,6 +252,7 @@ export class LineageView extends TextFileView {
 
         invariant(this.container);
         this.onDestroyCallbacks.add(viewSubscriptions(this));
+        this.consumePendingEphemeralState();
     };
 
     private createStore = () => {
@@ -311,5 +337,125 @@ export class LineageView extends TextFileView {
     getMinimapStore() {
         invariant(this.minimapStore);
         return this.minimapStore;
+    }
+
+    private consumePendingEphemeralState() {
+        if (!this.pendingEphemeralState) return;
+        const pending = this.pendingEphemeralState;
+        this.pendingEphemeralState = null;
+        this.setEphemeralState(pending);
+    }
+
+    private async handleSubpathJump(subpath: string) {
+        if (!this.file) return;
+        const cache = this.app.metadataCache.getFileCache(this.file);
+        if (!cache) return;
+        const result = resolveSubpath(
+            cache,
+            subpath,
+        ) as HeadingSubpathResult | BlockSubpathResult | null;
+        if (!result) return;
+
+        const heading =
+            result.type === 'heading'
+                ? {
+                      text: result.current.heading,
+                      level: result.current.level,
+                  }
+                : null;
+        const nodeId =
+            (heading &&
+                this.findNodeByHeading(heading.text, heading.level)) ||
+            this.getNodeIdByLine(result.start.line);
+        if (!nodeId) return;
+        await selectCard(this, nodeId);
+        if (heading) {
+            this.scrollHeadingIntoView(
+                nodeId,
+                heading.text,
+                heading.level,
+            );
+        }
+    }
+
+    private async handleLineJump(line: number) {
+        const nodeId = this.getNodeIdByLine(line);
+        if (!nodeId) return;
+        await selectCard(this, nodeId);
+    }
+
+    private getNodeIdByLine(line: number): string | null {
+        const section = this.getSectionNumberForLine(line);
+        if (!section) return null;
+        return this.documentStore.getValue().sections.section_id[section] || null;
+    }
+
+    private getSectionNumberForLine(line: number): string | null {
+        const lines = this.data ? this.data.split('\n') : [];
+        let current: string | null = null;
+        for (let i = 0; i <= line && i < lines.length; i++) {
+            const parsed = parseHtmlCommentMarker(lines[i]);
+            if (parsed) current = parsed[2];
+        }
+        return current;
+    }
+
+    private findNodeByHeading(
+        headingText: string,
+        headingLevel?: number,
+    ): string | null {
+        const normalizedTarget = this.normalizeHeadingText(headingText);
+        const { content } = this.documentStore.getValue().document;
+        for (const [nodeId, node] of Object.entries(content)) {
+            const lines = node.content.split('\n');
+            for (const line of lines) {
+                const trimmed = line.trimStart();
+                const match = /^(\#{1,6})\s+(.*)$/.exec(trimmed);
+                if (!match) continue;
+                const currentLevel = match[1].length;
+                if (headingLevel && currentLevel !== headingLevel) continue;
+                const text = match[2].replace(/\s*#+\s*$/, '').trim();
+                if (this.normalizeHeadingText(text) === normalizedTarget) {
+                    return nodeId;
+                }
+            }
+        }
+        return null;
+    }
+
+    private normalizeHeadingText(text: string) {
+        return stripHeading(text || '').trim().toLowerCase();
+    }
+
+    private scrollHeadingIntoView(
+        nodeId: string,
+        headingText: string,
+        headingLevel?: number,
+    ) {
+        setTimeout(() => {
+            const card = this.container?.querySelector<HTMLElement>(`#${nodeId}`);
+            if (!card) return;
+            const headingElements = Array.from(
+                card.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5, h6'),
+            );
+            const normalizedTarget = this.normalizeHeadingText(headingText);
+            const target =
+                headingElements.find((h) => {
+                    const level = Number(h.tagName.slice(1));
+                    if (headingLevel && headingLevel !== level) return false;
+                    const text =
+                        h.dataset.heading?.toString() ||
+                        h.textContent ||
+                        '';
+                    return (
+                        this.normalizeHeadingText(text) === normalizedTarget
+                    );
+                }) || card;
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'center',
+            });
+        }, 50);
     }
 }
