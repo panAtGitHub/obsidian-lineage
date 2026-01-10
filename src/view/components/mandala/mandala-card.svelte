@@ -47,6 +47,21 @@
 </div>
 
 <style>
+    .lineage-card {
+        width: var(--node-width);
+        min-height: var(--min-node-height);
+        height: fit-content;
+        display: flex;
+        position: relative;
+        font-size: 16px;
+        --scrollbar-thumb-bg: var(--color-base-30);
+        --scrollbar-active-thumb-bg: var(--color-base-40);
+    }
+
+    .lineage-card:hover {
+        z-index: 10;
+    }
+
     .mandala-section-label {
         position: absolute;
         top: 6px;
@@ -57,4 +72,3 @@
         pointer-events: none;
     }
 </style>
-
