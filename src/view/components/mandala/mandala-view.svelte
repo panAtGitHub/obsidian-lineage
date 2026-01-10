@@ -165,8 +165,9 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
-        --mandala-gap: var(--node-gap-setting, 12px);
-        --mandala-block-gap: calc(var(--mandala-gap) * 2);
+        --mandala-core-gap: clamp(10px, 1vw, 18px);
+        --mandala-gap: var(--mandala-core-gap);
+        --mandala-block-gap: calc(var(--mandala-core-gap) * 2);
     }
 
     .mandala-topbar {
@@ -210,8 +211,10 @@
     /* 3×3 主视图：铺满可视区域（避免横向滚动） */
     .mandala-grid--core {
         width: 100%;
+        height: 100%;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        align-items: start;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
         justify-items: stretch;
     }
 
@@ -219,19 +222,43 @@
     .mandala-grid--core .mandala-empty,
     .mandala-grid--core .mandala-mirror {
         width: 100%;
+        height: 100%;
+        min-height: 0;
     }
 
-    /* 9×9：缩小格子，尽量让 9×9 初始视图可读 */
+    /* 9×9：格子约等于 3×3 的 1/3，并铺满屏幕 */
     .mandala-root--9 {
-        --mandala-gap: clamp(4px, 0.6vw, 10px);
+        --mandala-gap: calc(var(--mandala-core-gap) / 4);
         --mandala-block-gap: var(--mandala-gap);
-        --mandala-cell-size: clamp(
-            56px,
-            calc((var(--view-width, 900px) - 24px - (8 * var(--mandala-gap))) / 9),
-            120px
-        );
-        --node-width: var(--mandala-cell-size);
-        --min-node-height: var(--mandala-cell-size);
+    }
+
+    .mandala-root--9 .mandala-blocks {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-content: stretch;
+        align-content: stretch;
+    }
+
+    .mandala-root--9 .mandala-block {
+        width: 100%;
+        height: 100%;
+    }
+
+    .mandala-root--9 .mandala-grid {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+    }
+
+    .mandala-root--9 :global(.lineage-card),
+    .mandala-root--9 .mandala-empty,
+    .mandala-root--9 .mandala-mirror {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 0;
     }
 
     .mandala-empty,
