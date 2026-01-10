@@ -170,8 +170,8 @@
         width: 100%;
         overflow: hidden;
         --mandala-core-gap: clamp(10px, 1vw, 18px);
-        --mandala-gap: var(--mandala-core-gap);
-        --mandala-block-gap: calc(var(--mandala-core-gap) * 2);
+        --mandala-gap: calc(var(--mandala-core-gap) / 4);
+        --mandala-block-gap: var(--mandala-gap);
         --mandala-card-width: 100%;
     }
 
@@ -238,8 +238,6 @@
 
     /* 9×9：格子约等于 3×3 的 1/3，并铺满屏幕 */
     .mandala-root--9 {
-        --mandala-gap: calc(var(--mandala-core-gap) / 4);
-        --mandala-block-gap: var(--mandala-gap);
         --mandala-card-width: 100%;
         --mandala-card-height: 100%;
         --mandala-card-min-height: 0px;
