@@ -67,7 +67,7 @@
 
     <div class="mandala-scroll" bind:this={containerRef} tabindex="0">
         {#if $mode === '3x3'}
-            <div class="mandala-grid mandala-grid--3">
+            <div class="mandala-grid mandala-grid--3 mandala-grid--core">
                 {#each coreSlots as section (section)}
                     {@const nodeId = requireNodeId(section)}
                     {#if nodeId}
@@ -199,6 +199,24 @@
         grid-template-columns: repeat(3, var(--node-width));
         gap: var(--cards-gap);
         align-items: start;
+    }
+
+    /* 3×3 主视图：铺满可视区域（避免横向滚动） */
+    .mandala-grid--core {
+        width: 100%;
+        height: 100%;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        justify-items: stretch;
+    }
+
+    .mandala-grid--core :global(.lineage-card),
+    .mandala-grid--core .mandala-empty,
+    .mandala-grid--core .mandala-mirror {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
     }
 
     .mandala-empty,
