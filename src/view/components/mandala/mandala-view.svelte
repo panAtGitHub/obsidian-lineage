@@ -4,7 +4,6 @@
     import { derived } from 'src/lib/store/derived';
     import { getView } from 'src/view/components/container/context';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
-    import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
     import {
         childSlots,
@@ -176,13 +175,7 @@
                                     {@const col = blockCol * 3 + localCol}
                                     {@const nodeId = requireNodeId(section)}
                                     {#if nodeId}
-                                        <div class="mandala-mirror mandala-mirror--center">
-                                            <Content
-                                                nodeId={nodeId}
-                                                isInSidebar={false}
-                                                active={null}
-                                            />
-                                        </div>
+                                        <div class="mandala-center-cell" data-section={section}></div>
                                     {:else}
                                         <div class="mandala-empty">{section}</div>
                                     {/if}
@@ -360,8 +353,12 @@
         pointer-events: auto;
     }
 
-    .mandala-mirror--center,
-    .mandala-mirror--center :global(.lng-prev) {
+    .mandala-center-cell {
+        width: 100%;
+        height: 100%;
+        border: 1px dashed var(--background-modifier-border);
+        border-radius: 8px;
+        opacity: 0.35;
         pointer-events: none;
     }
 </style>
