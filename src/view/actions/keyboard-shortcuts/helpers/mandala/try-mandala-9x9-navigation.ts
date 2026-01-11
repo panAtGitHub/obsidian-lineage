@@ -12,6 +12,10 @@ const deltas: Record<AllDirections, { dr: number; dc: number }> = {
     right: { dr: 0, dc: 1 },
 };
 
+const isCenterCell = (row: number, col: number) => {
+    return row >= 3 && row <= 5 && col >= 3 && col <= 5;
+};
+
 export const tryMandala9x9Navigation = (
     view: LineageView,
     direction: AllDirections,
@@ -38,11 +42,19 @@ export const tryMandala9x9Navigation = (
     }
 
     const { dr, dc } = deltas[direction];
-    const nextRow = current.row + dr;
-    const nextCol = current.col + dc;
-    if (nextRow < 0 || nextCol < 0 || nextRow > 8 || nextCol > 8) {
-        return true;
+    let nextRow = current.row + dr;
+    let nextCol = current.col + dc;
+    while (
+        nextRow >= 0 &&
+        nextCol >= 0 &&
+        nextRow <= 8 &&
+        nextCol <= 8 &&
+        isCenterCell(nextRow, nextCol)
+    ) {
+        nextRow += dr;
+        nextCol += dc;
     }
+    if (nextRow < 0 || nextCol < 0 || nextRow > 8 || nextCol > 8) return true;
 
     const nextSection = sectionAtCell9x9(nextRow, nextCol);
     if (!nextSection) return true;

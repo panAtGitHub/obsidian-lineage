@@ -5,7 +5,6 @@
     import { getView } from 'src/view/components/container/context';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
     import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
-    import { ActiveStatus } from 'src/view/components/container/column/components/group/components/active-status.enum';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
     import {
         childSlots,
@@ -128,18 +127,17 @@
                                     {@const col = blockCol * 3 + localCol}
                                     {#if slot === null}
                                         {#if themeNodeId}
-                                            <div
-                                                class="mandala-mirror"
-                                                on:click={() => {
-                                                    view.mandalaActiveCell9x9 = { row, col };
-                                                }}
-                                            >
-                                                <Content
-                                                    nodeId={themeNodeId}
-                                                    isInSidebar={false}
-                                                    active={themeNodeId === $activeNodeId ? ActiveStatus.node : null}
-                                                />
-                                            </div>
+                                            <MandalaCard
+                                                nodeId={themeNodeId}
+                                                section={themeSection}
+                                                gridCell={{ mode: '9x9', row, col }}
+                                                active={themeNodeId === $activeNodeId}
+                                                editing={$editingState.activeNodeId === themeNodeId && !$editingState.isInSidebar}
+                                                selected={$selectedNodes.has(themeNodeId)}
+                                                pinned={$pinnedNodes.has(themeNodeId)}
+                                                style={$nodeStyles.get(themeNodeId)}
+                                                draggable={true}
+                                            />
                                         {:else}
                                             <div class="mandala-empty">{themeSection}</div>
                                         {/if}
@@ -173,17 +171,13 @@
                                     {@const col = blockCol * 3 + localCol}
                                     {@const nodeId = requireNodeId(section)}
                                     {#if nodeId}
-                                        <MandalaCard
-                                            nodeId={nodeId}
-                                            {section}
-                                            gridCell={{ mode: '9x9', row, col }}
-                                            active={nodeId === $activeNodeId}
-                                            editing={$editingState.activeNodeId === nodeId && !$editingState.isInSidebar}
-                                            selected={$selectedNodes.has(nodeId)}
-                                            pinned={$pinnedNodes.has(nodeId)}
-                                            style={$nodeStyles.get(nodeId)}
-                                            draggable={section !== '1'}
-                                        />
+                                        <div class="mandala-mirror mandala-mirror--center">
+                                            <Content
+                                                nodeId={nodeId}
+                                                isInSidebar={false}
+                                                active={null}
+                                            />
+                                        </div>
                                     {:else}
                                         <div class="mandala-empty">{section}</div>
                                     {/if}
@@ -359,5 +353,10 @@
 
     .mandala-mirror :global(.lng-prev) {
         pointer-events: auto;
+    }
+
+    .mandala-mirror--center,
+    .mandala-mirror--center :global(.lng-prev) {
+        pointer-events: none;
     }
 </style>
