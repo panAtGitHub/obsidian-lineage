@@ -5,13 +5,8 @@
     import { getView } from 'src/view/components/container/context';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
-    import {
-        childSlots,
-        coreSlots,
-        posOfSection9x9,
-        sectionAtCell9x9,
-        themeBlocks,
-    } from 'src/view/helpers/mandala/mandala-grid';
+    import { coreSlots, posOfSection9x9, sectionAtCell9x9 } from 'src/view/helpers/mandala/mandala-grid';
+    import MandalaRaw9x9 from 'src/view/components/mandala/mandala-9x9-raw.svelte';
 
     const view = getView();
 
@@ -114,77 +109,7 @@
                 {/each}
             </div>
         {:else}
-            <div class="mandala-blocks">
-                {#each themeBlocks as themeSection, i (i)}
-                    {@const blockRow = Math.floor(i / 3)}
-                    {@const blockCol = i % 3}
-                    <div
-                        class={`mandala-block ${themeSection ? '' : 'mandala-block--center'}`}
-                    >
-                        {#if themeSection}
-                            {@const themeNodeId = requireNodeId(themeSection)}
-                            <div class="mandala-grid mandala-grid--3">
-                                {#each childSlots as slot, j (slot)}
-                                    {@const localRow = Math.floor(j / 3)}
-                                    {@const localCol = j % 3}
-                                    {@const row = blockRow * 3 + localRow}
-                                    {@const col = blockCol * 3 + localCol}
-                                    {#if slot === null}
-                                        {#if themeNodeId}
-                                            <MandalaCard
-                                                nodeId={themeNodeId}
-                                                section={themeSection}
-                                                gridCell={{ mode: '9x9', row, col }}
-                                                active={themeNodeId === $activeNodeId}
-                                                editing={$editingState.activeNodeId === themeNodeId && !$editingState.isInSidebar}
-                                                selected={$selectedNodes.has(themeNodeId)}
-                                                pinned={$pinnedNodes.has(themeNodeId)}
-                                                style={$nodeStyles.get(themeNodeId)}
-                                                draggable={true}
-                                            />
-                                        {:else}
-                                            <div class="mandala-empty">{themeSection}</div>
-                                        {/if}
-                                    {:else}
-                                        {@const section = `${themeSection}.${slot}`}
-                                        {@const nodeId = requireNodeId(section)}
-                                        {#if nodeId}
-                                            <MandalaCard
-                                                nodeId={nodeId}
-                                                {section}
-                                                gridCell={{ mode: '9x9', row, col }}
-                                                active={nodeId === $activeNodeId}
-                                                editing={$editingState.activeNodeId === nodeId && !$editingState.isInSidebar}
-                                                selected={$selectedNodes.has(nodeId)}
-                                                pinned={$pinnedNodes.has(nodeId)}
-                                                style={$nodeStyles.get(nodeId)}
-                                                draggable={true}
-                                            />
-                                        {:else}
-                                            <div class="mandala-empty">{section}</div>
-                                        {/if}
-                                    {/if}
-                                {/each}
-                            </div>
-                        {:else}
-                            <div class="mandala-grid mandala-grid--3">
-                                {#each coreSlots as section, j (section)}
-                                    {@const localRow = Math.floor(j / 3)}
-                                    {@const localCol = j % 3}
-                                    {@const row = blockRow * 3 + localRow}
-                                    {@const col = blockCol * 3 + localCol}
-                                    {@const nodeId = requireNodeId(section)}
-                                    {#if nodeId}
-                                        <div class="mandala-center-cell" data-section={section}></div>
-                                    {:else}
-                                        <div class="mandala-empty">{section}</div>
-                                    {/if}
-                                {/each}
-                            </div>
-                        {/if}
-                    </div>
-                {/each}
-            </div>
+            <MandalaRaw9x9 {containerRef} />
         {/if}
     </div>
 </div>
