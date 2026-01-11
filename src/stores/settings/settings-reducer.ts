@@ -129,6 +129,9 @@ const updateState = (store: Settings, action: SettingsActions) => {
                 ...store.view.scrolling,
             };
         }
+    } else if (action.type === 'settings/view/mandala/toggle-mode') {
+        store.view.mandalaMode =
+            store.view.mandalaMode === '9x9' ? '3x3' : '9x9';
     } else if (action.type === 'settings/view/set-node-indentation-width') {
         store.view.nodeIndentationWidth = action.payload.width;
     } else if (action.type === 'settings/view/set-maintain-edit-mode') {

@@ -167,6 +167,7 @@ export const FilteredHotkeysStore = (view: LineageView) =>
                     [lang.hkg_search]: [],
                     [lang.hkg_zoom]: [],
                     [lang.hkg_outline]: [],
+                    [lang.hkg_mandala]: [],
                 } satisfies GroupedHotkeys),
                 numberOfConflictingHotkeys: hotkeys.numberOfConflictingHotkeys,
             };

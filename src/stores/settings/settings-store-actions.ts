@@ -141,6 +141,7 @@ export type SettingsActions =
       }
     | { type: 'view/modes/gap-between-cards/toggle' }
     | { type: 'settings/view/modes/toggle-outline-mode' }
+    | { type: 'settings/view/mandala/toggle-mode' }
     | {
           type: 'settings/style-rules/set-active-tab';
           payload: { tab: RulesTab };

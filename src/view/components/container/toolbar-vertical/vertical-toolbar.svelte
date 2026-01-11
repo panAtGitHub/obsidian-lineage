@@ -5,9 +5,13 @@
     import { derived, writable } from 'svelte/store';
     import { uiControlsStore } from '../../../../stores/view/derived/ui-controls-store';
     import Button from '../shared/button.svelte';
-    import { ScrollSettingsStore, showMinimapStore } from '../../../../stores/settings/derived/scrolling-store';
+    import {
+        ScrollSettingsStore,
+        showMinimapStore,
+    } from '../../../../stores/settings/derived/scrolling-store';
     import {
         ApplyGapBetweenCardsStore,
+        MandalaModeStore,
         OutlineModeStore,
         ShowHiddenCardInfoStore,
     } from '../../../../stores/settings/derived/view-settings-store';
@@ -15,8 +19,6 @@
     import { ToolbarButton } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons';
 
     const view = getView();
-
-
 
     const showControls = writable(false);
     const toggleShowControls = () => {
@@ -28,6 +30,7 @@
     const scrollSettingsStore = ScrollSettingsStore(view);
     const applyGapBetweenCards = ApplyGapBetweenCardsStore(view);
     const outlineMode = OutlineModeStore(view);
+    const mandalaMode = MandalaModeStore(view);
     const showHiddenCardInfo = ShowHiddenCardInfoStore(view);
 
     const buttons = VerticalToolbarButtonsList(view);
@@ -37,6 +40,7 @@
             controls,
             scrollSettingsStore,
             outlineMode,
+            mandalaMode,
             applyGapBetweenCards,
             showHiddenCardInfo,
         ],
@@ -45,6 +49,7 @@
             controls,
             scrollSettingsStore,
             outlineMode,
+            mandalaMode,
             applyGapBetweenCards,
             showHiddenCardInfo,
         ]) => {
@@ -56,13 +61,12 @@
                 'center-active-node-h': scrollSettingsStore.centerActiveNodeH,
                 'center-active-node-v': scrollSettingsStore.centerActiveNodeV,
                 'outline-mode': outlineMode,
+                'mandala-mode': mandalaMode === '9x9',
                 'space-between-cards': applyGapBetweenCards,
                 'hidden-card-info': showHiddenCardInfo,
             } as Partial<Record<ToolbarButton, boolean>>;
         },
     );
-
-
 </script>
 
 <div class="controls-container">
@@ -89,7 +93,6 @@
                     label={button.label}
                     on:click={button.onClick}
                     tooltipPosition="left"
-
                 >
                     {#if 'svg' in button.icon}
                         {@html button.icon.svg}
@@ -112,7 +115,6 @@
         position: absolute;
         z-index: 2;
     }
-
 
     .controls-toggle {
         display: none;

@@ -65,6 +65,17 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
                 ],
             },
             {
+                id: 'mandala',
+                buttons: [
+                    {
+                        label: lang.controls_toggle_mandala_mode,
+                        onClick: h.toggleMandalaMode,
+                        icon: customIcons.cards,
+                        id: 'mandala-mode',
+                    },
+                ],
+            },
+            {
                 id: 'scroll',
                 buttons: [
                     {

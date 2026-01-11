@@ -117,6 +117,17 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
         hotkeys: [{ key: 'o', modifiers: ['Alt'], editorState: 'both' }],
     },
     {
+        name: 'toggle_mandala_mode',
+        callback: (view, e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            view.plugin.settings.dispatch({
+                type: 'settings/view/mandala/toggle-mode',
+            });
+        },
+        hotkeys: [],
+    },
+    {
         name: 'toggle_collapse',
         callback: (view, e) => {
             e.preventDefault();

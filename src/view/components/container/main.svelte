@@ -1,16 +1,26 @@
 <script lang="ts">
-    import { LineageView } from '../../view';
-    import Lineage from '../../../main';
     import { setContext } from 'svelte';
+    import Lineage from 'src/main';
+    import { uiControlsStore } from 'src/stores/view/derived/ui-controls-store';
+    import { showContextMenu } from 'src/view/actions/context-menu/show-context-menu';
     import { viewHotkeysAction } from 'src/view/actions/keyboard-shortcuts/view-hotkeys-action';
     import { mouseWheelZoom } from 'src/view/actions/mouse-wheel-zoom';
-    import { showContextMenu } from 'src/view/actions/context-menu/show-context-menu';
     import MandalaView from 'src/view/components/mandala/mandala-view.svelte';
+    import Toolbar from 'src/view/components/container/toolbar/toolbar.svelte';
+    import VerticalToolbar from 'src/view/components/container/toolbar-vertical/vertical-toolbar.svelte';
+    import HotkeysModal from 'src/view/components/container/modals/hotkeys/hotkeys.svelte';
+    import SettingsModal from 'src/view/components/container/modals/settings/settings.svelte';
+    import SnapshotsListModal from 'src/view/components/container/modals/snapshots-list/file-histoy.svelte';
+    import StyleRulesModal from 'src/view/components/container/style-rules/style-rules.svelte';
+    import { LineageView } from 'src/view/view';
 
     export let plugin: Lineage;
     export let view: LineageView;
+
     setContext('plugin', plugin);
     setContext('view', view);
+
+    const controls = uiControlsStore(view);
 </script>
 
 <div
@@ -21,6 +31,21 @@
 >
     <div class={`lineage-main`} use:mouseWheelZoom={view}>
         <MandalaView />
+        <Toolbar />
+        <VerticalToolbar />
+
+        {#if $controls.showHistorySidebar}
+            <SnapshotsListModal />
+        {/if}
+        {#if $controls.showHelpSidebar}
+            <HotkeysModal />
+        {/if}
+        {#if $controls.showSettingsSidebar}
+            <SettingsModal />
+        {/if}
+        {#if $controls.showStyleRulesModal}
+            <StyleRulesModal />
+        {/if}
     </div>
 </div>
 

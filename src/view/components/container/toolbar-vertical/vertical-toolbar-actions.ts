@@ -3,6 +3,12 @@ import { LineageView } from 'src/view/view';
 export class VerticalToolbarActions {
     constructor(private view: LineageView) {}
 
+    toggleMandalaMode = () => {
+        this.view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/toggle-mode',
+        });
+    };
+
     toggleHelp = () => {
         this.view.viewStore.dispatch({ type: 'view/hotkeys/toggle-modal' });
     };

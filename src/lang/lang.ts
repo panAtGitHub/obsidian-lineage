@@ -251,13 +251,16 @@ export const lang = {
     settings_layout_indentation_width: 'Card indentation',
     controls_single_column: 'Outline mode',
     hk_toggle_outline_mode: `Toggle outline mode`,
+    hk_toggle_mandala_mode: 'Toggle 3×3 / 9×9',
     card_btn_collapse_node: 'Collapse',
     card_btn_expand_node: 'Expand',
     hk_outline_toggle_collapse: 'Collapse/expand section',
     hk_outline_toggle_collapse_all: 'Collapse/expand all sections',
     hkg_outline: 'Outline',
+    hkg_mandala: 'Mandala',
 
     // toolbar
+    controls_toggle_mandala_mode: 'Toggle 3×3 / 9×9',
     settings_vertical_toolbar_icons: 'Vertical toolbar buttons',
     settings_vertical_toolbar_icons_desc:
         'Configure what buttons appear in the vertical toolbar',

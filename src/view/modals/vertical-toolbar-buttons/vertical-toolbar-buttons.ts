@@ -19,6 +19,7 @@ export type ToolbarButton =
     | 'center-active-node-h'
     | 'center-active-node-v'
     | 'outline-mode'
+    | 'mandala-mode'
     | 'space-between-cards'
     | 'hidden-card-info'
     | 'snapshots-list'
@@ -53,6 +54,16 @@ export const verticalToolbarButtons: VerticalToolbarGroup[] = [
                 id: 'style-rules',
                 label: lang.controls_rules,
                 icon: Palette,
+            },
+        ],
+    },
+    {
+        id: 'mandala',
+        buttons: [
+            {
+                id: 'mandala-mode',
+                label: lang.controls_toggle_mandala_mode,
+                icon: customIcons.cards,
             },
         ],
     },

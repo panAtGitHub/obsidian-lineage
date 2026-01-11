@@ -24,6 +24,9 @@ export type ScrollingSettings = {
 export type LineageDocumentFormat = 'outline' | 'sections' | 'html-element';
 
 export type ViewType = 'mandala-grid' | 'markdown';
+
+export type MandalaMode = '3x3' | '9x9';
+
 export type DocumentPreferences = {
     documentFormat: LineageDocumentFormat;
     viewType: ViewType;
@@ -64,6 +67,7 @@ export type Settings = {
         leftSidebarActiveTab: LeftSidebarTab;
         applyGapBetweenCards: boolean;
         outlineMode: boolean;
+        mandalaMode: MandalaMode;
         nodeIndentationWidth: number;
         maintainEditMode: boolean;
         alwaysShowCardButtons: boolean;

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { writable } from 'svelte/store';
     import { derived } from 'src/lib/store/derived';
+    import { MandalaModeStore } from 'src/stores/settings/derived/view-settings-store';
     import { getView } from 'src/view/components/container/context';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
@@ -14,9 +14,11 @@
 
     const view = getView();
 
-    const mode = writable<'3x3' | '9x9'>('3x3');
+    const mode = MandalaModeStore(view);
     const toggleMode = () => {
-        mode.update((m) => (m === '3x3' ? '9x9' : '3x3'));
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/toggle-mode',
+        });
         focusContainer(view);
     };
 
