@@ -8,6 +8,8 @@
     import { droppable } from 'src/view/actions/dnd/droppable';
     import { NodeStyle } from 'src/stores/settings/types/style-rules-types';
     import { getView } from 'src/view/components/container/context';
+    import { setActiveMainSplitNode } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/set-active-main-split-node';
+    import { enableEditModeInMainSplit } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/enable-edit-mode-in-main-split';
 
     export let nodeId: string;
     export let section: string;
@@ -32,13 +34,17 @@
     )}
     id={nodeId}
     use:droppable
-    on:click={() => {
+    on:click={(e) => {
         if (gridCell) {
             view.mandalaActiveCell9x9 = {
                 row: gridCell.row,
                 col: gridCell.col,
             };
         }
+        setActiveMainSplitNode(view, nodeId, e);
+    }}
+    on:dblclick={() => {
+        enableEditModeInMainSplit(view, nodeId);
     }}
 >
     {#if style}

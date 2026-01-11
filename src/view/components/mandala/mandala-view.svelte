@@ -88,7 +88,12 @@
         </button>
     </div>
 
-    <div class="mandala-scroll" bind:this={containerRef} tabindex="0">
+    <div
+        class="mandala-scroll"
+        bind:this={containerRef}
+        tabindex="0"
+        on:mousedown={() => containerRef?.focus()}
+    >
         {#if $mode === '3x3'}
             <div class="mandala-grid mandala-grid--3 mandala-grid--core">
                 {#each coreSlots as section (section)}
