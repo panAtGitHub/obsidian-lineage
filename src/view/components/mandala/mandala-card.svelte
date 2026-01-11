@@ -9,7 +9,6 @@
     import { NodeStyle } from 'src/stores/settings/types/style-rules-types';
     import { getView } from 'src/view/components/container/context';
     import { setActiveMainSplitNode } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/set-active-main-split-node';
-    import { enableEditModeInMainSplit } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/enable-edit-mode-in-main-split';
 
     export let nodeId: string;
     export let section: string;
@@ -42,9 +41,6 @@
             };
         }
         setActiveMainSplitNode(view, nodeId, e);
-    }}
-    on:dblclick={() => {
-        enableEditModeInMainSplit(view, nodeId);
     }}
 >
     {#if style}
