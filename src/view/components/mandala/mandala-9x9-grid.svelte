@@ -1,0 +1,112 @@
+<script lang="ts">
+    import { derived } from 'src/lib/store/derived';
+    import { getView } from 'src/view/components/container/context';
+    import { sectionAtCell9x9 } from 'src/view/helpers/mandala/mandala-grid';
+    import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
+
+    const view = getView();
+
+    const sectionToNodeId = derived(
+        view.documentStore,
+        (state) => state.sections.section_id,
+    );
+
+    const pinnedNodes = derived(
+        view.documentStore,
+        (state) => new Set(state.pinnedNodes.Ids),
+    );
+
+    const activeNodeId = derived(
+        view.viewStore,
+        (state) => state.document.activeNode,
+    );
+
+    const editingState = derived(
+        view.viewStore,
+        (state) => state.document.editing,
+    );
+
+    const selectedNodes = derived(
+        view.viewStore,
+        (state) => state.document.selectedNodes,
+    );
+
+    const nodeStyles = derived(
+        view.viewStore,
+        (state) => state.styleRules.nodeStyles,
+    );
+</script>
+
+<div class="mandala-9x9-grid">
+    {#each Array(9) as _, row (row)}
+        {#each Array(9) as __, col (col)}
+            {@const section = sectionAtCell9x9(row, col)}
+            {@const nodeId = section ? $sectionToNodeId[section] : null}
+
+            {#if section && nodeId}
+                {@const active = nodeId === $activeNodeId}
+                {@const editing =
+                    $editingState.activeNodeId === nodeId &&
+                    !$editingState.isInSidebar}
+                <MandalaCard
+                    {nodeId}
+                    {section}
+                    {active}
+                    {editing}
+                    selected={$selectedNodes.has(nodeId)}
+                    pinned={$pinnedNodes.has(nodeId)}
+                    style={$nodeStyles.get(nodeId)}
+                    draggable={section !== '1'}
+                    gridCell={{ mode: '9x9', row, col }}
+                />
+            {:else if section}
+                <div class="mandala-placeholder">
+                    <div class="mandala-section-label">{section}</div>
+                </div>
+            {/if}
+        {/each}
+    {/each}
+</div>
+
+<style>
+    .mandala-9x9-grid {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+        grid-template-rows: repeat(9, minmax(0, 1fr));
+        gap: var(--mandala-gap);
+
+        --mandala-card-width: 100%;
+        --mandala-card-height: 100%;
+        --mandala-card-min-height: 0;
+    }
+
+    .mandala-9x9-grid :global(.lineage-card) {
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 8px;
+        background: var(--background-primary);
+        box-sizing: border-box;
+    }
+
+    .mandala-placeholder {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border: 1px dashed var(--background-modifier-border);
+        border-radius: 8px;
+        opacity: 0.25;
+        pointer-events: none;
+        box-sizing: border-box;
+    }
+
+    .mandala-section-label {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        font-size: 12px;
+        opacity: 0.7;
+        user-select: none;
+        pointer-events: none;
+    }
+</style>

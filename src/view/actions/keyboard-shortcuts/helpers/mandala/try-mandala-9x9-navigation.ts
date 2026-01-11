@@ -12,10 +12,6 @@ const deltas: Record<AllDirections, { dr: number; dc: number }> = {
     right: { dr: 0, dc: 1 },
 };
 
-const isCenterCell = (row: number, col: number) => {
-    return row >= 3 && row <= 5 && col >= 3 && col <= 5;
-};
-
 export const tryMandala9x9Navigation = (
     view: LineageView,
     direction: AllDirections,
@@ -32,9 +28,7 @@ export const tryMandala9x9Navigation = (
     const cell = view.mandalaActiveCell9x9;
     const mapped = cell ? sectionAtCell9x9(cell.row, cell.col) : null;
     const current =
-        mapped === activeSection
-            ? cell
-            : posOfSection9x9(activeSection);
+        mapped === activeSection ? cell : posOfSection9x9(activeSection);
     if (!current) return true;
 
     if (!cell || mapped !== activeSection) {
@@ -44,16 +38,6 @@ export const tryMandala9x9Navigation = (
     const { dr, dc } = deltas[direction];
     let nextRow = current.row + dr;
     let nextCol = current.col + dc;
-    while (
-        nextRow >= 0 &&
-        nextCol >= 0 &&
-        nextRow <= 8 &&
-        nextCol <= 8 &&
-        isCenterCell(nextRow, nextCol)
-    ) {
-        nextRow += dr;
-        nextCol += dc;
-    }
     if (nextRow < 0 || nextCol < 0 || nextRow > 8 || nextCol > 8) return true;
 
     const nextSection = sectionAtCell9x9(nextRow, nextCol);
@@ -67,7 +51,9 @@ export const tryMandala9x9Navigation = (
     if (nextNodeId === activeNodeId) return true;
 
     if (options?.extendSelection) {
-        const selected = new Set(view.viewStore.getValue().document.selectedNodes);
+        const selected = new Set(
+            view.viewStore.getValue().document.selectedNodes,
+        );
         selected.add(activeNodeId);
         selected.add(nextNodeId);
         view.viewStore.dispatch({

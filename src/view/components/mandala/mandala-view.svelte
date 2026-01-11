@@ -5,14 +5,19 @@
     import { getView } from 'src/view/components/container/context';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
-    import { coreSlots, posOfSection9x9, sectionAtCell9x9 } from 'src/view/helpers/mandala/mandala-grid';
-    import MandalaRaw9x9 from 'src/view/components/mandala/mandala-9x9-raw.svelte';
+    import {
+        coreSlots,
+        posOfSection9x9,
+        sectionAtCell9x9,
+    } from 'src/view/helpers/mandala/mandala-grid';
+    import Mandala9x9Grid from 'src/view/components/mandala/mandala-9x9-grid.svelte';
 
     const view = getView();
 
     const mode = writable<'3x3' | '9x9'>('3x3');
     const toggleMode = () => {
         mode.update((m) => (m === '3x3' ? '9x9' : '3x3'));
+        focusContainer(view);
     };
 
     $: view.mandalaMode = $mode;
@@ -29,8 +34,14 @@
         view.documentStore,
         (state) => new Set(state.pinnedNodes.Ids),
     );
-    const activeNodeId = derived(view.viewStore, (state) => state.document.activeNode);
-    const editingState = derived(view.viewStore, (state) => state.document.editing);
+    const activeNodeId = derived(
+        view.viewStore,
+        (state) => state.document.activeNode,
+    );
+    const editingState = derived(
+        view.viewStore,
+        (state) => state.document.editing,
+    );
     const selectedNodes = derived(
         view.viewStore,
         (state) => state.document.selectedNodes,
@@ -94,10 +105,11 @@
                     {@const nodeId = requireNodeId(section)}
                     {#if nodeId}
                         <MandalaCard
-                            nodeId={nodeId}
+                            {nodeId}
                             {section}
                             active={nodeId === $activeNodeId}
-                            editing={$editingState.activeNodeId === nodeId && !$editingState.isInSidebar}
+                            editing={$editingState.activeNodeId === nodeId &&
+                                !$editingState.isInSidebar}
                             selected={$selectedNodes.has(nodeId)}
                             pinned={$pinnedNodes.has(nodeId)}
                             style={$nodeStyles.get(nodeId)}
@@ -109,7 +121,7 @@
                 {/each}
             </div>
         {:else}
-            <MandalaRaw9x9 {containerRef} />
+            <Mandala9x9Grid />
         {/if}
     </div>
 </div>
