@@ -60,7 +60,7 @@
         <CardStyle {style} />
     {/if}
 
-    {#if active && editing}
+    {#if active && editing && !$showDetailSidebar}
         <InlineEditor nodeId={nodeId} {style} />
     {:else if draggable}
         <Draggable nodeId={nodeId} isInSidebar={false}>

@@ -5,9 +5,11 @@
         ShowMandalaDetailSidebarStore,
         MandalaDetailSidebarWidthStore,
     } from 'src/stores/settings/derived/view-settings-store';
-    import { onDestroy } from 'svelte';
+    import { onDestroy, tick } from 'svelte';
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
+    import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import { NodeStylesStore } from 'src/stores/view/derived/style-rules';
+    import { ActiveStatus } from '../container/column/components/group/components/active-status.enum';
 
     const MIN_WIDTH = 250;
     // 用于 CSS transition 动画的宽度，可以为 0
@@ -18,13 +20,27 @@
     let startX = 0;
 
     const view = getView();
-    const showSidebarStore = ShowMandalaDetailSidebarStore(view);
     const savedWidthStore = MandalaDetailSidebarWidthStore(view);
+    const editingState = derived(view.viewStore, (state) => state.document.editing);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
     );
     const styleRules = NodeStylesStore(view);
+
+    $: isEditingInSidebar =
+        $editingState.activeNodeId === $activeNodeId &&
+        $editingState.isInSidebar;
+
+    // 自动聚焦逻辑
+    $: if (isEditingInSidebar) {
+        tick().then(() => {
+            const editor = view.contentEl.querySelector(
+                '.mandala-detail-sidebar .common-editor',
+            ) as HTMLTextAreaElement | HTMLDivElement;
+            if (editor) editor.focus();
+        });
+    }
 
     const unsub = showSidebarStore.subscribe((show) => {
         if (show) {
@@ -85,10 +101,18 @@
         <div class="sidebar-content">
             {#if $activeNodeId}
                 <div class="editor-wrapper">
-                    <InlineEditor
-                        nodeId={$activeNodeId}
-                        style={$styleRules.get($activeNodeId)}
-                    />
+                    {#if isEditingInSidebar}
+                        <InlineEditor
+                            nodeId={$activeNodeId}
+                            style={$styleRules.get($activeNodeId)}
+                        />
+                    {:else}
+                        <Content
+                            nodeId={$activeNodeId}
+                            isInSidebar={true}
+                            active={ActiveStatus.node}
+                        />
+                    {/if}
                 </div>
             {:else}
                 <div class="no-selection">请选择一个格子进行编辑</div>
