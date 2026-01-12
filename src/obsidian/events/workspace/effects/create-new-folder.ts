@@ -1,10 +1,10 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { TFolder } from 'obsidian';
 import invariant from 'tiny-invariant';
 import { getUniqueFileName } from 'src/obsidian/events/workspace/effects/get-unique-file-name';
 
 export const createNewFolder = async (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     folder: TFolder,
     basename: string,
 ) => {

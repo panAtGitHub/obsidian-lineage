@@ -3,10 +3,10 @@ import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
 import { onPluginError } from 'src/lib/store/on-plugin-error';
 import { mapDocumentToText } from 'src/obsidian/commands/helpers/export-document/map-document-to-text';
 import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 
-export const exportDocument = async (view: LineageView) => {
+export const exportDocument = async (view: MandalaView) => {
     try {
         const file = view.file;
         if (!file) return;

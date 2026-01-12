@@ -26,13 +26,13 @@ import { refreshCollapsedNodes } from 'src/stores/view/reducers/outline/refresh-
 import { toggleCollapseAllNodes } from 'src/stores/view/reducers/outline/toggle-collapse-all-nodes';
 import { collapseNode } from 'src/stores/view/reducers/outline/helpers/collapse-node';
 import { expandParentsOfActiveNode } from 'src/stores/view/reducers/outline/expand-parents-of-active-node';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { selectAllNodes } from 'src/stores/view/reducers/selection/select-all-nodes';
 
 const updateDocumentState = (
     state: ViewState,
     action: ViewStoreAction,
-    context: LineageDocument,
+    context: MandalaGridDocument,
 ) => {
     const activeNode = state.document.activeNode;
     if (
@@ -225,7 +225,7 @@ const updateDocumentState = (
 export const viewReducer = (
     store: ViewState,
     action: ViewStoreAction,
-    context: LineageDocument,
+    context: MandalaGridDocument,
 ): ViewState => {
     updateDocumentState(store, action, context);
     return store;

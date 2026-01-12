@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { sortNodeIdsBySectionNumber } from 'src/lib/tree-utils/sort/sort-node-ids-by-section-number';
 
 export const getTextOfFlatNodes = (
-    view: LineageView,
+    view: MandalaView,
     nodes: string[],
     copyAsOutline = false,
 ) => {

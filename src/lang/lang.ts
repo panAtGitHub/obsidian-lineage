@@ -1,8 +1,8 @@
 export const lang = {
     // open
     ocm_open_in_editor: 'Open in editor',
-    ocm_open_in_lineage: 'Open in Mandala Grid',
-    cmd_toggle_lineage_view: 'Open Mandala Grid',
+    ocm_open_in_mandala: 'Open in Mandala Grid',
+    cmd_toggle_mandala_view: 'Open Mandala Grid',
     card_btn_reveal_in_editor: 'Reveal in editor',
     error_parent_not_found: (full: string) =>
         `Could not find the parent section of ${full}`,

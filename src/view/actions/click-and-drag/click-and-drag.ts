@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { isEditing } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/is-editing';
 
-export const clickAndDrag = (element: HTMLElement, view: LineageView) => {
+export const clickAndDrag = (element: HTMLElement, view: MandalaView) => {
     let pressed = false;
     let initializedValues = false;
     let container_startX = 0;

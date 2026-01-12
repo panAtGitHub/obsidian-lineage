@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const setMinimapActiveNode = (view: LineageView) => {
+export const setMinimapActiveNode = (view: MandalaView) => {
     view.getMinimapStore().dispatch({
         type: 'minimap/set-active-node',
         payload: {

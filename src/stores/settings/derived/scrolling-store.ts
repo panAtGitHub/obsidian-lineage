@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'src/lib/store/derived';
 
-export const ScrollSettingsStore = (view: LineageView) =>
+export const ScrollSettingsStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.scrolling);
 
-export const showMinimapStore = (view: LineageView) =>
+export const showMinimapStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.showMinimap);

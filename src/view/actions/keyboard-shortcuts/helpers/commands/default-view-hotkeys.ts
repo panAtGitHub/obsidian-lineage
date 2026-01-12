@@ -9,7 +9,7 @@ import { selectionCommands } from 'src/view/actions/keyboard-shortcuts/helpers/c
 import { scrollCommands } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/scroll-commands';
 import { deleteNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/delete-node';
 import { moveNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/move-node';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { Hotkey, Notice } from 'obsidian';
 import { CommandName, GroupName } from 'src/lang/hotkey-groups';
 import { get } from 'svelte/store';
@@ -32,7 +32,7 @@ export type PersistedViewHotkey =
     | HotkeyPreferences
     | (Hotkey & HotkeyPreferences);
 export type DefaultViewCommand = {
-    callback: (view: LineageView, event: KeyboardEvent) => void;
+    callback: (view: MandalaView, event: KeyboardEvent) => void;
     hotkeys: ViewHotkey[];
     name: CommandName;
 };
@@ -55,7 +55,7 @@ const swapDeltas: Record<SwapDirection, { dr: number; dc: number }> = {
     right: { dr: 0, dc: 1 },
 };
 
-const swapMandalaCell = (view: LineageView, direction: SwapDirection) => {
+const swapMandalaCell = (view: MandalaView, direction: SwapDirection) => {
     if (view.mandalaMode !== '3x3') return;
 
     const viewState = view.viewStore.getValue();

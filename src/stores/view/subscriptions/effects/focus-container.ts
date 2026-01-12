@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { Platform } from 'obsidian';
 
-export const focusContainer = (view: LineageView) => {
+export const focusContainer = (view: MandalaView) => {
     setTimeout(() => {
         if (view.container) {
             const isEditing = Boolean(view.inlineEditor.nodeId);

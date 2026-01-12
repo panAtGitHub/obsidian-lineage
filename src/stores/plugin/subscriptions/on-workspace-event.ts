@@ -1,13 +1,13 @@
-import Lineage from 'src/main';
-import { LineageView } from 'src/view/view';
+import MandalaGrid from 'src/main';
+import { MandalaView } from 'src/view/view';
 import { removeStaleDocuments } from 'src/stores/plugin/subscriptions/effects/remove-stale-documents/remove-stale-documents';
 
-export const onWorkspaceEvent = (plugin: Lineage) => {
+export const onWorkspaceEvent = (plugin: MandalaGrid) => {
     const onActiveLeafChangeRef = plugin.app.workspace.on(
         'active-leaf-change',
         (leaf) => {
             const view = leaf?.view;
-            if (view instanceof LineageView && view.file?.path) {
+            if (view instanceof MandalaView && view.file?.path) {
                 view.plugin.store.dispatch({
                     type: 'plugin/documents/update-active-view-of-document',
                     payload: {

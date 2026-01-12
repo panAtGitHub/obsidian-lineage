@@ -1,13 +1,13 @@
 import { WorkspaceLeaf } from 'obsidian';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export function setActiveLeaf(next: (...params: unknown[]) => unknown) {
     return function (leaf: WorkspaceLeaf, param: unknown) {
-        const isLineageViewAndIsEditing =
+        const isMandalaViewAndIsEditing =
             leaf.view &&
-            leaf.view instanceof LineageView &&
+            leaf.view instanceof MandalaView &&
             leaf.view.inlineEditor?.nodeId;
-        if (isLineageViewAndIsEditing) return;
+        if (isMandalaViewAndIsEditing) return;
         return next.call(this, leaf, param);
     };
 }

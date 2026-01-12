@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export class VerticalToolbarActions {
-    constructor(private view: LineageView) {}
+    constructor(private view: MandalaView) {}
 
     toggleMandalaMode = () => {
         this.view.plugin.settings.dispatch({

@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { maybeGetIdOfSection } from 'src/stores/view/subscriptions/helpers/maybe-get-id-of-section';
 
-export const setInitialActiveNode = (view: LineageView) => {
+export const setInitialActiveNode = (view: MandalaView) => {
     let id: string | null = null;
     const viewStore = view.viewStore;
     const documentState = view.documentStore.getValue();

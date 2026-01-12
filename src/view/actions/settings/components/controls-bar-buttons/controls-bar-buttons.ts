@@ -1,11 +1,11 @@
 import { Setting } from 'obsidian';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { lang } from 'src/lang/lang';
 import { VerticalToolbarButtonsModal } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons-modal';
 
 export const ControlsBarButtons = (
     container: HTMLElement,
-    view: LineageView,
+    view: MandalaView,
     label?: string,
 ) => {
     new Setting(container)

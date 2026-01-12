@@ -24,12 +24,12 @@
         if (on) {
             showMinimap = true;
             showMinimapTimeout = setTimeout(() => {
-                view.contentEl.addClass('lineage-view__content-el--minimap-on');
+                view.contentEl.addClass('mandala-view__content-el--minimap-on');
             }, 150);
         } else {
             setTimeout(() => {
                 view.contentEl.removeClass(
-                    'lineage-view__content-el--minimap-on',
+                    'mandala-view__content-el--minimap-on',
                 );
             }, 150);
             showMinimapTimeout = setTimeout(() => {
@@ -51,7 +51,7 @@
 </script>
 
 <div
-    class={'lineage-right-sidebar'}
+    class={'mandala-right-sidebar'}
     style="--animated-sidebar-width: {animatedSidebarWidth}px; --sidebar-width: {sidebarWidth}px; }"
 >
     {#if showMinimap}
@@ -60,7 +60,7 @@
 </div>
 
 <style>
-    .lineage-right-sidebar {
+    .mandala-right-sidebar {
         --node-width: calc(var(--sidebar-width) - 40px);
         flex: 0 0 auto;
         width: var(--animated-sidebar-width);

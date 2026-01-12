@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const getActiveNodes = (view: LineageView, isInSidebar: boolean) => {
+export const getActiveNodes = (view: MandalaView, isInSidebar: boolean) => {
     const viewState = view.viewStore.getValue();
     const documentState = viewState.document;
 

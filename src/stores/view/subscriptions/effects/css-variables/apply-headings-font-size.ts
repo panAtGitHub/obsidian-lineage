@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { DEFAULT_H1_FONT_SIZE_EM } from 'src/stores/settings/default-settings';
 import { roundUp } from 'src/helpers/round-up';
 
@@ -31,7 +31,7 @@ const calculateFontSize = (
     );
 };
 
-export const applyHeadingsFontSize = (view: LineageView, h1_em: number) => {
+export const applyHeadingsFontSize = (view: MandalaView, h1_em: number) => {
     const el = view.containerEl;
 
     if (h1_em === DEFAULT_H1_FONT_SIZE_EM) {

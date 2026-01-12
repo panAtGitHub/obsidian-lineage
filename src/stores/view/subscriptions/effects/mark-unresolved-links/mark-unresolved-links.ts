@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getNonExistentLinks } from 'src/stores/view/subscriptions/effects/mark-unresolved-links/helpers/get-non-existent-links';
 import { getFileLinkElements } from 'src/stores/view/subscriptions/effects/mark-unresolved-links/helpers/get-file-link-elements';
 
@@ -6,7 +6,7 @@ enum Classes {
     'unresolved' = 'is-unresolved',
 }
 
-export const markUnresolvedLinks = (view: LineageView) => {
+export const markUnresolvedLinks = (view: MandalaView) => {
     const file = view.file;
     if (!file) return;
 

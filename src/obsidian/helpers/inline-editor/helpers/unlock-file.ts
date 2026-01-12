@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { MarkdownView } from 'obsidian';
 
-export const unlockFile = (view: LineageView) => {
+export const unlockFile = (view: MandalaView) => {
     view.plugin.app.workspace.iterateAllLeaves((e) => {
         const leafView = e.view;
         if (leafView instanceof MarkdownView) {

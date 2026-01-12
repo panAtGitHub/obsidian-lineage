@@ -6,7 +6,7 @@
     --position-lr: -4px;
 }
 
-.lineage-floating-button {
+.mandala-floating-button {
     width: var(--floating-button-width);
     height: var(--floating-button-height);
     position: absolute;
@@ -28,18 +28,18 @@
 
 /* bg */
 .theme-light {
-    .lineage-floating-button {
+    .mandala-floating-button {
         color: #000 !important;
         background-color: #ffffffee !important;
     }
 }
 
 .theme-dark {
-    .lineage-floating-button {
+    .mandala-floating-button {
         color: #fff !important;
         background-color: #bebebe30;
     }
-    .active-node .lineage-floating-button {
+    .active-node .mandala-floating-button {
         color: #fff !important;
         background-color: rgba(60, 60, 60, 0.3);
     }
@@ -61,22 +61,22 @@
 }
 
 
-.lineage-floating-button {
+.mandala-floating-button {
     opacity: 0;
 }
 
-.lineage-card:hover .lineage-floating-button {
+.mandala-card:hover .mandala-floating-button {
     opacity: var(--opacity-inactive-node);
 }
 
 .active-node:hover,
 .active-child:hover {
-    & .lineage-floating-button {
+    & .mandala-floating-button {
         opacity: var(--opacity-active-node);
     }
 }
 
-.lineage-floating-button:not(.is-disabled):hover {
+.mandala-floating-button:not(.is-disabled):hover {
     opacity: var(--opacity-active-button);
 }
 

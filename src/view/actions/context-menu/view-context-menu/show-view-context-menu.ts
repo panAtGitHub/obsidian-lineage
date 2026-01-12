@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import {
     MenuItemObject,
     renderContextMenu,
@@ -11,7 +11,7 @@ import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/com
 import { hasNHeadings } from 'src/lib/format-detection/has-n-headings';
 import { ejectDocument } from 'src/obsidian/commands/helpers/export-document/eject-document';
 
-export const showViewContextMenu = (event: MouseEvent, view: LineageView) => {
+export const showViewContextMenu = (event: MouseEvent, view: MandalaView) => {
     const file = view.file;
     if (!file) return;
 

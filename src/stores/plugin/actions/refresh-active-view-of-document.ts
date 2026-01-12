@@ -1,10 +1,10 @@
-import { LINEAGE_VIEW_TYPE, LineageView } from 'src/view/view';
+import { MANDALA_VIEW_TYPE, MandalaView } from 'src/view/view';
 
-export const refreshActiveViewOfDocument = (view: LineageView) => {
+export const refreshActiveViewOfDocument = (view: MandalaView) => {
     const views: [string, string][] = view.plugin.app.workspace
-        .getLeavesOfType(LINEAGE_VIEW_TYPE)
+        .getLeavesOfType(MANDALA_VIEW_TYPE)
         .map((leaf) =>
-            leaf.view instanceof LineageView &&
+            leaf.view instanceof MandalaView &&
             leaf.view !== view &&
             leaf.view.file
                 ? [leaf.view.id, leaf.view.file.path]

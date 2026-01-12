@@ -1,6 +1,6 @@
 import { Direction } from 'src/stores/document/document-store-actions';
 import { changeNodePosition } from 'src/lib/tree-utils/move/change-node-position';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { cleanAndSortColumns } from 'src/lib/tree-utils/sort/clean-and-sort-columns';
 import invariant from 'tiny-invariant';
 
@@ -14,7 +14,7 @@ export type DropAction = {
 };
 
 export const dropNode = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     action: Pick<DropAction, 'payload'>,
 ) => {
     const droppedNode = action.payload.droppedNodeId;

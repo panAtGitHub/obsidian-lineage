@@ -23,12 +23,12 @@
     display: none !important;
 }
 
-.lineage-card p,
+.mandala-card p,
 .mandala-detail-sidebar p {
     margin: 0;
 }
 
-.lineage-card,
+.mandala-card,
 .mandala-detail-sidebar {
     --p-spacing: 0px;
 

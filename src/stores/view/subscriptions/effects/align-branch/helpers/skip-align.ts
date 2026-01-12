@@ -1,7 +1,7 @@
 import { PluginAction } from 'src/stores/view/subscriptions/effects/align-branch/align-branch';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const skipAlign = (view: LineageView, action: PluginAction) => {
+export const skipAlign = (view: MandalaView, action: PluginAction) => {
     if (view.documentStore.getValue().meta.isMandala) return true;
 
     if (

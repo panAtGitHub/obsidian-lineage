@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { updateActiveBranch } from 'src/stores/view/reducers/document/helpers/update-active-branch';
 import { ActiveBranch } from 'src/stores/view/default-view-state';
 import { DocumentViewState } from 'src/stores/view/view-state-type';
@@ -83,7 +83,7 @@ describe('update-tree-state', () => {
             },
         };
         const input = {
-            document: document satisfies LineageDocument,
+            document: document satisfies MandalaGridDocument,
             state: {
                 activeBranch: {
                     childGroups: new Set([]),
@@ -98,7 +98,7 @@ describe('update-tree-state', () => {
         };
 
         const output = {
-            document: document satisfies LineageDocument,
+            document: document satisfies MandalaGridDocument,
             activeBranch: {
                 childGroups: new Set([activeNodeId, child4]),
                 sortedParentNodes: [],

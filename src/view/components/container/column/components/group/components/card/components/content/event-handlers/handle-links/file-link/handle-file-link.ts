@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { openFileInExistingRightTabGroup } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/open-file-in-existing-right-tab-group';
 import { getLinkPaneType } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/block-link/handle-global-block-link';
 
 export const handleFileLink = (
-    view: LineageView,
+    view: MandalaView,
     link: string,
     modKey: boolean,
 ) => {

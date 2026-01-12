@@ -1,11 +1,11 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { cssVariables } from 'src/stores/view/subscriptions/effects/css-variables/helpers/css-variables';
 
 const PADDING_H = 8 * 4 + 34 * 2;
 const PADDING_V = 8 * 2;
-export const applyViewSize = (view: LineageView) => {
+export const applyViewSize = (view: MandalaView) => {
     const viewElement = view.contentEl.querySelector(
-        '.lineage-main',
+        '.mandala-main',
     ) as HTMLElement | null;
     if (!viewElement) return;
     const rect = viewElement.getBoundingClientRect();

@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getTextOfFlatNodes } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/get-text-of-flat-nodes';
 
 export const copyFlatNodesToClipboard = async (
-    view: LineageView,
+    view: MandalaView,
     nodes: string[],
     copyAsOutline = false,
 ) => {

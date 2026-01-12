@@ -1,12 +1,12 @@
 import {
     DocumentState,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import invariant from 'tiny-invariant';
 
 export const loadDocumentFromJSON = (
     state: DocumentState,
-    document: LineageDocument,
+    document: MandalaGridDocument,
 ) => {
     state.document.columns = document.columns;
     state.document.content = document.content;

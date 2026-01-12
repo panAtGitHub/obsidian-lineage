@@ -1,22 +1,22 @@
-.lineage-view {
-    --lineage-accent: #55b1ae;
-    --lineage-color-selection: #418cff;
+.mandala-view {
+    --mandala-accent: #55b1ae;
+    --mandala-color-selection: #418cff;
 }
 .theme-dark {
     --background-container: #373d4c;
     --background-active-node: var(--background-primary);
     --background-active-parent: #5b637a;
     --color-active-parent: var(--text-normal);
-    --lineage-accent-faint: #628c8c;
-    --lineage-color-selection-faint: #567aab;
+    --mandala-accent-faint: #628c8c;
+    --mandala-color-selection-faint: #567aab;
 }
 .theme-light {
     --background-container: #899cb3;
     --background-active-node: var(--background-primary);
     --background-active-parent: #cedbeb;
     --color-active-parent: var(--text-normal);
-    --lineage-accent-faint: #adccca;
-    --lineage-color-selection-faint: #8eaedf;
+    --mandala-accent-faint: #adccca;
+    --mandala-color-selection-faint: #8eaedf;
 }
 
 

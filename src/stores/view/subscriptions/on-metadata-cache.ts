@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { markUnresolvedLinks } from 'src/stores/view/subscriptions/effects/mark-unresolved-links/mark-unresolved-links';
 import { TAbstractFile, TFile } from 'obsidian';
 
-const metadataCallback = (view: LineageView, updatedFile: TFile) => {
+const metadataCallback = (view: MandalaView, updatedFile: TFile) => {
     const viewFile = view.file;
     if (!viewFile) return;
 
@@ -11,7 +11,7 @@ const metadataCallback = (view: LineageView, updatedFile: TFile) => {
     }
 };
 
-const vaultCallback = (view: LineageView, affectedFile: TAbstractFile) => {
+const vaultCallback = (view: MandalaView, affectedFile: TAbstractFile) => {
     if (!(affectedFile instanceof TFile)) return;
     const viewFile = view.file;
     if (!viewFile) return;
@@ -34,7 +34,7 @@ const vaultCallback = (view: LineageView, affectedFile: TAbstractFile) => {
     }
 };
 
-export const onMetadataCache = (view: LineageView) => {
+export const onMetadataCache = (view: MandalaView) => {
     const app = view.plugin.app;
 
     const metadataRef = app.metadataCache.on('changed', (file) =>

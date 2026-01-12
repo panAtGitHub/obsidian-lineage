@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const selectInactiveCard = (
-    view: LineageView,
+    view: MandalaView,
     closestCardElement: HTMLElement,
     isInSidebar: boolean,
     isInRecentCardsList: boolean,

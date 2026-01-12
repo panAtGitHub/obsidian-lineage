@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getExistingRightTabGroup } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/get-existing-right-tab-group';
 import { WorkspaceLeaf } from 'obsidian';
 
 export const openFileInExistingRightTabGroup = (
-    view: LineageView,
+    view: MandalaView,
     link: string,
     activeFilePath: string,
 ): boolean => {

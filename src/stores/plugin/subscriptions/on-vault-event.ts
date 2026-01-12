@@ -1,7 +1,7 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { TFile } from 'obsidian';
 
-export const onVaultEvent = (plugin: Lineage) => {
+export const onVaultEvent = (plugin: MandalaGrid) => {
     const onDeleteRef = plugin.app.vault.on('delete', (file) => {
         if (file instanceof TFile) {
             if (plugin.viewType[file.path]) {

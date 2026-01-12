@@ -1,9 +1,9 @@
 import { SplitNodeModal } from 'src/view/modals/split-node-modal/split-node-modal';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { get } from 'svelte/store';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 
-export const openSplitNodeModal = async (view: LineageView) => {
+export const openSplitNodeModal = async (view: MandalaView) => {
     const viewState = view.viewStore.getValue();
     const activeNode = viewState.document.activeNode;
     if (!activeNode) return;

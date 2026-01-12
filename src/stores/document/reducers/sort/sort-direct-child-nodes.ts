@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { findGroupByParentId } from 'src/lib/tree-utils/find/find-group-by-node-id';
 import invariant from 'tiny-invariant';
 import { cleanAndSortColumns } from 'src/lib/tree-utils/sort/clean-and-sort-columns';
@@ -12,7 +12,7 @@ export type SortChildNodesAction = {
 };
 
 export const sortDirectChildNodes = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     payload: SortChildNodesAction['payload'],
 ) => {
     const group = findGroupByParentId(document.columns, payload.id);

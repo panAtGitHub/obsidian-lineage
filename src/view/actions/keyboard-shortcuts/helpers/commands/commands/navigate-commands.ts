@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import { JumpTarget } from 'src/stores/view/reducers/document/jump-to-node';
 import { DefaultViewCommand } from 'src/view/actions/keyboard-shortcuts/helpers/commands/default-view-hotkeys';
@@ -6,13 +6,13 @@ import { enableEditModeInMainSplit } from 'src/view/components/container/column/
 import { tryMandala3x3Navigation } from 'src/view/actions/keyboard-shortcuts/helpers/mandala/try-mandala-3x3-navigation';
 import { tryMandala9x9Navigation } from 'src/view/actions/keyboard-shortcuts/helpers/mandala/try-mandala-9x9-navigation';
 
-const outlineModeSelector = (view: LineageView) =>
+const outlineModeSelector = (view: MandalaView) =>
     view.plugin.settings.getValue().view.outlineMode;
 
-const maintainEditMode = (view: LineageView) =>
+const maintainEditMode = (view: MandalaView) =>
     view.plugin.settings.getValue().view.maintainEditMode;
 
-const maybeEnableEditMode = (view: LineageView) => {
+const maybeEnableEditMode = (view: MandalaView) => {
     const viewState = view.viewStore.getValue();
     const isEditing = viewState.document.editing.activeNodeId;
     const activeNode = viewState.document.activeNode;
@@ -33,7 +33,7 @@ const maybeEnableEditMode = (view: LineageView) => {
     }
 };
 
-const spatialNavigation = (view: LineageView, direction: AllDirections) => {
+const spatialNavigation = (view: MandalaView, direction: AllDirections) => {
     maybeEnableEditMode(view);
     if (view.mandalaMode === '3x3') {
         if (tryMandala3x3Navigation(view, direction)) return;
@@ -53,7 +53,7 @@ const spatialNavigation = (view: LineageView, direction: AllDirections) => {
 };
 
 const sequentialNavigation = (
-    view: LineageView,
+    view: MandalaView,
     direction: 'forward' | 'back',
 ) => {
     maybeEnableEditMode(view);
@@ -69,7 +69,7 @@ const sequentialNavigation = (
     });
 };
 
-const jump = (view: LineageView, target: JumpTarget) => {
+const jump = (view: MandalaView, target: JumpTarget) => {
     maybeEnableEditMode(view);
     view.viewStore.dispatch({
         type: 'view/set-active-node/keyboard-jump',

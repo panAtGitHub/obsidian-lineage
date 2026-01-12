@@ -16,9 +16,9 @@ const getDropPosition = (event: DragEvent, targetElement: HTMLElement) => {
 };
 
 export const dropClasses = {
-    up: 'lineage__drop-node-above',
-    down: 'lineage__drop-node-below',
-    right: 'lineage__drop-node-under',
+    up: 'mandala__drop-node-above',
+    down: 'mandala__drop-node-below',
+    right: 'mandala__drop-node-under',
 };
 const classesList = Object.values(dropClasses);
 

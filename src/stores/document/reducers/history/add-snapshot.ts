@@ -3,7 +3,7 @@ import { updateNavigationState } from 'src/stores/document/reducers/history/help
 import { NodePosition } from 'src/lib/tree-utils/find/find-node-position';
 import {
     DocumentHistory,
-    LineageDocument,
+    MandalaGridDocument,
     SnapshotContext,
 } from 'src/stores/document/document-state-type';
 import { createSnapshot } from 'src/stores/document/reducers/history/helpers/create-snapshot';
@@ -21,7 +21,7 @@ export type AddSnapshotAction = {
 };
 
 export const addSnapshot = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     history: DocumentHistory,
     context: SnapshotContext,
 ) => {

@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import {
     mergeNode,
     MergeNodeAction,
 } from 'src/stores/document/reducers/merge-node/merge-node';
 
-type Output = LineageDocument & { state: { activeNode: string } };
-type Input = LineageDocument & { action: MergeNodeAction };
+type Output = MandalaGridDocument & { state: { activeNode: string } };
+type Input = MandalaGridDocument & { action: MergeNodeAction };
 describe('merge node', () => {
     test('case: two nodes, merge up', () => {
         const mergedNode = 'nrIb';
@@ -656,7 +656,7 @@ describe('merge node', () => {
                 nuPi: { content: '2.1.1' },
                 nbKt: { content: '2.1.2' },
             },
-        } as LineageDocument;
+        } as MandalaGridDocument;
         const action = {
             type: 'document/merge-node',
             payload: { direction: 'down', activeNodeId: mergedNode },
@@ -775,7 +775,7 @@ describe('merge node', () => {
                 nwQt: { content: '2.1.1' },
                 ndoV: { content: '2.1.2' },
             },
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         const action = {
             type: 'document/merge-node',
             payload: { direction: 'up', activeNodeId: megedNode },
@@ -895,7 +895,7 @@ describe('merge node', () => {
                 nIgL: { content: '2.1.2' },
                 nBBa: { content: 'middle' },
             },
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         const action = {
             type: 'document/merge-node',
             payload: { direction: 'down', activeNodeId: merged },

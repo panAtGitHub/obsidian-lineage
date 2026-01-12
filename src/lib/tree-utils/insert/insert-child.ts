@@ -1,10 +1,10 @@
 import { findNodeColumn } from '../find/find-node-column';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { id } from 'src/helpers/id';
 import { sortGroups } from 'src/lib/tree-utils/sort/sort-groups';
 
 export const insertChild = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     nodeIdOfParent: string,
     newNodeId: string,
     insertChildAtTheStart: boolean,

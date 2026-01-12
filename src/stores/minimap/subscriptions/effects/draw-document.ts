@@ -1,18 +1,18 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { minimapWorker } from 'src/workers/worker-instances';
 import invariant from 'tiny-invariant';
 
-export const drawDocument = async (view: LineageView) => {
+export const drawDocument = async (view: MandalaView) => {
     const minimapStore = view.getMinimapStore();
     const state = minimapStore.getValue();
-    const lineageDocument = view.documentStore.getValue().document;
+    const mandalaDocument = view.documentStore.getValue().document;
     const canvasId = state.canvasId;
     const activeCardId = state.activeCardId;
 
     const payload = await minimapWorker.run({
         type: 'minimap/set/document',
         payload: {
-            document: lineageDocument,
+            document: mandalaDocument,
             canvasId: canvasId,
             activeNodeId: activeCardId,
         },

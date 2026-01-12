@@ -1,7 +1,7 @@
 import {
     Column,
     Content,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 
 import { __stringifySets } from 'src/helpers/test-helpers/stringify-sets';
@@ -66,7 +66,7 @@ const insertVariableName = (input: string, name: string) => {
     return `const ${name} = ${input}`;
 };
 export const __logDocument__ = (
-    input: Partial<LineageDocument> & { columns: Column[] },
+    input: Partial<MandalaGridDocument> & { columns: Column[] },
     name: string,
     variables = true,
 ) => {

@@ -21,7 +21,7 @@ export type DocumentMeta = {
     isMandala: boolean;
 };
 export type DocumentState = {
-    document: LineageDocument;
+    document: MandalaGridDocument;
     sections: Sections;
     file: {
         // path: string | null;
@@ -33,7 +33,7 @@ export type DocumentState = {
 };
 
 // document
-export type LineageDocument = {
+export type MandalaGridDocument = {
     columns: Column[];
     content: Content;
 };

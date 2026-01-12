@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { ShapesAndRanges } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/shapes/shapes-and-ranges';
 import { Renderer } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/renderer/renderer';
 import {
@@ -34,7 +34,7 @@ export class MinimapRenderer {
         this.state.theme = theme;
     };
 
-    setDocument = (document: LineageDocument, canvasId: string) => {
+    setDocument = (document: MandalaGridDocument, canvasId: string) => {
         const shapes = this.shapes.calculateDocument(document, canvasId);
         this.renderer.drawDocument(this.state.theme, this.range.visibleRange);
         return {

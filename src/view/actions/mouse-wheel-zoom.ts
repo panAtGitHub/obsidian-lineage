@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { isMacLike } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-events/mod-key';
 
-export const mouseWheelZoom = (element: HTMLElement, view: LineageView) => {
+export const mouseWheelZoom = (element: HTMLElement, view: MandalaView) => {
     const listener = (e: WheelEvent) => {
         const modKey = isMacLike ? e.metaKey : e.ctrlKey;
         if (!modKey) return;

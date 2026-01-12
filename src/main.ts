@@ -1,5 +1,5 @@
 import { Plugin, WorkspaceLeaf } from 'obsidian';
-import { LINEAGE_VIEW_TYPE, LineageView } from './view/view';
+import { MANDALA_VIEW_TYPE, MandalaView } from './view/view';
 import { createSetViewState } from 'src/obsidian/patches/create-set-view-state';
 import { around } from 'monkey-around';
 import { settingsReducer } from 'src/stores/settings/settings-reducer';
@@ -24,7 +24,7 @@ import { setActiveLeaf } from 'src/obsidian/patches/set-active-leaf';
 import { migrateSettings } from 'src/stores/settings/migrations/migrate-settings';
 import { toggleFileViewType } from 'src/obsidian/events/workspace/effects/toggle-file-view-type';
 import { getActiveFile } from 'src/obsidian/commands/helpers/get-active-file';
-import { createLineageDocument } from 'src/obsidian/events/workspace/effects/create-lineage-document';
+import { createMandalaGridDocument } from 'src/obsidian/events/workspace/effects/create-mandala-document';
 import { registerFilesMenuEvent } from 'src/obsidian/events/workspace/register-files-menu-event';
 import { removeHtmlElementMarkerInPreviewMode } from 'src/obsidian/markdown-post-processors/remove-html-element-marker-in-preview-mode';
 import {
@@ -39,7 +39,7 @@ import { SettingsActions } from 'src/stores/settings/settings-store-actions';
 export type SettingsStore = Store<Settings, SettingsActions>;
 export type PluginStore = Store<PluginState, PluginStoreActions>;
 
-export default class Lineage extends Plugin {
+export default class MandalaGrid extends Plugin {
     settings: SettingsStore;
     store: PluginStore;
     statusBar: StatusBar;
@@ -55,8 +55,8 @@ export default class Lineage extends Plugin {
         );
         loadCustomIcons();
         this.registerView(
-            LINEAGE_VIEW_TYPE,
-            (leaf) => new LineageView(leaf, this),
+            MANDALA_VIEW_TYPE,
+            (leaf) => new MandalaView(leaf, this),
         );
         addCommands(this);
         this.registerPatches();
@@ -112,7 +112,7 @@ export default class Lineage extends Plugin {
             () => {
                 const file = getActiveFile(this);
                 if (file) toggleFileViewType(this, file, undefined);
-                else createLineageDocument(this);
+                else createMandalaGridDocument(this);
             },
         );
     }

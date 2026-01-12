@@ -20,7 +20,7 @@
     }
 </script>
 
-<div class="lineage-modal lineage-modal--full-height">
+<div class="mandala-modal mandala-modal--full-height">
     <Front />
     <div class="groups">
         {#each Object.entries($store.hotkeys) as [groupName, group] (groupName)}

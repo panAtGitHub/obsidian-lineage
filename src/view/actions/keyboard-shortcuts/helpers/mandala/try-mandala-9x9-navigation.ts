@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import {
     posOfSection9x9,
@@ -13,7 +13,7 @@ const deltas: Record<AllDirections, { dr: number; dc: number }> = {
 };
 
 export const tryMandala9x9Navigation = (
-    view: LineageView,
+    view: MandalaView,
     direction: AllDirections,
     options?: { extendSelection?: boolean },
 ) => {

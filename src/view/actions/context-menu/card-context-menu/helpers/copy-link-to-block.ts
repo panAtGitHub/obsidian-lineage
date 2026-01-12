@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { insertBlockId } from 'src/view/actions/context-menu/card-context-menu/helpers/insert-block-id';
 import { Notice } from 'obsidian';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 
 export const copyLinkToBlock = async (
-    view: LineageView,
+    view: MandalaView,
     isInSidebar: boolean,
 ) => {
     const file = view.file;

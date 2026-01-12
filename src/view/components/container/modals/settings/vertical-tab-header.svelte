@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="lineage-vertical-tab-header">
+<div class="mandala-vertical-tab-header">
     <div class="vertical-tab-header-group">
 <!--        <div class="vertical-tab-header-group-title">Options</div>-->
         <div class="vertical-tab-header-group-items">
@@ -25,7 +25,7 @@
 </div>
 
 <style>
-    .lineage-vertical-tab-header {
+    .mandala-vertical-tab-header {
         width: 250px;
         padding: var(--size-4-3);
         background-color: var(--background-secondary);

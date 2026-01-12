@@ -95,18 +95,18 @@
 }
 
 #columns-container.zoom-enabled {
-    .lineage-floating-button {
+    .mandala-floating-button {
         opacity: 0.5 !important;
     }
-    .lineage-card:not(:hover) .lineage-floating-button:not(.collapse-button) {
+    .mandala-card:not(:hover) .mandala-floating-button:not(.collapse-button) {
         visibility: hidden;
     }
 }
 
 /* hides floating buttons when the mouse is inactive*/
 .hide-floating-buttons {
-    .lineage-card:not(.active-node) {
-        .lineage-floating-button:not(.collapse-button) {
+    .mandala-card:not(.active-node) {
+        .mandala-floating-button:not(.collapse-button) {
             display: none;
         }
     }

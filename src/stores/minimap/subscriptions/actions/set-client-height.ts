@@ -1,12 +1,12 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { dpx_to_cpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
 import { delay } from 'src/helpers/delay';
 
-const getActiveView = async (view: LineageView) => {
+const getActiveView = async (view: MandalaView) => {
     for (let i = 0; i < 10; i++) {
         const activeView =
-            view.plugin.app.workspace.getActiveViewOfType(LineageView);
+            view.plugin.app.workspace.getActiveViewOfType(MandalaView);
         if (activeView) {
             return activeView;
         } else {
@@ -15,7 +15,7 @@ const getActiveView = async (view: LineageView) => {
     }
 };
 
-export const setClientHeight = async (view: LineageView) => {
+export const setClientHeight = async (view: MandalaView) => {
     /* dom height of inactive views is 0*/
     const activeView = await getActiveView(view);
     if (!activeView) return;

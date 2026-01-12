@@ -3,7 +3,7 @@ import { SilentError } from 'src/lib/errors/errors';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
 import { findNodePosition } from 'src/lib/tree-utils/find/find-node-position';
 import { sortGroups } from 'src/lib/tree-utils/sort/sort-groups';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 export type MandalaSwapAction = {
     type: 'document/mandala/swap';
@@ -14,7 +14,7 @@ export type MandalaSwapAction = {
 };
 
 export const swapMandalaNodes = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     sourceNodeId: string,
     targetNodeId: string,
 ) => {
@@ -45,7 +45,7 @@ export type MandalaEnsureChildrenAction = {
 };
 
 export const ensureMandalaChildren = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     parentNodeId: string,
     childCount = 8,
 ): string[] => {

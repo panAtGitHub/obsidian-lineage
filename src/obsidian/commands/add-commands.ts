@@ -1,12 +1,12 @@
 import { Command } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { lang } from 'src/lang/lang';
 import { slugify } from 'src/helpers/slugify';
 import { toggleFileViewType } from 'src/obsidian/events/workspace/effects/toggle-file-view-type';
 import { customIcons } from 'src/helpers/load-custom-icons';
 import { getActiveFile } from 'src/obsidian/commands/helpers/get-active-file';
-import { createLineageDocument } from 'src/obsidian/events/workspace/effects/create-lineage-document';
-import { getActiveLineageView } from 'src/obsidian/commands/helpers/get-active-lineage-view';
+import { createMandalaGridDocument } from 'src/obsidian/events/workspace/effects/create-mandala-document';
+import { getActiveMandalaView } from 'src/obsidian/commands/helpers/get-active-mandala-view';
 import { openSplitNodeModal } from 'src/view/modals/split-node-modal/open-split-node-modal';
 import { isEditing } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/is-editing';
 import { copyLinkToBlock } from 'src/view/actions/context-menu/card-context-menu/helpers/copy-link-to-block';
@@ -18,12 +18,12 @@ import invariant from 'tiny-invariant';
 import { sortChildNodes } from 'src/view/actions/context-menu/card-context-menu/helpers/sort-child-nodes';
 import { ejectDocument } from 'src/obsidian/commands/helpers/export-document/eject-document';
 
-const createCommands = (plugin: Lineage) => {
+const createCommands = (plugin: MandalaGrid) => {
     const commands: (Omit<Command, 'id' | 'callback'> & {
         checkCallback: (checking: boolean) => boolean | void;
     })[] = [];
     commands.push({
-        name: lang.cmd_toggle_lineage_view,
+        name: lang.cmd_toggle_mandala_view,
         icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             const file = getActiveFile(plugin);
@@ -41,7 +41,7 @@ const createCommands = (plugin: Lineage) => {
         icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             if (checking) return true;
-            createLineageDocument(plugin);
+            createMandalaGridDocument(plugin);
         },
     });
 
@@ -50,7 +50,7 @@ const createCommands = (plugin: Lineage) => {
         icon: customIcons.alignH.name,
         checkCallback: (checking) => {
             if (checking) {
-                return Boolean(getActiveLineageView(plugin));
+                return Boolean(getActiveMandalaView(plugin));
             }
             plugin.settings.dispatch({
                 type: 'settings/view/toggle-horizontal-scrolling-mode',
@@ -63,7 +63,7 @@ const createCommands = (plugin: Lineage) => {
         icon: customIcons.alignV.name,
         checkCallback: (checking) => {
             if (checking) {
-                return Boolean(getActiveLineageView(plugin));
+                return Boolean(getActiveMandalaView(plugin));
             }
             plugin.settings.dispatch({
                 type: 'settings/view/toggle-vertical-scrolling-mode',
@@ -75,7 +75,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cm_split_node,
         icon: customIcons.split.name,
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -87,7 +87,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_sort_child_nodes_asc,
         icon: 'sort-asc',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -104,7 +104,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_sort_child_nodes_desc,
         icon: 'sort-desc',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -121,7 +121,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cm_copy_link_to_block,
         icon: 'links-coming-in',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -133,7 +133,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_toggle_pin_in_left_sidebar,
         icon: 'pin',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return view ? isEditing(view) : false;
             }
@@ -157,7 +157,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_extract_branch,
         icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -169,7 +169,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_export_branches_with_subitems,
         icon: 'file-text',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -181,7 +181,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_export_nodes_wo_subitems,
         icon: 'file-text',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -193,7 +193,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cm_export_document,
         icon: 'file-text',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -205,7 +205,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cm_eject_document,
         icon: 'file-text',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -217,7 +217,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_toggle_minimap,
         icon: 'panel-right',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -231,7 +231,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_toggle_left_sidebar,
         icon: 'panel-left',
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -243,7 +243,7 @@ const createCommands = (plugin: Lineage) => {
         name: lang.cmd_space_between_cards,
         icon: customIcons.gap.name,
         checkCallback: (checking) => {
-            const view = getActiveLineageView(plugin);
+            const view = getActiveMandalaView(plugin);
             if (checking) {
                 return Boolean(view);
             }
@@ -256,7 +256,7 @@ const createCommands = (plugin: Lineage) => {
     return commands;
 };
 
-export const addCommands = (plugin: Lineage) => {
+export const addCommands = (plugin: MandalaGrid) => {
     const commands = createCommands(plugin);
     for (const command of commands) {
         plugin.addCommand({

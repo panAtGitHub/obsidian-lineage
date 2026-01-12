@@ -5,12 +5,12 @@
     import { historyStore } from '../../../../../stores/document/derived/history-store';
     import { getView } from '../../context';
     import { Notice } from 'obsidian';
-    import { LineageView } from 'src/view/view';
+    import { MandalaView } from 'src/view/view';
 
     const view = getView();
     const history = historyStore(view);
 
-    const isEditing = (view: LineageView) =>
+    const isEditing = (view: MandalaView) =>
         view.viewStore.getValue().document.editing.activeNodeId;
 
     const toggleSnapshotsModal = () =>

@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 const md = `# Cobol
 
@@ -148,7 +148,7 @@ Projects to modernize COBOL applications through re-engineering, encapsulation, 
 
 COBOL is a testament to the durability and adaptability of early programming languages. While it faces challenges due to its age, COBOL's role in powering critical systems ensures its continued relevance in the modern world.`;
 
-const columns: LineageDocument = {
+const columns: MandalaGridDocument = {
     columns: [
         {
             id: 'cijm03doO',

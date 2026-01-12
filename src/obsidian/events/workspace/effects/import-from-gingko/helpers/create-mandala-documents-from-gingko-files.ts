@@ -1,4 +1,4 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import invariant from 'tiny-invariant';
 import { TFolder } from 'obsidian';
 import { createNewFolder } from 'src/obsidian/events/workspace/effects/create-new-folder';
@@ -7,10 +7,10 @@ import { createNewFile } from 'src/obsidian/events/workspace/effects/create-new-
 import { setDocumentFormat } from 'src/stores/settings/actions/set-document-format';
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 import { GingkoFile } from 'src/obsidian/events/workspace/effects/import-from-gingko/import-from-gingko';
-import { LINEAGE_VIEW_TYPE } from 'src/view/view';
+import { MANDALA_VIEW_TYPE } from 'src/view/view';
 
-export const createLineageDocumentsFromGingkoFiles = async (
-    plugin: Lineage,
+export const createMandalaGridDocumentsFromGingkoFiles = async (
+    plugin: MandalaGrid,
     files: GingkoFile[],
     folderPath: string,
 ) => {
@@ -36,6 +36,6 @@ export const createLineageDocumentsFromGingkoFiles = async (
             file.basename,
         );
         setDocumentFormat(plugin, createdFile.path, 'sections');
-        setViewType(plugin, createdFile.path, LINEAGE_VIEW_TYPE);
+        setViewType(plugin, createdFile.path, MANDALA_VIEW_TYPE);
     }
 };

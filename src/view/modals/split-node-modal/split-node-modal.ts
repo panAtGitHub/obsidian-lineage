@@ -1,5 +1,5 @@
 import { Modal } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import Content from './components/modal-content.svelte';
 import { get, Writable, writable } from 'svelte/store';
 import { hasNHeadings } from 'src/lib/format-detection/has-n-headings';
@@ -20,7 +20,7 @@ export type SplitNodeModalState = {
 };
 
 export type SplitNodeModalProps = {
-    plugin: Lineage;
+    plugin: MandalaGrid;
     callbacks: SplitNodeCallbacks;
     nodeContent: string;
 };

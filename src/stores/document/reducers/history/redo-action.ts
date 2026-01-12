@@ -1,12 +1,12 @@
 import {
     DocumentHistory,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import { loadDocumentFromSnapshot } from 'src/stores/document/reducers/history/helpers/load-document-from-snapshot';
 import { updateNavigationState } from 'src/stores/document/reducers/history/helpers/update-navigation-state';
 
 export const redoAction = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     history: DocumentHistory,
 ) => {
     const currentIndex = history.state.activeIndex;

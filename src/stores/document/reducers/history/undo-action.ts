@@ -1,7 +1,7 @@
 import { updateNavigationState } from 'src/stores/document/reducers/history/helpers/update-navigation-state';
 import {
     DocumentHistory,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import { loadDocumentFromSnapshot } from 'src/stores/document/reducers/history/helpers/load-document-from-snapshot';
 
@@ -12,7 +12,7 @@ export type UndoRedoAction = {
 };
 
 export const undoAction = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     history: DocumentHistory,
 ) => {
     const currentIndex = history.state.activeIndex;

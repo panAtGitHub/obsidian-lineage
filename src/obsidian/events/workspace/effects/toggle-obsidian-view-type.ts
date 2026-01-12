@@ -1,9 +1,9 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { ViewState, WorkspaceLeaf } from 'obsidian';
 import { ViewType } from 'src/stores/settings/settings-type';
 
 export const toggleObsidianViewType = (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     leaf: WorkspaceLeaf,
     type: ViewType,
 ) => {

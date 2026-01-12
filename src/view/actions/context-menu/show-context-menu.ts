@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { Platform } from 'obsidian';
 import { onLongPress } from 'src/helpers/on-long-press';
 import { showNodeContextMenu } from 'src/view/actions/context-menu/card-context-menu/show-node-context-menu';
@@ -6,7 +6,7 @@ import { shouldShowNodeContextMenu } from 'src/view/actions/context-menu/card-co
 import { shouldShowViewContextMenu } from 'src/view/actions/context-menu/view-context-menu/should-show-view-context-menu';
 import { showViewContextMenu } from 'src/view/actions/context-menu/view-context-menu/show-view-context-menu';
 
-export const showContextMenu = (element: HTMLElement, view: LineageView) => {
+export const showContextMenu = (element: HTMLElement, view: MandalaView) => {
     const listener = (e: MouseEvent | TouchEvent) => {
         if (shouldShowNodeContextMenu(e)) {
             if (e.instanceOf(MouseEvent)) showNodeContextMenu(e, view);

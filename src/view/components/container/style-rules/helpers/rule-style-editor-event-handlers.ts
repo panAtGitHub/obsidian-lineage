@@ -2,10 +2,10 @@ import {
     NodeStyle,
     StyleVariant,
 } from 'src/stores/settings/types/style-rules-types';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const ruleStyleEditorEventHandlers = (
-    view: LineageView,
+    view: MandalaView,
     ruleId: string,
 ) => {
     const documentPath = () => view.file?.path ?? '';

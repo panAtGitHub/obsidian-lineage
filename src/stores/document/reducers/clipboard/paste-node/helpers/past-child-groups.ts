@@ -1,12 +1,12 @@
 import {
     ClipboardBranch,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
 import { id } from 'src/helpers/id';
 
 export const pastChildGroups = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     branch: ClipboardBranch,
 ) => {
     const parentColumnIndex = findNodeColumn(document.columns, branch.nodeId);

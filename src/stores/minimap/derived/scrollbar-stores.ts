@@ -1,7 +1,7 @@
 import { ScrollInfo } from 'src/stores/minimap/minimap-state-type';
 import { cpx_to_dpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
 import { derived } from 'src/lib/store/derived';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const calculateThumbHeightDpx = (state: ScrollInfo) => {
     const isScrollIndicatorHidden =
@@ -14,13 +14,13 @@ export const calculateThumbHeightDpx = (state: ScrollInfo) => {
     return cpx_to_dpx(indicatorHeight_cpx);
 };
 
-export const ScrollThumbHeightStore = (view: LineageView) => {
+export const ScrollThumbHeightStore = (view: MandalaView) => {
     return derived(view.getMinimapStore(), (state) => {
         return calculateThumbHeightDpx(state.scrollbar);
     });
 };
 
-export const ScrollThumbPositionStore = (view: LineageView) => {
+export const ScrollThumbPositionStore = (view: MandalaView) => {
     return derived(view.getMinimapStore(), (_state) => {
         const state = _state.scrollbar;
         const indicatorHeight_dpx = calculateThumbHeightDpx(state);
@@ -34,7 +34,7 @@ export const ScrollThumbPositionStore = (view: LineageView) => {
     });
 };
 
-export const MinimapScrollOffsetStore = (view: LineageView) =>
+export const MinimapScrollOffsetStore = (view: MandalaView) =>
     derived(view.getMinimapStore(), (state) => {
         const offset = cpx_to_dpx(state.scrollbar.scrollPosition_cpx);
         return offset > 0 ? -1 * offset : offset;

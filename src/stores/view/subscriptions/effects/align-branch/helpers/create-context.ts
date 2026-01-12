@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { ActiveBranch } from 'src/stores/view/default-view-state';
 import { adjustScrollBehavior } from 'src/stores/view/subscriptions/effects/align-branch/helpers/adjust-scroll-behavior';
 import { PluginAction } from 'src/stores/view/subscriptions/effects/align-branch/align-branch';
@@ -27,7 +27,7 @@ export type AlignBranchContext = {
     activeNodesOfColumn: ActiveNodesOfColumn;
 };
 export const createContext = (
-    view: LineageView,
+    view: MandalaView,
     action: PluginAction,
     previousActiveBranch: ActiveBranch | null,
 ) => {

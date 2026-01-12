@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import { getElementById } from 'src/lib/align-element/helpers/get-element-by-id';
 
-export const scrollNode = (view: LineageView, direction: AllDirections) => {
+export const scrollNode = (view: MandalaView, direction: AllDirections) => {
     const container = view.container;
     if (!container) return;
     const element = getElementById(

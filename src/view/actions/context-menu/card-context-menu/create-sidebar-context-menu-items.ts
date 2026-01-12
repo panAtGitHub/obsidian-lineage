@@ -1,11 +1,11 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { MenuItemObject } from 'src/obsidian/context-menu/render-context-menu';
 import { lang } from 'src/lang/lang';
 import { copyLinkToBlock } from 'src/view/actions/context-menu/card-context-menu/helpers/copy-link-to-block';
 import { copyActiveNodesToClipboard } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/copy-active-nodes-to-clipboard';
 
 export const togglePinNode = (
-    view: LineageView,
+    view: MandalaView,
     activeNode: string,
     isPinned: boolean,
     isInSidebar: boolean,
@@ -26,7 +26,7 @@ type Props = {
     isInRecentCardsList: boolean;
 };
 export const createSidebarContextMenuItems = (
-    view: LineageView,
+    view: MandalaView,
     { isPinned, activeNode, isInRecentCardsList }: Props,
 ) => {
     const menuItems: MenuItemObject[] = [

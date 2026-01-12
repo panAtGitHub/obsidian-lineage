@@ -19,7 +19,7 @@
     class={classNames(
         classes,
         positionClasses[position],
-        'lineage-floating-button',
+        'mandala-floating-button',
     )}
     on:click
 >

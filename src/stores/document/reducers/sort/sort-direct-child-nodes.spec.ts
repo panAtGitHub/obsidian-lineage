@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { sortDirectChildNodes } from 'src/stores/document/reducers/sort/sort-direct-child-nodes';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 describe('sort-direct-child-nodes', () => {
     test('case 1', () => {
@@ -86,7 +86,7 @@ describe('sort-direct-child-nodes', () => {
                 },
             ],
             content: content,
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
 
         const output = {
             columns: [
@@ -119,7 +119,7 @@ describe('sort-direct-child-nodes', () => {
                 },
             ],
             content: content,
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         sortDirectChildNodes(input, payload);
         expect(input).toEqual(output);
     });

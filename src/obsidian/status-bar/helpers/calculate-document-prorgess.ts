@@ -2,7 +2,7 @@ import {
     columnsToExtendedJson,
     ExtendedTreeNode,
 } from 'src/lib/data-conversion/x-to-json/columns-to-extended-json';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 const flattenTree = (
     nodes: ExtendedTreeNode[],
@@ -20,7 +20,7 @@ const calculateFlatTreeContentLength = (flatTree: ExtendedTreeNode[]) => {
 };
 
 export type DocumentProgressProps = {
-    document: LineageDocument;
+    document: MandalaGridDocument;
     activeNode: string;
 };
 export const calculateDocumentProgress = (payload: DocumentProgressProps) => {

@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { delay } from 'src/helpers/delay';
 import { delayAlign } from 'src/stores/view/subscriptions/effects/align-branch/helpers/delay-align';
 import { ActiveBranch } from 'src/stores/view/default-view-state';
@@ -45,7 +45,7 @@ export class AlignBranch {
 
     private previousActiveBranch: ActiveBranch | null = null;
 
-    constructor(public view: LineageView) {}
+    constructor(public view: MandalaView) {}
 
     align = (action: PluginAction) => {
         const priority = actionPriority.get(action.type);

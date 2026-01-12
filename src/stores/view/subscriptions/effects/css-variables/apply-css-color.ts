@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { cssVariables } from 'src/stores/view/subscriptions/effects/css-variables/helpers/css-variables';
 
 export const applyCssColor = (
-    view: LineageView,
+    view: MandalaView,
     name: keyof typeof cssVariables.colors,
 ) => {
     const target = view.contentEl;

@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { setActivePinnedNode } from 'src/stores/view/subscriptions/actions/set-active-pinned-node';
 
-export const loadPinnedNodesToDocument = (view: LineageView) => {
+export const loadPinnedNodesToDocument = (view: MandalaView) => {
     const documentStore = view.documentStore;
     const documentState = documentStore.getValue();
     const settingsStore = view.plugin.settings;

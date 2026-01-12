@@ -1,10 +1,10 @@
-import Lineage from 'src/main';
-import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
+import MandalaGrid from 'src/main';
+import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
 
 export const setDocumentFormat = (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     path: string,
-    type: LineageDocumentFormat,
+    type: MandalaGridDocumentFormat,
 ) => {
     plugin.settings.dispatch({
         type: 'settings/documents/set-document-format',

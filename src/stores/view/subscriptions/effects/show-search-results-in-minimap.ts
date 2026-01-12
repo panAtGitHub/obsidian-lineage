@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const showSearchResultsInMinimap = (view: LineageView) => {
+export const showSearchResultsInMinimap = (view: MandalaView) => {
     const viewStore = view.viewStore;
     const viewState = viewStore.getValue();
     const settingsStore = view.plugin.settings;

@@ -1,11 +1,11 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { TFile } from 'obsidian';
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
 import { verifyJsonFile } from 'src/obsidian/events/workspace/effects/import-from-gingko/helpers/verify-json-file';
 import { GingkoFile } from 'src/obsidian/events/workspace/effects/import-from-gingko/import-from-gingko';
 
 export const mapFilesToGingkoFiles = async (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     files: TFile[],
 ) => {
     const gingkoFiles: GingkoFile[] = [];

@@ -8,7 +8,7 @@
     const history = historyStore(view)
 </script>
 
-<div class="lineage-modal snapshots-modal" style="padding-left: 0; padding-right:0" tabindex="0">
+<div class="mandala-modal snapshots-modal" style="padding-left: 0; padding-right:0" tabindex="0">
     <div
         class="snapshots-list"
         use:updateRelativeTime

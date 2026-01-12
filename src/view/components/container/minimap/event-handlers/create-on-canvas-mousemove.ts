@@ -1,5 +1,5 @@
 import { debounce } from 'obsidian';
-import { LineageView, MinimapStore } from 'src/view/view';
+import { MandalaView, MinimapStore } from 'src/view/view';
 import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
 import { findCardAtPosition } from 'src/view/components/container/minimap/event-handlers/helpers/find-card-at-position';
 import { dpx_to_cpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
@@ -7,7 +7,7 @@ import { isMacLike } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-
 
 import { MinimapDomElements } from 'src/stores/minimap/minimap-state-type';
 
-export const createOnCanvasMousemove = (view: LineageView) => {
+export const createOnCanvasMousemove = (view: MandalaView) => {
     let lastActiveCardId: string | null = null;
 
     let minimapStore: MinimapStore;

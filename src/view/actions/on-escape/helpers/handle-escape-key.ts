@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const handleEscapeKey = (view: LineageView) => {
+export const handleEscapeKey = (view: MandalaView) => {
     const viewStore = view.viewStore;
     const value = viewStore.getValue();
     const search = value.search;

@@ -1,11 +1,11 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getSectionOfId } from 'src/stores/view/subscriptions/helpers/get-section-of-id';
 
 const state: {
     [path: string]: string;
 } = {};
 
-export const persistActiveNodeInPluginSettings = (view: LineageView) => {
+export const persistActiveNodeInPluginSettings = (view: MandalaView) => {
     if (!view.file) return;
     const documentState = view.documentStore.getValue();
     const viewState = view.viewStore.getValue();

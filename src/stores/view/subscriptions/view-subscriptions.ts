@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { onViewMount } from 'src/stores/view/subscriptions/on-view-mount';
 import { onViewStateUpdate } from 'src/stores/view/subscriptions/on-view-state-update';
 import { onDocumentStateUpdate } from 'src/stores/view/subscriptions/on-document-state-update';
@@ -6,7 +6,7 @@ import { onPluginSettingsUpdate } from 'src/stores/view/subscriptions/on-plugin-
 import { onPluginStateUpdate } from 'src/stores/view/subscriptions/on-plugin-state-update';
 import { onMetadataCache } from 'src/stores/view/subscriptions/on-metadata-cache';
 
-export const viewSubscriptions = (view: LineageView) => {
+export const viewSubscriptions = (view: MandalaView) => {
     const unsubFromDocument = view.documentStore.subscribe(
         (documentState, action) => {
             if (!action) return;

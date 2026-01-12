@@ -1,11 +1,11 @@
 import { isMacLike } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-events/mod-key';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 const getLink = (el: HTMLElement) => {
     return el.getAttr('data-href') || el.getAttr('href');
 };
 
-export const attachHoverPreviewListener = (view: LineageView) => {
+export const attachHoverPreviewListener = (view: MandalaView) => {
     view.plugin.registerDomEvent(view.contentEl, 'mouseover', (evt) => {
         if (!(isMacLike ? evt.metaKey : evt.ctrlKey)) return;
         const targetEl = evt.target as HTMLElement;

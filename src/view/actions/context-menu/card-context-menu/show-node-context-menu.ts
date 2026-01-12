@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import {
     MenuItemObject,
     renderContextMenu,
@@ -10,7 +10,7 @@ import { createSidebarContextMenuItems } from 'src/view/actions/context-menu/car
 import { createSingleNodeContextMenuItems } from 'src/view/actions/context-menu/card-context-menu/create-single-node-context-menu-items';
 
 const getContextMenuContext = (
-    view: LineageView,
+    view: MandalaView,
     isInSidebar: boolean,
     isInRecentCardsList: boolean,
 ) => {
@@ -35,12 +35,12 @@ const getContextMenuContext = (
     };
 };
 
-export const showNodeContextMenu = (event: MouseEvent, view: LineageView) => {
+export const showNodeContextMenu = (event: MouseEvent, view: MandalaView) => {
     if (view.documentStore.getValue().meta.isMandala) return;
 
     const target = event.target as HTMLElement;
     const closestCardElement = target.closest(
-        '.lineage-card',
+        '.mandala-card',
     ) as HTMLElement | null;
 
     if (!closestCardElement) return;

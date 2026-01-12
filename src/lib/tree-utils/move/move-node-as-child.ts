@@ -2,14 +2,14 @@ import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
 import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
 import {
     Column,
-    LineageDocument,
+    MandalaGridDocument,
     NodeId,
 } from 'src/stores/document/document-state-type';
 import { createColumn } from 'src/lib/tree-utils/create/create-column';
 import { createGroup } from 'src/lib/tree-utils/create/create-group';
 
 export const moveNodeAsChild = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     node: NodeId,
     targetNode: NodeId,
     moveToTheStart: boolean,

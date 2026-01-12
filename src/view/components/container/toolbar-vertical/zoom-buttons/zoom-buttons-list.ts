@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { HiddenVerticalToolbarButtons } from 'src/stores/settings/derived/view-settings-store';
 import { derived } from 'svelte/store';
 import { ToolbarButton } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons';
@@ -24,7 +24,7 @@ export type ToolbarButtonsGroup = {
 };
 
 export const ZoomButtonsList = (
-    view: LineageView,
+    view: MandalaView,
     restoreZoom: () => void,
     showZoomPopupMenu: (event: MouseEvent) => void,
 ) => {

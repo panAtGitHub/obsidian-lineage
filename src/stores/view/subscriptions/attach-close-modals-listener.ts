@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { uiControlsStore } from 'src/stores/view/derived/ui-controls-store';
 
-export const attachCloseModalsListener = (view: LineageView) => {
+export const attachCloseModalsListener = (view: MandalaView) => {
     const listener = (e: MouseEvent) => {
         const target = e.target as HTMLElement;
-        const isInsideModal = target.closest('.lineage-modal');
+        const isInsideModal = target.closest('.mandala-modal');
         const isInsideControlsBar =
             !isInsideModal && target.closest('.controls-container');
 

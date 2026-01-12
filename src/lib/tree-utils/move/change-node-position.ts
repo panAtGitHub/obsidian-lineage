@@ -3,7 +3,7 @@ import { moveNodeAsChild } from 'src/lib/tree-utils/move/move-node-as-child';
 import { moveNodeAsSibling } from 'src/lib/tree-utils/move/move-node-as-sibling';
 import { moveChildGroupsNextToTheirParent } from 'src/lib/tree-utils/move/move-child-groups-next-to-their-parent';
 import {
-    LineageDocument,
+    MandalaGridDocument,
     NodeId,
 } from 'src/stores/document/document-state-type';
 import { findGroupByNodeId } from 'src/lib/tree-utils/find/find-group-by-node-id';
@@ -11,7 +11,7 @@ import invariant from 'tiny-invariant';
 import { deleteNodeById } from 'src/lib/tree-utils/delete/delete-node-by-id';
 
 export const changeNodePosition = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     node: NodeId,
     targetNode: NodeId,
     direction: AllDirections,

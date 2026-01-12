@@ -1,5 +1,5 @@
 import { MinimapRenderer } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/minimap-renderer';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { MinimapTheme } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/consts/minimap-theme';
 import { chunkPositionsCache } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/shapes/helpers/chunk-positions-cache';
 
@@ -34,7 +34,7 @@ export type CanvasWorkerProps =
     | {
           type: 'minimap/set/document';
           payload: {
-              document: LineageDocument;
+              document: MandalaGridDocument;
               activeNodeId: string;
               canvasId: string;
           };

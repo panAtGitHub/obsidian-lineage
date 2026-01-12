@@ -1,4 +1,4 @@
-.lineage-modal {
+.mandala-modal {
     max-width: var(--view-width);
     max-height: var(--view-height);
     overflow: auto;
@@ -23,12 +23,12 @@
 }
 
 @media (max-width: 720px) {
-    .lineage-modal {
+    .mandala-modal {
         left: var(--size-4-2);
         overflow-x: auto;
     }
 }
 
-.lineage-modal--full-height {
+.mandala-modal--full-height {
     bottom: var(--size-4-2);
 }

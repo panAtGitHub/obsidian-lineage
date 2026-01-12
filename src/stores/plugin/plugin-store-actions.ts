@@ -4,7 +4,7 @@ export type PluginStoreActions =
     | DeleteDocument
     | UpdateDocumentPath
     | AddDocument
-    | ActiveLineageViewChange
+    | ActiveMandalaViewChange
     | RefreshDocuments
     | WorkspaceEvents;
 
@@ -39,12 +39,12 @@ export type RefreshDocuments = {
 };
 
 export type WorkspaceEvents =
-    | ActiveLineageViewChange
+    | ActiveMandalaViewChange
     | ActiveLeafChange
     | WorkspaceResize
     | LayoutReady;
 
-export type ActiveLineageViewChange = {
+export type ActiveMandalaViewChange = {
     type: 'plugin/documents/update-active-view-of-document';
     payload: {
         path: string;

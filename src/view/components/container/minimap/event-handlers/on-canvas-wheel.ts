@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const onCanvasWheel = (e: WheelEvent, view: LineageView) => {
+export const onCanvasWheel = (e: WheelEvent, view: MandalaView) => {
     e.preventDefault();
     view.getMinimapStore().dispatch({
         type: 'minimap/mouse-wheel-scroll',

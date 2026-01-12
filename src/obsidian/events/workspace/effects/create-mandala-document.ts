@@ -1,13 +1,13 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { getActiveFile } from 'src/obsidian/commands/helpers/get-active-file';
 import { TFolder } from 'obsidian';
 import { createNewFile } from 'src/obsidian/events/workspace/effects/create-new-file';
 import { onPluginError } from 'src/lib/store/on-plugin-error';
 import { lang } from 'src/lang/lang';
-import { openFileInLineage } from 'src/obsidian/events/workspace/effects/open-file-in-lineage';
+import { openFileInMandalaGrid } from 'src/obsidian/events/workspace/effects/open-file-in-mandala';
 import { createMandalaMarkdownTemplate } from 'src/lib/mandala/create-mandala-markdown-template';
 
-export const createLineageDocument = async (plugin: Lineage) => {
+export const createMandalaGridDocument = async (plugin: MandalaGrid) => {
     try {
         const format = 'sections';
         const file = getActiveFile(plugin);
@@ -25,7 +25,7 @@ export const createLineageDocument = async (plugin: Lineage) => {
                 'Mandala',
             );
             if (newFile) {
-                await openFileInLineage(plugin, newFile, format, 'tab');
+                await openFileInMandalaGrid(plugin, newFile, format, 'tab');
             }
         }
     } catch (e) {

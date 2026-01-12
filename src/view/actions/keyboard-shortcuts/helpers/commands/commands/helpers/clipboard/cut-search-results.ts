@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { copySearchResultsToClipboard } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/copy-search-results-to-clipboard';
 import { sortNodeIdsByDepthDesc } from 'src/lib/tree-utils/sort/sort-node-ids-by-depth-desc';
 import { sortNodeIdsBySectionNumber } from 'src/lib/tree-utils/sort/sort-node-ids-by-section-number';
 
-export const cutSearchResults = async (view: LineageView) => {
+export const cutSearchResults = async (view: MandalaView) => {
     copySearchResultsToClipboard(view);
     const viewState = view.viewStore.getValue();
     const documentState = view.documentStore.getValue();

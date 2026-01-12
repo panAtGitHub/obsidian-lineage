@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { dpx_to_cpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
 import { minimapWorker } from 'src/workers/worker-instances';
 import { minimapTheme } from './minimap-canvas/worker/consts/minimap-theme';
 
-export const initializeMinimapWorker = async (view: LineageView) => {
+export const initializeMinimapWorker = async (view: MandalaView) => {
     const canvasContainer = view.getMinimapDom().canvasContainer.parentElement!;
     const canvas_height_cpx = dpx_to_cpx(
         canvasContainer.getBoundingClientRect().height,

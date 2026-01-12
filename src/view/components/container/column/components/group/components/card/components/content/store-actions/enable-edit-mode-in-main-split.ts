@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const enableEditModeInMainSplit = (
-    view: LineageView,
+    view: MandalaView,
     nodeId: string,
 ) => {
     const editing = view.viewStore.getValue().document.editing;

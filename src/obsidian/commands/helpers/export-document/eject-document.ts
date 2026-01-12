@@ -1,12 +1,12 @@
 import { onPluginError } from 'src/lib/store/on-plugin-error';
 import { mapDocumentToText } from 'src/obsidian/commands/helpers/export-document/map-document-to-text';
 import { getPersistedDocumentFormat } from 'src/obsidian/events/workspace/helpers/get-persisted-document-format';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 import { toggleObsidianViewType } from 'src/obsidian/events/workspace/effects/toggle-obsidian-view-type';
 
-export const ejectDocument = async (view: LineageView) => {
+export const ejectDocument = async (view: MandalaView) => {
     try {
         const file = view.file;
         if (!file) return;

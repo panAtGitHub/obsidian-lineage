@@ -1,8 +1,8 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { LinkCache } from 'obsidian';
 
 export const filterNonExistentLinks = (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     links: LinkCache[],
     filePath: string,
 ) => {

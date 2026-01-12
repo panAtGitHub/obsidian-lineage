@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const sortChildNodes = (
-    view: LineageView,
+    view: MandalaView,
     activeNode: string,
     order: 'ascending' | 'descending',
 ) => {

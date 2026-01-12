@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { isEmptyDocument } from 'src/stores/view/subscriptions/helpers/is-empty-document';
 import { enableEditMode } from 'src/stores/view/subscriptions/actions/enable-edit-mode';
 import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
@@ -20,7 +20,7 @@ import { applyInactiveNodeOpacity } from 'src/stores/view/subscriptions/effects/
 import { loadCollapsedSectionsFromSettings } from 'src/stores/view/subscriptions/actions/view/load-collapsed-sections-from-settings';
 import { applyHeadingsFontSize } from 'src/stores/view/subscriptions/effects/css-variables/apply-headings-font-size';
 
-const applySettingsToView = (view: LineageView) => {
+const applySettingsToView = (view: MandalaView) => {
     const state = view.plugin.settings.getValue();
     applyFontSize(view, state.view.fontSize);
     applyHeadingsFontSize(view, state.view.h1FontSize_em);
@@ -36,7 +36,7 @@ const applySettingsToView = (view: LineageView) => {
     attachCheckboxListener(view);
 };
 
-export const onViewMount = (view: LineageView) => {
+export const onViewMount = (view: MandalaView) => {
     const subscriptions: Set<() => void> = new Set();
     const documentStore = view.documentStore;
     const documentState = documentStore.getValue();

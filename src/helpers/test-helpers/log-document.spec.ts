@@ -1,9 +1,9 @@
 import { expect, it } from 'vitest';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { __logDocument__ } from 'src/helpers/test-helpers/log-document';
 
 it('should replace node IDs', () => {
-    const input: LineageDocument = {
+    const input: MandalaGridDocument = {
         columns: [
             {
                 id: 'cIaq',

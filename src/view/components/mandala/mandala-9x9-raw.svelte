@@ -183,7 +183,7 @@
     }
 
     .mandala-raw9-cell--active {
-        outline: 2px solid var(--lineage-accent);
+        outline: 2px solid var(--mandala-accent);
         outline-offset: -2px;
     }
 

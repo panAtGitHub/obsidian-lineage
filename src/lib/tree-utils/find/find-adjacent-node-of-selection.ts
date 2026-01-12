@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import { clone } from 'src/helpers/clone';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
@@ -6,7 +6,7 @@ import invariant from 'tiny-invariant';
 import { findAdjacentNode } from 'src/lib/tree-utils/find/find-adjacent-node';
 
 export const findAdjacentNodeOfSelection = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     activeNodeId: string,
     selectedNodes: Set<string>,
     direction: AllDirections,

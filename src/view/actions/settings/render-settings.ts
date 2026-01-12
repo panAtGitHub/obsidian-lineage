@@ -14,7 +14,7 @@ import { AlwaysShowCardButtons } from 'src/view/actions/settings/components/alwa
 import { ControlsBarButtons } from 'src/view/actions/settings/components/controls-bar-buttons/controls-bar-buttons';
 import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-font-size';
 import { LinkPaneType } from 'src/view/actions/settings/components/link-pane-type';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export type SettingsTab = 'General' | 'Appearance' | 'Layout';
 type Tab = { element: HTMLDivElement; name: SettingsTab };
@@ -29,7 +29,7 @@ const setVisibleTab = (tabs: Tab[], activeTab: SettingsTab) => {
     }
 };
 
-const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
+const render = (view: MandalaView, element: HTMLElement, tabs: Tab[]) => {
     const settingsStore = view.plugin.settings;
     const isMandala = view.getViewType() === 'mandala-grid';
     const generalTab = activeDocument.createElement('div');

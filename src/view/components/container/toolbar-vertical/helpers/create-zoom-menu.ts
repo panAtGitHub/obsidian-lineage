@@ -2,7 +2,7 @@ import { get } from 'svelte/store';
 import { zoomLevelStore } from 'src/stores/view/derived/zoom-level-store';
 import { Menu } from 'obsidian';
 import { showMinimapStore } from 'src/stores/settings/derived/scrolling-store';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { fitDocumentHeightIntoView } from 'src/view/components/container/toolbar-vertical/helpers/fit-document-height-into-view';
 import { fitBranchIntoView } from 'src/view/components/container/toolbar-vertical/helpers/fit-branch-into-view';
 
@@ -12,11 +12,11 @@ type State = {
     lastMenuHideEvent_ms: number;
 };
 
-type DynamicZoomValue = (view: LineageView) => Promise<number>;
+type DynamicZoomValue = (view: MandalaView) => Promise<number>;
 
 type Props = {
     event: MouseEvent;
-    view: LineageView;
+    view: MandalaView;
     state: State;
 };
 

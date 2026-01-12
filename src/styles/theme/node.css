@@ -40,23 +40,23 @@
 }
 
 /* box-shadow */
-.theme-dark .lineage-main {
-    .lineage-card:hover {
+.theme-dark .mandala-main {
+    .mandala-card:hover {
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
     }
     .active-child:hover {
         box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
     }
 }
-.theme-light .lineage-main {
-    .lineage-card:hover {
+.theme-light .mandala-main {
+    .mandala-card:hover {
         box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
     }
 }
 
 /* borders */
 
-.lineage-card{
+.mandala-card{
     /* to prevent layout shift */
     border-left: 5px solid transparent;
 }
@@ -73,14 +73,14 @@
 }
 
 .theme-dark {
-    .lineage-view:not(:focus-within) {
+    .mandala-view:not(:focus-within) {
         .node-border--editing {
             border-left: 5px var(--color-base-40) solid;
         }
     }
 }
 .theme-light {
-    .lineage-view:not(:focus-within) {
+    .mandala-view:not(:focus-within) {
         .node-border--editing {
             border-left: 5px var(--color-base-30) solid;
         }
@@ -88,7 +88,7 @@
 }
 
 .node-border--active {
-    border-left: 5px var(--lineage-accent) solid;
+    border-left: 5px var(--mandala-accent) solid;
 }
 
 .node-border--discard {
@@ -99,29 +99,29 @@
     border-left: 5px #ff7b4d solid;
 }
 .node-border--selected {
-    border-left: 5px var(--lineage-color-selection) solid;
+    border-left: 5px var(--mandala-color-selection) solid;
 }
 .node-border--search-match {
     border-left: 5px #ffc857 solid;
 }
 
-.lineage-view:not(:focus-within) {
+.mandala-view:not(:focus-within) {
     & .node-border--active {
-        border-left-color: var(--lineage-accent-faint);
+        border-left-color: var(--mandala-accent-faint);
     }
     & .node-border--discard {
         border-left-color: #e8314660;
     }
     & .node-border--selected {
-        border-left-color: var(--lineage-color-selection-faint);
+        border-left-color: var(--mandala-color-selection-faint);
     }
 }
 
 /*transition*/
-.lineage-card {
+.mandala-card {
     transition: box-shadow 200ms ease;
 }
-/*.lineage-card:hover {
+/*.mandala-card:hover {
     transition: opacity 100ms ease;
 }*/
 

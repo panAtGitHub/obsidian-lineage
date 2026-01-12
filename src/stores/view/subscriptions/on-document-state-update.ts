@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
 import { getDocumentEventType } from 'src/stores/view/helpers/get-document-event-type';
 import { setActiveNode } from 'src/stores/view/subscriptions/actions/set-active-node';
@@ -11,7 +11,7 @@ import { setActivePinnedNode } from 'src/stores/view/subscriptions/actions/set-a
 import { updateSelectedNodes } from 'src/stores/view/subscriptions/actions/update-selected-nodes';
 
 export const onDocumentStateUpdate = (
-    view: LineageView,
+    view: MandalaView,
     action: DocumentStoreAction,
 ) => {
     const documentStore = view.documentStore;

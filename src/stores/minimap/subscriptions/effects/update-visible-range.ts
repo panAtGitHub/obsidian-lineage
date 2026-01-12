@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { minimapWorker } from 'src/workers/worker-instances';
 import { cpx_to_dpx } from 'src/view/components/container/minimap/event-handlers/on-canvas-click';
 
-export const updateVisibleRange = async (view: LineageView) => {
+export const updateVisibleRange = async (view: MandalaView) => {
     const minimapStore = view.getMinimapStore();
     const state = minimapStore.getValue();
     const canvasId = state.canvasId;

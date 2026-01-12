@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const loadCollapsedSectionsFromSettings = (view: LineageView) => {
+export const loadCollapsedSectionsFromSettings = (view: MandalaView) => {
     const settings = view.plugin.settings.getValue();
     const path = view.file!.path;
     const collapsedSections =

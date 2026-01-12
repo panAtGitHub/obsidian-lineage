@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { eventToString } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-events/event-to-string';
 import { viewHotkeys } from 'src/view/actions/keyboard-shortcuts/helpers/commands/update-view-hotkeys-dictionary';
 import { handleEscapeKey } from 'src/view/actions/on-escape/helpers/handle-escape-key';
@@ -10,7 +10,7 @@ export const viewHotkeysAction = (
     {
         view,
     }: {
-        view: LineageView;
+        view: MandalaView;
     },
 ) => {
     const state = {

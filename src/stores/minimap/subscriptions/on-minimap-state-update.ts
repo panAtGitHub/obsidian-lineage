@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { MinimapStoreAction } from 'src/stores/minimap/minimap-store-actions';
 import invariant from 'tiny-invariant';
 import { MinimapState } from 'src/stores/minimap/minimap-state-type';
 
 export const onMinimapStateUpdate = (
-    view: LineageView,
+    view: MandalaView,
     action: MinimapStoreAction,
     state: MinimapState,
     localState: { previousScrollPosition: number },

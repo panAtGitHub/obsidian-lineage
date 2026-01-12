@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import Fuse, { FuseResult } from 'fuse.js';
 
 type SearchItem = { id: string; content: string };
@@ -6,7 +6,7 @@ type SearchItem = { id: string; content: string };
 export type NodeSearchResult = FuseResult<SearchItem>;
 
 export class DocumentSearch {
-    constructor(private view: LineageView) {}
+    constructor(private view: MandalaView) {}
     private fuse: Fuse<SearchItem> | null;
     #searchTriggeredMinimap: boolean;
 

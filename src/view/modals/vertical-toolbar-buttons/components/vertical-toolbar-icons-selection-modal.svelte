@@ -3,10 +3,10 @@
     import Button from '../../../components/container/shared/button.svelte';
     import { derived } from 'svelte/store';
     import { HiddenVerticalToolbarButtons } from '../../../../stores/settings/derived/view-settings-store';
-    import Lineage from '../../../../main';
+    import MandalaGrid from '../../../../main';
 
     export let close: () => void;
-    export let plugin: Lineage;
+    export let plugin: MandalaGrid;
 
     const buttons = derived(
         [HiddenVerticalToolbarButtons(plugin)],

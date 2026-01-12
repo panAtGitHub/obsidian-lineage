@@ -4,7 +4,7 @@ import {
     CANVAS_WIDTH_DPX,
     LINE_HEIGHT_CPX,
 } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/consts/constants';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
 
 export const dpx_to_cpx = (px: number) =>
@@ -15,7 +15,7 @@ export const cpx_to_dpx = (px: number) =>
     px * (CANVAS_WIDTH_DPX / CANVAS_WIDTH_CPX);
 export const LINE_HEIGHT_DPX = cpx_to_dpx(LINE_HEIGHT_CPX);
 
-export const onCanvasClick = (e: MouseEvent, view: LineageView) => {
+export const onCanvasClick = (e: MouseEvent, view: MandalaView) => {
     const minimapStore = view.getMinimapStore();
     const dom = view.getMinimapDom();
     const rect = dom.canvasContainer.getBoundingClientRect();

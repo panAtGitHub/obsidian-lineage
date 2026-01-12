@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { MenuItemObject } from 'src/obsidian/context-menu/render-context-menu';
 import { lang } from 'src/lang/lang';
 import { customIcons } from 'src/helpers/load-custom-icons';
@@ -21,7 +21,7 @@ type Props = {
     isPinned: boolean;
 };
 export const createSingleNodeContextMenuItems = (
-    view: LineageView,
+    view: MandalaView,
     { hasChildren, isPinned, activeNode }: Props,
 ) => {
     const menuItems: MenuItemObject[] = [
@@ -85,7 +85,7 @@ export const createSingleNodeContextMenuItems = (
                   submenu: [
                       {
                           title: lang.cm_copy_branch,
-                          icon: 'lineage-cards',
+                          icon: 'mandala-cards',
                           action: () =>
                               copyActiveBranchesToClipboard(view, true, false),
                       },

@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getElementById } from 'src/lib/align-element/helpers/get-element-by-id';
 import { delay } from 'src/helpers/delay';
 
@@ -7,7 +7,7 @@ const MAX_ATTEMPTS = 100;
 const REQUIRED_MATCHES = 20;
 
 export const waitForActiveNodeToStopMoving = async (
-    view: LineageView,
+    view: MandalaView,
     signal: AbortSignal,
 ) => {
     const activeBranch = view.viewStore.getValue().document.activeBranch;

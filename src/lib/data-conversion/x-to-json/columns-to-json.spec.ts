@@ -111,9 +111,9 @@ describe('columns-to-json', () => {
         expect(columnsToJson(columns, content)).toEqual(roots);
     });
     it('case', () => {
-        const { json, lineageDocument } = ginkgo_academic_paper;
+        const { json, mandalaDocument } = ginkgo_academic_paper;
         expect(
-            columnsToJson(lineageDocument.columns, lineageDocument.content),
+            columnsToJson(mandalaDocument.columns, mandalaDocument.content),
         ).toEqual(json);
     });
 });

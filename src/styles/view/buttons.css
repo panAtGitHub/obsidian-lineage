@@ -1,4 +1,4 @@
-.lineage-view-button {
+.mandala-view-button {
     width: 34px !important;
     height: 34px !important;
     padding: 8px !important;
@@ -17,24 +17,24 @@
     }
 }
 
-.lineage-view-button:disabled {
+.mandala-view-button:disabled {
     cursor: not-allowed;
 }
 
-.lineage-view-button:hover {
+.mandala-view-button:hover {
     background-color: var(--interactive-hover);
 }
 
-.lineage-view-button:disabled {
+.mandala-view-button:disabled {
     cursor: not-allowed;
     color: var(--color-base-40) !important;
 }
 
-.lineage-view-button[data-active='true'] {
+.mandala-view-button[data-active='true'] {
     color: var(--icon-color-active) !important;
 }
 
-.lineage-view-button[data-active='true'] svg {
+.mandala-view-button[data-active='true'] svg {
     opacity: 1;
 }
 

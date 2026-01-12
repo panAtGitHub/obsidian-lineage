@@ -1,9 +1,9 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { updateViewHotkeysDictionary } from 'src/view/actions/keyboard-shortcuts/helpers/commands/update-view-hotkeys-dictionary';
 import { get } from 'svelte/store';
 import { ViewHotkeysStore } from 'src/stores/settings/derived/view-hotkeys-store';
 
-export const settingsSubscriptions = (plugin: Lineage) => {
+export const settingsSubscriptions = (plugin: MandalaGrid) => {
     return plugin.settings.subscribe((state, action, initialRun) => {
         plugin.viewType = state.documents;
         if (initialRun) {

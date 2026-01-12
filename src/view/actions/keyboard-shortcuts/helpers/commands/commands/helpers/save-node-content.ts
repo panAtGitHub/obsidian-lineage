@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const saveNodeContent = (view: LineageView, modKey = false) => {
+export const saveNodeContent = (view: MandalaView, modKey = false) => {
     if (view.inlineEditor.nodeId) {
         view.inlineEditor.unloadNode();
         const isInSidebar =

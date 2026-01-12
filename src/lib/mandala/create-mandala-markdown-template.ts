@@ -1,8 +1,8 @@
 import { id } from 'src/helpers/id';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { stringifyDocument } from 'src/view/helpers/stringify-document';
 
-const createMandalaDocument = (): LineageDocument => {
+const createMandalaDocument = (): MandalaGridDocument => {
     const rootParentId = id.rootNode();
     const rootNodes = Array.from({ length: 9 }, () => id.node());
 
@@ -22,7 +22,7 @@ const createMandalaDocument = (): LineageDocument => {
         },
     ];
 
-    const content: LineageDocument['content'] = {};
+    const content: MandalaGridDocument['content'] = {};
     for (const nodeId of rootNodes) {
         content[nodeId] = { content: '' };
     }

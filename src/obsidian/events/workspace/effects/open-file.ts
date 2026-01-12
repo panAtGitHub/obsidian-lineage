@@ -1,8 +1,8 @@
 import { TFile } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 
 export const openFile = async (
-    plugin: Lineage,
+    plugin: MandalaGrid,
     file: TFile,
     newLeaf: 'split' | 'tab',
 ) => {

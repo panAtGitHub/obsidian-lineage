@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const enableEditModeInSidebar = (view: LineageView, nodeId: string) => {
+export const enableEditModeInSidebar = (view: MandalaView, nodeId: string) => {
     const settings = view.plugin.settings.getValue();
     const activeSidebarTab = settings.view.leftSidebarActiveTab;
     view.viewStore.dispatch({

@@ -3,7 +3,7 @@ import {
     ConditionNode,
     NodeStyle,
 } from 'src/stores/settings/types/style-rules-types';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { evaluateCondition } from 'src/stores/view/subscriptions/effects/style-rules/helpers/evaluate-condition';
 import { TargetNodeResolver } from 'src/stores/view/subscriptions/effects/style-rules/helpers/resolvers/target-node-resolver';
 import { NodePropertyResolver } from 'src/stores/view/subscriptions/effects/style-rules/helpers/resolvers/node-property-resolver/node-property-resolver';
@@ -15,7 +15,7 @@ export type StyleRulesResult = {
 };
 
 export const processStyleRules = (
-    doc: LineageDocument,
+    doc: MandalaGridDocument,
     rules: ExtendedStyleRule[],
     nodeResolver: NodePropertyResolver,
     propertyResolver: TargetNodeResolver,

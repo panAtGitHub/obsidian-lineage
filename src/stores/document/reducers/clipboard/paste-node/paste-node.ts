@@ -1,5 +1,5 @@
 import { insertNode } from 'src/stores/document/reducers/insert-node/insert-node';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { pastChildGroups } from 'src/stores/document/reducers/clipboard/paste-node/helpers/past-child-groups';
 import { cleanAndSortColumns } from 'src/lib/tree-utils/sort/clean-and-sort-columns';
 import { textToBranches } from 'src/stores/document/reducers/clipboard/paste-node/helpers/text-to-branches';
@@ -16,7 +16,7 @@ export type PasteNodeAction = {
 };
 
 export const pasteNode = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     action: Pick<PasteNodeAction, 'payload'>,
 ) => {
     const branches = textToBranches(action.payload.text);

@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const cancelChanges = (view: LineageView) => {
+export const cancelChanges = (view: MandalaView) => {
     const documentViewState = view.viewStore.getValue().document;
     if (documentViewState.pendingConfirmation.disableEdit) {
         view.inlineEditor.unloadNode(undefined, true);

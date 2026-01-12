@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'src/lib/store/derived';
 import { Column, NodeGroup } from 'src/stores/document/document-state-type';
 
@@ -6,7 +6,7 @@ export const findColumn = (columns: Column[], columnId: string) => {
     return columns.find((c) => c.id === columnId);
 };
 
-export const groupsStore = (view: LineageView, columnId: string) => {
+export const groupsStore = (view: MandalaView, columnId: string) => {
     let column: Column | undefined;
     let columns: Column[];
     return derived(view.documentStore, (state) => {
@@ -19,7 +19,7 @@ export const groupsStore = (view: LineageView, columnId: string) => {
     });
 };
 
-export const singleColumnGroupStore = (view: LineageView) => {
+export const singleColumnGroupStore = (view: MandalaView) => {
     return derived(view.documentStore, (state) => {
         return state.document.columns.length > 0
             ? state.document.columns[0].groups

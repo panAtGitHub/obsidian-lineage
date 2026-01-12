@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { HiddenVerticalToolbarButtons } from 'src/stores/settings/derived/view-settings-store';
 import { derived } from 'svelte/store';
 import { ToolbarButton } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons';
@@ -23,7 +23,7 @@ export type ToolbarButtonsGroup = {
     }[];
 };
 
-export const VerticalToolbarButtonsList = (view: LineageView) => {
+export const VerticalToolbarButtonsList = (view: MandalaView) => {
     const hiddenControlsBarButtons = HiddenVerticalToolbarButtons(view.plugin);
     const h = new VerticalToolbarActions(view);
 

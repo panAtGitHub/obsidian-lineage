@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { Settings } from 'src/stores/settings/settings-type';
 import { applyFontSize } from 'src/stores/view/subscriptions/effects/css-variables/apply-font-size';
 import { applyCssColor } from 'src/stores/view/subscriptions/effects/css-variables/apply-css-color';
@@ -13,7 +13,7 @@ import { applyHeadingsFontSize } from 'src/stores/view/subscriptions/effects/css
 import { SettingsActions } from 'src/stores/settings/settings-store-actions';
 
 export const onPluginSettingsUpdate = (
-    view: LineageView,
+    view: MandalaView,
     state: Settings,
     action: SettingsActions,
 ) => {

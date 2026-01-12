@@ -1,12 +1,12 @@
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 type EditingState = {
     editedNode: string;
 };
 
-const restoreEditingState = (view: LineageView, state: EditingState) => {
+const restoreEditingState = (view: MandalaView, state: EditingState) => {
     setTimeout(() => {
         view.viewStore.dispatch({
             type: 'view/editor/enable-main-editor',
@@ -17,7 +17,7 @@ const restoreEditingState = (view: LineageView, state: EditingState) => {
     });
 };
 
-export const moveNode = async (view: LineageView, direction: AllDirections) => {
+export const moveNode = async (view: MandalaView, direction: AllDirections) => {
     let state: null | EditingState = null;
     if (view.inlineEditor.nodeId) {
         state = {

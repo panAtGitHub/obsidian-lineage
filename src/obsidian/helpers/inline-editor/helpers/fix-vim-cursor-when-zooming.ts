@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const fixVimCursorWhenZooming = (view: LineageView) => {
+export const fixVimCursorWhenZooming = (view: MandalaView) => {
     if (view.zoomFactor === 1) return null;
     // @ts-ignore
     const config = view.plugin.app.vault.config;

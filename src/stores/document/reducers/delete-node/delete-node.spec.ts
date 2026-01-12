@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { deleteNode } from 'src/stores/document/reducers/delete-node/delete-node';
 
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 describe('delete node', () => {
     it('should delete node', () => {
@@ -34,7 +34,7 @@ describe('delete node', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         const output = {
             content: {},
             columns: [
@@ -61,7 +61,7 @@ describe('delete node', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
 
         expect(deleteNode(input, activeNode)).toEqual(expectedActiveNode);
         expect(input).toEqual(output);
@@ -130,7 +130,7 @@ describe('delete node', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
 
         const stateAfter = {
             content: {},
@@ -145,7 +145,7 @@ describe('delete node', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         const nextNode = deleteNode(stateBefore, deletedNode);
         expect(nextNode).toEqual(aboveDeleteNode);
         expect(stateBefore).toEqual(stateAfter);
@@ -170,7 +170,7 @@ describe('delete node', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
 
         const stateAfter = {
             content: { 'n-lt8wz9zd': { content: 'one' } },
@@ -180,7 +180,7 @@ describe('delete node', () => {
                     groups: [{ parentId: 'r-lt8wz9zc', nodes: [siblingNodId] }],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
 
         expect(deleteNode(state, activeNodeId)).toEqual(siblingNodId);
         expect(state).toEqual(stateAfter);

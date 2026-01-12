@@ -1,24 +1,24 @@
-.lineage-view {
-    --lng-box-shadow-dnd-above: inset 2px 51px 19px -28px var(--lineage-accent);
-    --lng-box-shadow-dnd-below: inset 2px -51px 19px -28px var(--lineage-accent);
-    --lng-box-shadow-dnd-under: inset -51px 2px 19px -28px var(--lineage-accent)
+.mandala-view {
+    --lng-box-shadow-dnd-above: inset 2px 51px 19px -28px var(--mandala-accent);
+    --lng-box-shadow-dnd-below: inset 2px -51px 19px -28px var(--mandala-accent);
+    --lng-box-shadow-dnd-under: inset -51px 2px 19px -28px var(--mandala-accent)
 }
 
-.lineage__drop-node-above {
+.mandala__drop-node-above {
     box-shadow: var(--lng-box-shadow-dnd-above) !important;
     & .card-background-style{
         box-shadow: var(--lng-box-shadow-dnd-above) !important;
     }
 }
 
-.lineage__drop-node-below {
+.mandala__drop-node-below {
     box-shadow: var(--lng-box-shadow-dnd-below) !important;
     & .card-background-style{
         box-shadow: var(--lng-box-shadow-dnd-below) !important;
     }
 }
 
-.lineage__drop-node-under {
+.mandala__drop-node-under {
     box-shadow: var(--lng-box-shadow-dnd-under) !important;
 
     & .card-background-style{

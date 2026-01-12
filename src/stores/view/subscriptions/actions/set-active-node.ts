@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getIdOfSection } from 'src/stores/view/subscriptions/helpers/get-id-of-section';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
 import { Snapshot } from 'src/stores/document/document-state-type';
 
 export const setActiveNode = (
-    view: LineageView,
+    view: MandalaView,
     action: DocumentStoreAction,
 ) => {
     const documentState = view.documentStore.getValue();

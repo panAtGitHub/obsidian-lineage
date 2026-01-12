@@ -1,5 +1,5 @@
 import { cleanAndSortColumns } from 'src/lib/tree-utils/sort/clean-and-sort-columns';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { deleteChildNodes } from 'src/lib/tree-utils/delete/delete-child-nodes';
 import { isLastRootNode } from 'src/lib/tree-utils/assert/is-last-root-node';
 import invariant from 'tiny-invariant';
@@ -16,7 +16,7 @@ export type DeleteNodeAction = {
 };
 
 export const deleteNode = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     nodeId: string,
     selectedNodes?: Set<string>,
 ) => {

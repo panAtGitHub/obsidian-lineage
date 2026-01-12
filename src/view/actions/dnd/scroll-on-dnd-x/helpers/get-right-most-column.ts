@@ -10,7 +10,7 @@ export const getRightMostColumn = (
               .find(
                   (x) =>
                       x.querySelectorAll(
-                          `.lineage-card:not(.${DND_ACTIVE_CLASS})`,
+                          `.mandala-card:not(.${DND_ACTIVE_CLASS})`,
                       ).length > 0,
               ) as HTMLElement)
         : null;

@@ -1,10 +1,10 @@
 import { Modal } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import Content from 'src/view/modals/vertical-toolbar-buttons/components/vertical-toolbar-icons-selection-modal.svelte';
 import { lang } from 'src/lang/lang';
 
 export type ModalProps = {
-    plugin: Lineage;
+    plugin: MandalaGrid;
 };
 
 export class VerticalToolbarButtonsModal extends Modal {

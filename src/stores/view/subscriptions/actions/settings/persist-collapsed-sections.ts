@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const persistCollapsedSections = (view: LineageView) => {
+export const persistCollapsedSections = (view: MandalaView) => {
     const viewState = view.viewStore.getValue();
     const documentState = view.documentStore.getValue();
     const collapsedParents = Array.from(viewState.outline.collapsedParents);

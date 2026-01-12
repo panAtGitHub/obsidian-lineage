@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { Notice } from 'obsidian';
 import { lang } from 'src/lang/lang';
 
-export const pasteNode = async (view: LineageView) => {
+export const pasteNode = async (view: MandalaView) => {
     const viewState = view.viewStore.getValue();
     const clipboardItems = await navigator.clipboard.read();
     let containsImage = false;

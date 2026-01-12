@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const setActiveSidebarNode = (view: LineageView, id: string) => {
+export const setActiveSidebarNode = (view: MandalaView, id: string) => {
     const settings = view.plugin.settings.getValue();
     const activeTab = settings.view.leftSidebarActiveTab;
     view.viewStore.dispatch({

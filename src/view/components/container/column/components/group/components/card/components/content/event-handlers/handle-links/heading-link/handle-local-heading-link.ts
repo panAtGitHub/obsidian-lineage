@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
 
-export const handleLocalHeadingLink = (view: LineageView, link: string) => {
+export const handleLocalHeadingLink = (view: MandalaView, link: string) => {
     const match = /#+(.*)$/.exec(link);
     if (!match) return;
     const headingText = match[1].trimStart();
@@ -11,7 +11,7 @@ export const handleLocalHeadingLink = (view: LineageView, link: string) => {
         ) as HTMLHeadingElement[];
         const heading = headings.find((h) => h.dataset.heading === headingText);
         if (heading) {
-            const card = heading.closest('.lineage-card');
+            const card = heading.closest('.mandala-card');
             if (card && card.id) {
                 selectCard(view, card.id);
                 break;

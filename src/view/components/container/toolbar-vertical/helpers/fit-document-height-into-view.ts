@@ -2,9 +2,9 @@ import invariant from 'tiny-invariant';
 import { get } from 'svelte/store';
 import { zoomLevelStore } from 'src/stores/view/derived/zoom-level-store';
 import { getCombinedBoundingClientRect } from 'src/lib/align-element/helpers/get-combined-client-rect';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const fitDocumentHeightIntoView = async (view: LineageView) => {
+export const fitDocumentHeightIntoView = async (view: MandalaView) => {
     invariant(view.container);
     const initialZoomLevel = get(zoomLevelStore(view));
     view.plugin.settings.dispatch({

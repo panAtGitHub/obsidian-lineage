@@ -1,44 +1,44 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'src/lib/store/derived';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 
-export const ViewSettingsStore = (view: LineageView) =>
+export const ViewSettingsStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view);
 
-export const ShowLeftSidebarStore = (view: LineageView) =>
+export const ShowLeftSidebarStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.showLeftSidebar);
 
-export const LeftSidebarWidthStore = (view: LineageView) =>
+export const LeftSidebarWidthStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.leftSidebarWidth);
 
-export const LeftSidebarActiveTabStore = (view: LineageView) =>
+export const LeftSidebarActiveTabStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.leftSidebarActiveTab);
 
-export const ApplyGapBetweenCardsStore = (view: LineageView) =>
+export const ApplyGapBetweenCardsStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.applyGapBetweenCards);
 
-export const OutlineModeStore = (view: LineageView) =>
+export const OutlineModeStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.outlineMode);
 
-export const MandalaModeStore = (view: LineageView) =>
+export const MandalaModeStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.mandalaMode);
 
-export const MaintainEditMode = (view: LineageView) =>
+export const MaintainEditMode = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.maintainEditMode);
 
-export const AlwaysShowCardButtons = (view: LineageView) =>
+export const AlwaysShowCardButtons = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.alwaysShowCardButtons);
 
-export const ShowHiddenCardInfoStore = (view: LineageView) =>
+export const ShowHiddenCardInfoStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.showHiddenCardInfo);
 
-export const ShowMandalaDetailSidebarStore = (view: LineageView) =>
+export const ShowMandalaDetailSidebarStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.showMandalaDetailSidebar);
 
-export const MandalaDetailSidebarWidthStore = (view: LineageView) =>
+export const MandalaDetailSidebarWidthStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.mandalaDetailSidebarWidth);
 
-export const HiddenVerticalToolbarButtons = (plugin: Lineage) =>
+export const HiddenVerticalToolbarButtons = (plugin: MandalaGrid) =>
     derived(
         plugin.settings,
         (state) => state.view.hiddenVerticalToolbarButtons,

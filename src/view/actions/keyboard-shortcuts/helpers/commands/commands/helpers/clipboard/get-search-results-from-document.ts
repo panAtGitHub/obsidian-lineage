@@ -1,6 +1,6 @@
 import {
     ClipboardBranch,
-    LineageDocument,
+    MandalaGridDocument,
     Sections,
 } from 'src/stores/document/document-state-type';
 import { clone } from 'src/helpers/clone';
@@ -11,7 +11,7 @@ import { sortNodeIdsByDepthDesc } from 'src/lib/tree-utils/sort/sort-node-ids-by
 
 export const getSearchResultsFromDocument = (
     results: string[],
-    document: LineageDocument,
+    document: MandalaGridDocument,
     sections: Sections,
 ) => {
     const sortedByDepth = sortNodeIdsByDepthDesc(sections, results);

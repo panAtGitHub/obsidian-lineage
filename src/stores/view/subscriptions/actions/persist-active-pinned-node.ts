@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const persistActivePinnedNode = (view: LineageView) => {
+export const persistActivePinnedNode = (view: MandalaView) => {
     const documentState = view.documentStore.getValue();
     const sections = documentState.sections;
 

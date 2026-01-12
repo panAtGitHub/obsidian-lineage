@@ -1,11 +1,11 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getView } from 'src/view/components/container/context';
 import { get } from 'svelte/store';
 import { limitPreviewHeightStore } from 'src/stores/settings/derived/limit-preview-height-store';
 
 const deletionKeys = new Set(['Backspace', 'Delete', 'x', ' ']);
 
-export const AdjustHeight = (view: LineageView, el: HTMLElement) => {
+export const AdjustHeight = (view: MandalaView, el: HTMLElement) => {
     let previousScrollHeight = 0;
     let x: HTMLElement;
     const limitCardHeight = get(limitPreviewHeightStore(view));

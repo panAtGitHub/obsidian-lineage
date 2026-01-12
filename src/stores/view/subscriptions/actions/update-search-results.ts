@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
 export const updateActiveNodeAfterSearch = (
-    view: LineageView,
+    view: MandalaView,
     results: string[],
 ) => {
     const activeNode = view.viewStore.getValue().document.activeNode;
@@ -17,7 +17,7 @@ export const updateActiveNodeAfterSearch = (
     }
 };
 
-export const updateSearchResults = (view: LineageView) => {
+export const updateSearchResults = (view: MandalaView) => {
     const viewState = view.viewStore.getValue();
 
     const query = viewState.search.query;

@@ -1,12 +1,12 @@
 import { id } from 'src/helpers/id';
 import {
-    LineageDocument,
+    MandalaGridDocument,
     Snapshot,
     SnapshotContext,
 } from 'src/stores/document/document-state-type';
 
 export const createSnapshot = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     context: SnapshotContext,
 ) => {
     return {

@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { refreshMinimapTheme } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/consts/minimap-theme';
 import { setMinimapDom } from 'src/stores/minimap/subscriptions/effects/set-minimap-dom';
@@ -7,7 +7,7 @@ import { setMinimapActiveNode } from 'src/stores/minimap/subscriptions/actions/s
 import { drawDocument } from './effects/draw-document';
 import { setClientHeight } from 'src/stores/minimap/subscriptions/actions/set-client-height';
 
-export const onMinimapMount = async (view: LineageView) => {
+export const onMinimapMount = async (view: MandalaView) => {
     const minimapStore = view.minimapStore;
     invariant(minimapStore);
     refreshMinimapTheme();

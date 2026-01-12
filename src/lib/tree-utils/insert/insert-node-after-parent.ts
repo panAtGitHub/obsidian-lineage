@@ -1,10 +1,10 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { findNodeColumnAndParent } from 'src/lib/tree-utils/find/find-node-column-and-parent';
 import { findGroupByNodeId } from 'src/lib/tree-utils/find/find-group-by-node-id';
 import { SilentError } from 'src/lib/errors/errors';
 
 export const insertNodeAfterParent = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     nodeId: string,
     newNodeId: string,
 ) => {

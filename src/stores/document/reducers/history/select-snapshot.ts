@@ -2,7 +2,7 @@ import { updateNavigationState } from 'src/stores/document/reducers/history/help
 import { findSnapshotIndex } from 'src/stores/document/reducers/history/helpers/find-snapshot-index';
 import {
     DocumentHistory,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import { loadDocumentFromSnapshot } from 'src/stores/document/reducers/history/helpers/load-document-from-snapshot';
 
@@ -14,7 +14,7 @@ export type SelectSnapshotAction = {
 };
 
 export const selectSnapshot = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     history: DocumentHistory,
     action: SelectSnapshotAction,
 ) => {

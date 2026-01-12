@@ -11,14 +11,14 @@ import {
 } from 'obsidian';
 
 import Component from './components/container/main.svelte';
-import Lineage from '../main';
+import MandalaGrid from '../main';
 import { documentReducer } from 'src/stores/document/document-reducer';
 import { Unsubscriber } from 'svelte/store';
 import { OnError, Store } from 'src/lib/store/store';
 import { defaultDocumentState } from 'src/stores/document/default-document-state';
 import {
     DocumentState,
-    LineageDocument,
+    MandalaGridDocument,
 } from 'src/stores/document/document-state-type';
 import { clone } from 'src/helpers/clone';
 import { extractFrontmatter } from 'src/view/helpers/extract-frontmatter';
@@ -53,17 +53,17 @@ import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/documen
 import { loadFullDocument } from 'src/stores/view/subscriptions/actions/document/load-full-document';
 import { refreshActiveViewOfDocument } from 'src/stores/plugin/actions/refresh-active-view-of-document';
 import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-format';
-import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
+import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
 import { parseHtmlCommentMarker } from 'src/lib/data-conversion/helpers/html-comment-marker/parse-html-comment-marker';
 import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
 
-export const LINEAGE_VIEW_TYPE = 'mandala-grid';
+export const MANDALA_VIEW_TYPE = 'mandala-grid';
 
 export type DocumentStore = Store<DocumentState, DocumentStoreAction>;
-export type ViewStore = Store<ViewState, ViewStoreAction, LineageDocument>;
+export type ViewStore = Store<ViewState, ViewStoreAction, MandalaGridDocument>;
 export type MinimapStore = Store<MinimapState, MinimapStoreAction>;
 
-export class LineageView extends TextFileView {
+export class MandalaView extends TextFileView {
     component: Component;
     documentStore: DocumentStore;
     viewStore: ViewStore;
@@ -84,7 +84,7 @@ export class LineageView extends TextFileView {
     private activeFilePath: null | string;
     constructor(
         leaf: WorkspaceLeaf,
-        public plugin: Lineage,
+        public plugin: MandalaGrid,
     ) {
         super(leaf);
         this.documentStore = new Store(
@@ -92,7 +92,7 @@ export class LineageView extends TextFileView {
             documentReducer,
             this.onViewStoreError as OnError<DocumentStoreAction>,
         );
-        this.viewStore = new Store<ViewState, ViewStoreAction, LineageDocument>(
+        this.viewStore = new Store<ViewState, ViewStoreAction, MandalaGridDocument>(
             defaultViewState(),
             viewReducer,
             this.onViewStoreError as OnError<ViewStoreAction>,
@@ -108,7 +108,7 @@ export class LineageView extends TextFileView {
 
     get isActive() {
         return (
-            this === this.plugin.app.workspace.getActiveViewOfType(LineageView)
+            this === this.plugin.app.workspace.getActiveViewOfType(MandalaView)
         );
     }
 
@@ -156,7 +156,7 @@ export class LineageView extends TextFileView {
     }
 
     getViewType() {
-        return LINEAGE_VIEW_TYPE;
+        return MANDALA_VIEW_TYPE;
     }
 
     getIcon(): IconName {
@@ -308,7 +308,7 @@ export class LineageView extends TextFileView {
     };
 
     private getDocumentFormat(body: string) {
-        let format: LineageDocumentFormat;
+        let format: MandalaGridDocumentFormat;
         format = getPersistedDocumentFormat(this, false);
         if (format) {
             return format;

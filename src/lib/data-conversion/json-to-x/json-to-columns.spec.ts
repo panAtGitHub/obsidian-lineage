@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { TreeNode } from 'src/lib/data-conversion/x-to-json/columns-to-json';
 import { jsonToColumns } from 'src/lib/data-conversion/json-to-x/json-to-columns';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 type Expect = typeof expect;
 
 export const __compareColumns__ = (
-    documentA: LineageDocument,
-    documentB: LineageDocument,
+    documentA: MandalaGridDocument,
+    documentB: MandalaGridDocument,
     expect: Expect,
 ) => {
     expect(documentA.columns.length).toEqual(documentB.columns.length);
@@ -100,7 +100,7 @@ describe('tree-to-columns', () => {
                     ],
                 },
             ],
-        } satisfies LineageDocument;
+        } satisfies MandalaGridDocument;
         __compareColumns__(jsonToColumns(tree), document, expect);
     });
 });

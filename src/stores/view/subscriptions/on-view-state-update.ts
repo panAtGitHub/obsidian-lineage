@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { ViewStoreAction } from 'src/stores/view/view-store-actions';
 import { getViewEventType } from 'src/stores/view/helpers/get-view-event-type';
 import { updateSearchResults } from 'src/stores/view/subscriptions/actions/update-search-results';
@@ -10,7 +10,7 @@ import { getUsedHotkeys } from 'src/obsidian/helpers/get-used-hotkeys';
 import { persistCollapsedSections } from 'src/stores/view/subscriptions/actions/settings/persist-collapsed-sections';
 
 export const onViewStateUpdate = (
-    view: LineageView,
+    view: MandalaView,
     action: ViewStoreAction,
     localState: { previousActiveNode: string },
 ) => {

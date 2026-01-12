@@ -1,15 +1,15 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { updateCheckbox } from 'src/stores/view/subscriptions/effects/checkbox-listener/helpers/update-checkbox/update-checkbox';
 
-const handleCheckboxChange = (event: Event, view: LineageView) => {
+const handleCheckboxChange = (event: Event, view: MandalaView) => {
     const checkbox = event.target as HTMLInputElement;
     if (!checkbox?.classList.contains('task-list-item-checkbox')) {
         return;
     }
 
     const listItem = checkbox.closest('.task-list-item');
-    const card = checkbox.closest('.lineage-card');
+    const card = checkbox.closest('.mandala-card');
     if (!listItem || !card) {
         return;
     }
@@ -39,7 +39,7 @@ const handleCheckboxChange = (event: Event, view: LineageView) => {
     }
 };
 
-export const attachCheckboxListener = (view: LineageView): (() => void) => {
+export const attachCheckboxListener = (view: MandalaView): (() => void) => {
     const container = view.contentEl;
     invariant(container);
     const listener = (event: Event) => {

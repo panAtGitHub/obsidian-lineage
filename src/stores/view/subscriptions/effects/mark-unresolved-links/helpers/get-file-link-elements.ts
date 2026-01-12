@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const getFileLinkElements = (view: LineageView) => {
+export const getFileLinkElements = (view: MandalaView) => {
     return Array.from(
         view.contentEl.querySelectorAll('.internal-link'),
     ) as HTMLElement[];

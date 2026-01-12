@@ -883,7 +883,7 @@ After a couple of "passes" of expanding, you will end up with your complete, and
 Here's a (somewhat dated) video which might help.
 <iframe width="256" height="144" src="//www.youtube.com/embed/J4prcx0jZ9M?rel=0" frameborder="0" allowfullscreen></iframe>`;
 
-const lineageDocument = {
+const mandalaDocument = {
     content: {
         'n-lt8yutmx': {
             content:
@@ -1109,5 +1109,5 @@ export const ginkgo_academic_paper = {
     md,
     annotatedMd,
     mdWithHtmlElement,
-    lineageDocument,
+    mandalaDocument,
 };

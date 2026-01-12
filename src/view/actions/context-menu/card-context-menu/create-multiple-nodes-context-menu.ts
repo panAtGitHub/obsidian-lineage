@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { MenuItemObject } from 'src/obsidian/context-menu/render-context-menu';
 import { lang } from 'src/lang/lang';
 import { copyActiveBranchesToClipboard } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/copy-active-branches-to-clipboard';
@@ -6,7 +6,7 @@ import { copyActiveNodesToClipboard } from 'src/view/actions/keyboard-shortcuts/
 import { cutNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/cut-node';
 import { exportSelection } from 'src/view/actions/context-menu/card-context-menu/helpers/export-selection';
 
-export const createMultipleNodesContextMenu = (view: LineageView) => {
+export const createMultipleNodesContextMenu = (view: MandalaView) => {
     const menuItems: MenuItemObject[] = [
         {
             title: lang.cm_copy,
@@ -14,7 +14,7 @@ export const createMultipleNodesContextMenu = (view: LineageView) => {
             submenu: [
                 {
                     title: lang.cm_copy_branches,
-                    icon: 'lineage-cards',
+                    icon: 'mandala-cards',
                     action: () =>
                         copyActiveBranchesToClipboard(view, true, false),
                 },

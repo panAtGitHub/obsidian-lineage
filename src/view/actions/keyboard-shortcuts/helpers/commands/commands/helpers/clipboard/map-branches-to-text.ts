@@ -1,15 +1,15 @@
 import { getBranch } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/get-branch';
 import { branchToHtmlComment } from 'src/lib/data-conversion/branch-to-x/branch-to-html-comment';
 import { branchToOutline } from 'src/lib/data-conversion/branch-to-x/branch-to-outline';
-import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { branchToHtmlElement } from 'src/lib/data-conversion/branch-to-x/branch-to-html-element';
 import { branchToText } from 'src/lib/data-conversion/branch-to-x/branch-to-text';
 
 export const mapBranchesToText = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     nodes: Array<string>,
-    format: LineageDocumentFormat | 'unformatted-text',
+    format: MandalaGridDocumentFormat | 'unformatted-text',
 ) => {
     const branches = nodes.map((node) =>
         getBranch(document.columns, document.content, node, 'copy'),

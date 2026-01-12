@@ -82,7 +82,7 @@
         --mandala-card-min-height: 0;
     }
 
-    .mandala-9x9-grid :global(.lineage-card) {
+    .mandala-9x9-grid :global(.mandala-card) {
         border: 1px solid var(--background-modifier-border);
         border-radius: 8px;
         background: var(--background-primary);

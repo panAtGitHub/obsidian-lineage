@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'src/lib/store/derived';
 import { Content } from 'src/stores/document/document-state-type';
 
-export const contentStore = (view: LineageView, nodeId: string) => {
+export const contentStore = (view: MandalaView, nodeId: string) => {
     let nodeContent: Content[string];
     let documentContent: Content;
     return derived(view.documentStore, (state) => {
@@ -20,7 +20,7 @@ export const contentStore = (view: LineageView, nodeId: string) => {
     });
 };
 
-export const documentContentStore = (view: LineageView) => {
+export const documentContentStore = (view: MandalaView) => {
     return derived(view.documentStore, (state) => {
         return state.document.content;
     });

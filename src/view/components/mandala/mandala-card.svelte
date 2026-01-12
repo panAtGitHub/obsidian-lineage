@@ -63,7 +63,7 @@
 
 <div
     class={clx(
-        'lineage-card',
+        'mandala-card',
         active ? 'active-node' : 'inactive-node',
         selected ? 'node-border--selected' : undefined,
         pinned ? 'node-border--pinned' : undefined,
@@ -114,7 +114,7 @@
 </div>
 
 <style>
-    .lineage-card {
+    .mandala-card {
         width: var(--mandala-card-width, var(--node-width));
         min-height: var(--mandala-card-min-height, var(--min-node-height));
         height: var(--mandala-card-height, fit-content);
@@ -127,7 +127,7 @@
         --scrollbar-active-thumb-bg: var(--color-base-40);
     }
 
-    .lineage-card:hover {
+    .mandala-card:hover {
         z-index: 10;
     }
 
@@ -141,11 +141,11 @@
         pointer-events: none;
     }
 
-    /* .lineage-card.always-show-buttons :global(.lineage-floating-button) {
+    /* .mandala-card.always-show-buttons :global(.mandala-floating-button) {
         opacity: var(--opacity-inactive-node) !important;
     }
 
-    .lineage-card.always-show-buttons.active-node :global(.lineage-floating-button) {
+    .mandala-card.always-show-buttons.active-node :global(.mandala-floating-button) {
         opacity: var(--opacity-active-node) !important;
     } */
 </style>

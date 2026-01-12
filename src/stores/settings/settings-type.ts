@@ -21,14 +21,14 @@ export type ScrollingSettings = {
     centerActiveNodeV: boolean;
 };
 
-export type LineageDocumentFormat = 'outline' | 'sections' | 'html-element';
+export type MandalaGridDocumentFormat = 'outline' | 'sections' | 'html-element';
 
 export type ViewType = 'mandala-grid' | 'markdown';
 
 export type MandalaMode = '3x3' | '9x9';
 
 export type DocumentPreferences = {
-    documentFormat: LineageDocumentFormat;
+    documentFormat: MandalaGridDocumentFormat;
     viewType: ViewType;
     activeSection: string | null;
     pinnedSections: {
@@ -77,7 +77,7 @@ export type Settings = {
         hiddenVerticalToolbarButtons: ToolbarButton[];
     };
     general: {
-        defaultDocumentFormat: LineageDocumentFormat;
+        defaultDocumentFormat: MandalaGridDocumentFormat;
         linkPaneType: LinkPaneType;
     };
     styleRules: {

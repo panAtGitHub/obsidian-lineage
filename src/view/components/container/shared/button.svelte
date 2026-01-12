@@ -8,7 +8,7 @@
 
 <button
     aria-label={label}
-    class={"lineage-view-button "+classes}
+    class={"mandala-view-button "+classes}
     data-active={active}
     data-tooltip-position={tooltipPosition}
     {disabled}

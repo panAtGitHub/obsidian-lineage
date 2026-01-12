@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'src/lib/store/derived';
 import { Column, NodeGroup } from 'src/stores/document/document-state-type';
 import { findColumn } from 'src/stores/document/derived/groups-store';
@@ -16,7 +16,7 @@ export const findGroup = (
 };
 
 export const nodesStore = (
-    view: LineageView,
+    view: MandalaView,
     columnId: string,
     groupId: string,
 ) => {
@@ -32,7 +32,7 @@ export const nodesStore = (
     });
 };
 
-export const singleColumnNodesStore = (view: LineageView) => {
+export const singleColumnNodesStore = (view: MandalaView) => {
     return derived(view.documentStore, (state) => {
         return sortTreeNodes(state.document.columns);
     });

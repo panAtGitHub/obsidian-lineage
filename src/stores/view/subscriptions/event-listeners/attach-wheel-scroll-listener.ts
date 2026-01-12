@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const attachWheelScrollListener = (view: LineageView) => {
+export const attachWheelScrollListener = (view: MandalaView) => {
     view.plugin.registerDomEvent(view.contentEl, 'wheel', (evt) => {
         if (!evt.altKey) return;
         if (evt.deltaY === 0) return;

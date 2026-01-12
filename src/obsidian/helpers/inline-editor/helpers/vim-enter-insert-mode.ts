@@ -1,8 +1,8 @@
 import { MarkdownView } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { logger } from 'src/helpers/logger';
 
-export const vimEnterInsertMode = (plugin: Lineage, view: MarkdownView) => {
+export const vimEnterInsertMode = (plugin: MandalaGrid, view: MarkdownView) => {
     // @ts-ignore
     const config = plugin.app.vault.config;
     if (config?.vimMode) {

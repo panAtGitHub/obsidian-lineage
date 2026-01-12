@@ -4,7 +4,7 @@ import { findAdjacentNode } from 'src/lib/tree-utils/find/find-adjacent-node';
 import { cleanAndSortColumns } from 'src/lib/tree-utils/sort/clean-and-sort-columns';
 import invariant from 'tiny-invariant';
 import { SilentError } from 'src/lib/errors/errors';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { findAdjacentNodeOfSelection } from 'src/lib/tree-utils/find/find-adjacent-node-of-selection';
 import { findAdjacentParent } from 'src/lib/tree-utils/find/find-adjacent-parent';
 
@@ -18,7 +18,7 @@ export type MoveNodeAction = {
 };
 
 export const moveNode = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     action: Pick<MoveNodeAction, 'payload'>,
 ) => {
     const selectedNodes = action.payload.selectedNodes;

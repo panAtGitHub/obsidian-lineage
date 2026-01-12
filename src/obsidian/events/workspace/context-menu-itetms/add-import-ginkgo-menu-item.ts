@@ -1,12 +1,12 @@
 import { Menu, TFile } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { lang } from 'src/lang/lang';
 import { customIcons } from 'src/helpers/load-custom-icons';
 import { importFromGingko } from 'src/obsidian/events/workspace/effects/import-from-gingko/import-from-gingko';
 
 export const addImportGinkgoMenuItem = (
     menu: Menu,
-    plugin: Lineage,
+    plugin: MandalaGrid,
     files: TFile[],
 ) => {
     const allJson = files.every((file) => file.extension === 'json');

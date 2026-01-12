@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { createNewFile } from 'src/obsidian/events/workspace/effects/create-new-file';
 import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
@@ -7,7 +7,7 @@ import { getActiveNodes } from 'src/view/actions/keyboard-shortcuts/helpers/comm
 import { mapBranchesToText } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/map-branches-to-text';
 
 export const exportSelection = async (
-    view: LineageView,
+    view: MandalaView,
     includeSubItems: boolean,
 ) => {
     const viewState = view.viewStore.getValue();

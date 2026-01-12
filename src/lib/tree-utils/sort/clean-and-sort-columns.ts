@@ -1,8 +1,8 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { sortGroups } from 'src/lib/tree-utils/sort/sort-groups';
 
 export const cleanAndSortColumns = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
 ) => {
     const emptyColumns: Set<string> = new Set();
 

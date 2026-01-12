@@ -1,11 +1,11 @@
 import {
     DocumentHistory,
-    LineageDocument,
+    MandalaGridDocument,
     Snapshot,
 } from 'src/stores/document/document-state-type';
 
 export const loadDocumentFromSnapshot = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     snapshot: Snapshot,
     history: DocumentHistory,
 ) => {

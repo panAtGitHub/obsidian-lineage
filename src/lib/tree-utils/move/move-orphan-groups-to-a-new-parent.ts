@@ -1,5 +1,5 @@
 import {
-    LineageDocument,
+    MandalaGridDocument,
     NodeId,
 } from 'src/stores/document/document-state-type';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
@@ -8,7 +8,7 @@ import { VerticalDirection } from 'src/stores/document/document-store-actions';
 import { findGroupByParentId } from 'src/lib/tree-utils/find/find-group-by-node-id';
 
 export const moveOrphanGroupsToANewParent = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     currentParentNode: NodeId,
     newParentNode: NodeId,
     direction: VerticalDirection,

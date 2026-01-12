@@ -17,7 +17,7 @@
 </button>
 
 <style>
-    :global(.lineage-view) .clickable-icon {
+    :global(.mandala-view) .clickable-icon {
         cursor: pointer;
     }
     .clickable-icon--active {

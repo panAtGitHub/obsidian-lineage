@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { VerticalDirection } from 'src/stores/document/document-store-actions';
 import { findSiblingNodeInColumn } from 'src/lib/tree-utils/find/find-sibling-node-in-column';
 import { deleteNodeById } from 'src/lib/tree-utils/delete/delete-node-by-id';
@@ -15,7 +15,7 @@ export type MergeNodeAction = {
     };
 };
 export const mergeNode = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     action: MergeNodeAction,
 ) => {
     const mergedNode = action.payload.activeNodeId;

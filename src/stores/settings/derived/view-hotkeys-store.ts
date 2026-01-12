@@ -1,4 +1,4 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { derived } from 'svelte/store';
 import {
     defaultViewHotkeys,
@@ -13,14 +13,14 @@ import {
 } from 'src/stores/view/derived/hotkeys-store';
 import { groupArrayByProperty } from 'src/helpers/array-helpers/group-array-by-property';
 import { lang } from 'src/lang/lang';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { OutlineModeStore } from 'src/stores/settings/derived/view-settings-store';
 import { getDynamicLabel } from 'src/view/components/container/modals/hotkeys/components/helpers/get-dynamic-label';
 
-export const CustomHotkeysStore = (plugin: Lineage) =>
+export const CustomHotkeysStore = (plugin: MandalaGrid) =>
     derived(plugin.settings, (state) => state.hotkeys.customHotkeys);
 
-export const ViewHotkeysStore = (plugin: Lineage) =>
+export const ViewHotkeysStore = (plugin: MandalaGrid) =>
     derived([CustomHotkeysStore(plugin)], ([customHotkeys]) => {
         const viewHotkeys: StatefulViewCommand[] = [];
         for (const defaultViewHotkey of defaultViewHotkeys()) {
@@ -80,7 +80,7 @@ export const ViewHotkeysStore = (plugin: Lineage) =>
         return viewHotkeys;
     });
 
-export const ConflictLabeledHotkeysStore = (view: LineageView) =>
+export const ConflictLabeledHotkeysStore = (view: MandalaView) =>
     derived(
         [ViewHotkeysStore(view.plugin), ConflictingHotkeys(view)],
         ([hotkeys, conflicts]) => {
@@ -142,7 +142,7 @@ export const ConflictLabeledHotkeysStore = (view: LineageView) =>
     );
 
 type GroupedHotkeys = Record<GroupName, StatefulViewCommand[]>;
-export const FilteredHotkeysStore = (view: LineageView) =>
+export const FilteredHotkeysStore = (view: MandalaView) =>
     derived(
         [
             ConflictLabeledHotkeysStore(view),

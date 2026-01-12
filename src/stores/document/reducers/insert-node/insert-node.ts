@@ -2,7 +2,7 @@ import { insertChild } from 'src/lib/tree-utils/insert/insert-child';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
 import { AllDirections } from 'src/stores/document/document-store-actions';
 import { findGroupByNodeId } from 'src/lib/tree-utils/find/find-group-by-node-id';
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import invariant from 'tiny-invariant';
 import { id } from 'src/helpers/id';
 import { insertNodeAfterParent } from 'src/lib/tree-utils/insert/insert-node-after-parent';
@@ -16,7 +16,7 @@ export type CreateNodeAction = {
     };
 };
 export const insertNode = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     position: AllDirections | 'right-last',
     activeNodeId: string,
     content?: string,

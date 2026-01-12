@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { CANVAS_WIDTH_CPX } from 'src/stores/minimap/subscriptions/effects/minimap-canvas/worker/consts/constants';
 import { SilentError } from 'src/lib/errors/errors';
 
-export const setMinimapDom = (view: LineageView) => {
+export const setMinimapDom = (view: MandalaView) => {
     const minimapContainer = view.contentEl.querySelector(
         '.minimap-container',
     ) as HTMLElement | null;

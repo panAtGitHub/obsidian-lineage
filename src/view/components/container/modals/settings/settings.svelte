@@ -4,9 +4,9 @@
     import { ActiveSettingsTabStore } from 'src/view/components/container/modals/settings/active-settings-tab-store';
     import { X } from 'lucide-svelte';
     import { getContext } from 'svelte';
-    import type { LineageView } from 'src/view/view';
+    import type { MandalaView } from 'src/view/view';
 
-    const view = getContext<LineageView>('LineageView');
+    const view = getContext<MandalaView>('MandalaView');
 
     const setActiveTab = (tab: SettingsTab) => {
         ActiveSettingsTabStore.set(tab);
@@ -17,24 +17,24 @@
     };
 </script>
 
-<div class="lineage-modal" id="lineage-view-settings" tabindex="0">
+<div class="mandala-modal" id="mandala-view-settings" tabindex="0">
     <button class="modal-close-button" on:click={closeSettings} aria-label="Close settings">
         <X size={18} />
     </button>
-    <div class="lineage-vertical-tabs-container">
+    <div class="mandala-vertical-tabs-container">
         <VerticalTabHeader {setActiveTab} activeTab={$ActiveSettingsTabStore} />
         <div
-            class="lineage-vertical-tab-content"
+            class="mandala-vertical-tab-content"
             use:renderSettings={$ActiveSettingsTabStore}
         ></div>
     </div>
 </div>
 
 <style>
-    .lineage-vertical-tabs-container {
+    .mandala-vertical-tabs-container {
         display: flex;
     }
-    .lineage-vertical-tab-content {
+    .mandala-vertical-tab-content {
         height: auto;
         display: grid;
         flex-direction: column;

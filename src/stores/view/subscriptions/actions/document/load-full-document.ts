@@ -1,11 +1,11 @@
-import { LineageDocumentFormat } from 'src/stores/settings/settings-type';
-import { LineageView } from 'src/view/view';
+import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
+import { MandalaView } from 'src/view/view';
 
 export const loadFullDocument = (
-    view: LineageView,
+    view: MandalaView,
     data: string,
     frontmatter: string,
-    format: LineageDocumentFormat,
+    format: MandalaGridDocumentFormat,
     activeSection: string | null,
 ) => {
     view.documentStore.dispatch({

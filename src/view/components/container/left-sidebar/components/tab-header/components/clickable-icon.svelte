@@ -17,23 +17,23 @@
 </button>
 
 <style>
-    :global(.lineage-view) .clickable-icon {
+    :global(.mandala-view) .clickable-icon {
         cursor: pointer;
     }
 
     :global(.theme-dark) {
-        & .lineage-view .sidebar-tabs-header .clickable-icon {
+        & .mandala-view .sidebar-tabs-header .clickable-icon {
             color: var(--color-base-60);
         }
-        & .lineage-view .sidebar-tabs-header .clickable-icon:active {
+        & .mandala-view .sidebar-tabs-header .clickable-icon:active {
             color: var(--icon-color-active);
         }
     }
     :global(.theme-light) {
-        & .lineage-view .sidebar-tabs-header .clickable-icon {
+        & .mandala-view .sidebar-tabs-header .clickable-icon {
             color: var(--color-base-10);
         }
-        & .lineage-view .sidebar-tabs-header .clickable-icon:active {
+        & .mandala-view .sidebar-tabs-header .clickable-icon:active {
             color: var(--color-base-10);
         }
     }

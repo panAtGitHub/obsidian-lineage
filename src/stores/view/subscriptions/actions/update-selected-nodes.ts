@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
 import { getIdOfSection } from 'src/stores/view/subscriptions/helpers/get-id-of-section';
 import { clearSelectedNodes } from 'src/stores/view/subscriptions/actions/clear-selected-nodes';
 
 export const updateSelectedNodes = (
-    view: LineageView,
+    view: MandalaView,
     action: DocumentStoreAction,
     changeHistory: boolean,
 ) => {

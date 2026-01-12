@@ -1,10 +1,10 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { PluginStoreActions } from 'src/stores/plugin/plugin-store-actions';
 import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-content';
 import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
 
 export const onPluginStateUpdate = (
-    view: LineageView,
+    view: MandalaView,
     action: PluginStoreActions,
 ) => {
     if (!view.container) return;

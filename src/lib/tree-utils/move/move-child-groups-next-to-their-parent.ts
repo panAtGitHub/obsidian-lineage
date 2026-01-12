@@ -1,5 +1,5 @@
 import {
-    LineageDocument,
+    MandalaGridDocument,
     NodeId,
 } from 'src/stores/document/document-state-type';
 import { findNodeColumn } from 'src/lib/tree-utils/find/find-node-column';
@@ -7,7 +7,7 @@ import { id } from 'src/helpers/id';
 import { getSortedChildGroups } from 'src/lib/tree-utils/get/get-sorted-child-groups';
 
 export const moveChildGroupsNextToTheirParent = (
-    document: Pick<LineageDocument, 'columns'>,
+    document: Pick<MandalaGridDocument, 'columns'>,
     parentNode: NodeId,
 ) => {
     const sortedChildGroups = getSortedChildGroups(

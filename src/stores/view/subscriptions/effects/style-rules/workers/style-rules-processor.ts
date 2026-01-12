@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { NodePropertyResolver } from 'src/stores/view/subscriptions/effects/style-rules/helpers/resolvers/node-property-resolver/node-property-resolver';
 import { TargetNodeResolver } from 'src/stores/view/subscriptions/effects/style-rules/helpers/resolvers/target-node-resolver';
 import {
@@ -15,7 +15,7 @@ export class StyleRulesProcessor {
     constructor() {}
 
     processStyleRules = (
-        document: LineageDocument,
+        document: MandalaGridDocument,
         rules: ExtendedStyleRule[],
         action: DocumentStoreAction | null,
     ): StyleRulesResult => {
@@ -33,7 +33,7 @@ export class StyleRulesProcessor {
     };
 
     resetResolversCache = (
-        document: LineageDocument,
+        document: MandalaGridDocument,
         action: DocumentStoreAction,
     ) => {
         this.targetResolver.resetCache(action, document.columns);
@@ -44,7 +44,7 @@ export class StyleRulesProcessor {
         );
     };
 
-    private initialize = (document: LineageDocument) => {
+    private initialize = (document: MandalaGridDocument) => {
         this.targetResolver = new TargetNodeResolver(document.columns);
         this.propertyResolver = new NodePropertyResolver(
             document.columns,

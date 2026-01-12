@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { setActivePinnedNode } from 'src/stores/view/subscriptions/actions/set-active-pinned-node';
 
-export const updateStaleActivePinnedNode = (view: LineageView) => {
+export const updateStaleActivePinnedNode = (view: MandalaView) => {
     const viewStore = view.viewStore;
 
     const pinnedNodes = view.documentStore.getValue().pinnedNodes.Ids;

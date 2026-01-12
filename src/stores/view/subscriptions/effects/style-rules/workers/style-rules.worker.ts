@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { StyleRule } from 'src/stores/settings/types/style-rules-types';
 import { StyleRulesProcessor } from 'src/stores/view/subscriptions/effects/style-rules/workers/style-rules-processor';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
@@ -21,7 +21,7 @@ type ProcessRulesEvent = {
     type: 'process-rules';
     payload: {
         viewId: string;
-        document: LineageDocument;
+        document: MandalaGridDocument;
         rules: StyleRule[];
         action: DocumentStoreAction | null;
     };

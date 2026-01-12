@@ -1,8 +1,8 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 
 export const compareDocuments = (
-    docA: LineageDocument,
-    docB: LineageDocument,
+    docA: MandalaGridDocument,
+    docB: MandalaGridDocument,
 ): boolean => {
     if (docA.columns.length !== docB.columns.length) {
         // debugger;

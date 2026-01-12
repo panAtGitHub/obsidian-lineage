@@ -2,7 +2,7 @@ import {
     CustomHotkeys,
     DocumentPreferences,
     LeftSidebarTab,
-    LineageDocumentFormat,
+    MandalaGridDocumentFormat,
     LinkPaneType,
     RulesTab,
     ViewType,
@@ -18,7 +18,7 @@ export type SettingsActions =
         type: 'settings/documents/set-document-format';
         payload: {
             path: string;
-            format: LineageDocumentFormat;
+            format: MandalaGridDocumentFormat;
         };
     }
     | {
@@ -110,7 +110,7 @@ export type SettingsActions =
     | {
         type: 'settings/general/set-default-document-format';
         payload: {
-            format: LineageDocumentFormat;
+            format: MandalaGridDocumentFormat;
         };
     }
     | {

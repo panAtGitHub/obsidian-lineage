@@ -1,6 +1,6 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 
-export const getExistingRightTabGroup = (view: LineageView) => {
+export const getExistingRightTabGroup = (view: MandalaView) => {
     const rootSplit = view.plugin.app.workspace.rootSplit;
     if (!('children' in rootSplit)) return;
 

@@ -11,7 +11,7 @@ export type CustomIcon = {
 };
 
 const cards: CustomIcon = {
-    name: 'lineage-cards',
+    name: 'mandala-cards',
     svg: `
     <path
     d="m 13.115181,16.644424 h 6.605231 v 5.578301 H 13.115181 Z M 4.3082043,9.2066877 H 10.913436 V 14.784989 H 4.3082043 Z m 8.8069767,0 h 6.605231 v 5.5783013 h -6.605231 z m 0,-7.4377346 h 6.605231 V 7.347254 h -6.605231 z"
@@ -37,13 +37,13 @@ const mandalaGrid: CustomIcon = {
 };
 
 const split: CustomIcon = {
-    name: 'lineage-split',
+    name: 'mandala-split',
     svg: `<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/>`,
     mode: 'stroke',
 };
 
 const alignH: CustomIcon = {
-    name: 'lineage-align-horizontal',
+    name: 'mandala-align-horizontal',
     svg: `<g> 
             <rect width="20" height="12" x="2" y="6" rx="2"/> 
             <line x1="12" y1="0" x2="12" y2="24" stroke-dasharray="4 3" />
@@ -52,7 +52,7 @@ const alignH: CustomIcon = {
 };
 
 const alignV: CustomIcon = {
-    name: 'lineage-align-vertical',
+    name: 'mandala-align-vertical',
     svg: `<g> 
             <rect width="18" height="12" x="3" y="6" rx="2"/> 
         

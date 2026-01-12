@@ -1,7 +1,7 @@
 import { TFile } from 'obsidian';
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 
-export const getAllLoadedFiles = (plugin: Lineage) => {
+export const getAllLoadedFiles = (plugin: MandalaGrid) => {
     const allFiles = plugin.app.vault.getAllLoadedFiles();
 
     const allPaths = new Set<string>();

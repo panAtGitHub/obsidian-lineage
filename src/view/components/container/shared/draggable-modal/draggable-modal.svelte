@@ -51,7 +51,7 @@
 </script>
 
 <div
-    class="lineage-modal"
+    class="mandala-modal"
     bind:this={modal}
     style="transform: translate(0px, 0px);"
 >
@@ -70,7 +70,7 @@
         background-color: transparent;
         z-index: 1;
     }
-    .lineage-modal:hover .drag-handle {
+    .mandala-modal:hover .drag-handle {
         background-size: 2px 4px;
         background-image: linear-gradient(
             0deg,

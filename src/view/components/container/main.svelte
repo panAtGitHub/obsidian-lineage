@@ -1,6 +1,6 @@
 <script lang="ts">
     import { setContext } from 'svelte';
-    import Lineage from 'src/main';
+    import MandalaGrid from 'src/main';
     import { uiControlsStore } from 'src/stores/view/derived/ui-controls-store';
     import { showContextMenu } from 'src/view/actions/context-menu/show-context-menu';
     import { viewHotkeysAction } from 'src/view/actions/keyboard-shortcuts/view-hotkeys-action';
@@ -11,10 +11,10 @@
     import SettingsModal from 'src/view/components/container/modals/settings/settings.svelte';
     import SnapshotsListModal from 'src/view/components/container/modals/snapshots-list/file-histoy.svelte';
     import StyleRulesModal from 'src/view/components/container/style-rules/style-rules.svelte';
-    import { LineageView } from 'src/view/view';
+    import { MandalaView } from 'src/view/view';
 
-    export let plugin: Lineage;
-    export let view: LineageView;
+    export let plugin: MandalaGrid;
+    export let view: MandalaView;
 
     setContext('plugin', plugin);
     setContext('view', view);
@@ -23,12 +23,12 @@
 </script>
 
 <div
-    class="lineage-view"
+    class="mandala-view"
     use:viewHotkeysAction={{ view }}
     use:showContextMenu={view}
     tabindex="0"
 >
-    <div class={`lineage-main`} use:mouseWheelZoom={view}>
+    <div class={`mandala-main`} use:mouseWheelZoom={view}>
         <MandalaView />
         <Toolbar />
 
@@ -48,7 +48,7 @@
 </div>
 
 <style>
-    .lineage-main {
+    .mandala-main {
         display: flex;
         height: 100%;
         flex: 1 1 auto;
@@ -56,7 +56,7 @@
         position: relative;
     }
 
-    .lineage-view {
+    .mandala-view {
         background-color: var(--background-container);
         display: flex;
         height: 100%;

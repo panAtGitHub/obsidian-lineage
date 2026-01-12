@@ -1,9 +1,9 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { onMinimapMount } from 'src/stores/minimap/subscriptions/on-minimap-mount';
 import { onMinimapStateUpdate } from 'src/stores/minimap/subscriptions/on-minimap-state-update';
 import { minimapWorker } from 'src/workers/worker-instances';
 
-export const minimapSubscriptions = (view: LineageView) => {
+export const minimapSubscriptions = (view: MandalaView) => {
     const localState: { previousScrollPosition: number } = {
         previousScrollPosition: 0,
     };

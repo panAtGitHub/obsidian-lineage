@@ -49,7 +49,7 @@
         ? `margin-left: calc(var(--node-indentation-width) * ${depth})`
         : ''}
     class={clx(
-        'lineage-card',
+        'mandala-card',
         hidden ? 'hidden-node' : '',
         active
             ? activeStatusClasses[active]
@@ -111,7 +111,7 @@
         --min-node-height: 100px;
     }
 
-    .lineage-card {
+    .mandala-card {
         width: var(--node-width);
         height: fit-content;
         display: flex;
@@ -121,11 +121,11 @@
         --scrollbar-active-thumb-bg: var(--color-base-40);
     }
 
-    .lineage-card:hover {
+    .mandala-card:hover {
         z-index: 10;
     }
 
-    .lineage-card::-webkit-scrollbar {
+    .mandala-card::-webkit-scrollbar {
         display: initial;
     }
 

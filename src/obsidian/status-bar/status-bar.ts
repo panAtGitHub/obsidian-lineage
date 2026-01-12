@@ -1,5 +1,5 @@
-import { LineageView } from 'src/view/view';
-import Lineage from 'src/main';
+import { MandalaView } from 'src/view/view';
+import MandalaGrid from 'src/main';
 import { statusBarWorker } from 'src/workers/worker-instances';
 
 export class StatusBar {
@@ -10,7 +10,7 @@ export class StatusBar {
         // numberOfChildren: HTMLElement;
     };
 
-    constructor(public plugin: Lineage) {
+    constructor(public plugin: MandalaGrid) {
         this.onload();
     }
 
@@ -29,25 +29,25 @@ export class StatusBar {
         //     'Total number of subsections';
         this.plugin.registerEvent(
             this.plugin.app.workspace.on('active-leaf-change', (x) => {
-                const visible = Boolean(x && x.view instanceof LineageView);
+                const visible = Boolean(x && x.view instanceof MandalaView);
                 this.setVisibility(visible);
             }),
         );
     }
 
     private setVisibility(visible: boolean) {
-        this.container.toggleClass('lineage__hidden-element', !visible);
+        this.container.toggleClass('mandala__hidden-element', !visible);
     }
     private setElementVisibility(element: HTMLElement, visible: boolean) {
-        element.toggleClass('lineage__hidden-element', !visible);
+        element.toggleClass('mandala__hidden-element', !visible);
     }
 
-    updateAll = (view: LineageView) => {
+    updateAll = (view: MandalaView) => {
         this.updateCardsNumber(view);
         this.updateProgressIndicatorAndChildCount(view);
     };
 
-    updateCardsNumber = (view: LineageView) => {
+    updateCardsNumber = (view: MandalaView) => {
         const cards = Object.keys(
             view.documentStore.getValue().document.content,
         ).length;
@@ -55,7 +55,7 @@ export class StatusBar {
             cards + ' section' + (cards === 1 ? '' : 's'),
         );
     };
-    updateProgressIndicatorAndChildCount = async (view: LineageView) => {
+    updateProgressIndicatorAndChildCount = async (view: MandalaView) => {
         const document = view.documentStore.getValue().document;
         const activeNode = view.viewStore.getValue().document.activeNode;
         const result = await statusBarWorker.run({

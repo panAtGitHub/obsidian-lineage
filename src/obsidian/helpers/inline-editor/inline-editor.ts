@@ -1,5 +1,5 @@
 import { Editor, EditorPosition, MarkdownView, TFile } from 'obsidian';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { AdjustHeight } from 'src/view/actions/inline-editor/expandable-textarea-action';
 import { vimEnterInsertMode } from 'src/obsidian/helpers/inline-editor/helpers/vim-enter-insert-mode';
 import { fixVimCursorWhenZooming } from 'src/obsidian/helpers/inline-editor/helpers/fix-vim-cursor-when-zooming';
@@ -22,7 +22,7 @@ export class InlineEditor {
     private subscriptions: Set<() => void> = new Set();
     private cursorPositions: Map<string, EditorPosition> = new Map();
 
-    constructor(private view: LineageView) {}
+    constructor(private view: MandalaView) {}
 
     get nodeId() {
         return this.#nodeId;
@@ -152,7 +152,7 @@ export class InlineEditor {
         const workspace = this.view.plugin.app.workspace;
 
         this.containerEl = document.createElement('div');
-        this.containerEl.addClasses(['lineage-inline-editor']);
+        this.containerEl.addClasses(['mandala-inline-editor']);
         this.inlineView = new MarkdownView({
             containerEl: this.containerEl,
             app: this.view.plugin.app,

@@ -1,8 +1,8 @@
 import { parseHtmlElementMarker } from 'src/lib/data-conversion/helpers/html-element-marker/parse-html-element-marker';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { get } from 'svelte/store';
 
-export const findHtmlElementPosition = (view: LineageView, nodeId: string) => {
+export const findHtmlElementPosition = (view: MandalaView, nodeId: string) => {
     const lines = view.data.split('\n');
     const treeIndex = get(view.documentStore).sections.id_section[nodeId];
     for (let i = 0; i < lines.length; i++) {

@@ -1,8 +1,8 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { isMacLike } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-events/mod-key';
 
 export const setActiveMainSplitNode = (
-    view: LineageView,
+    view: MandalaView,
     nodeId: string,
     e: MouseEvent,
 ) => {

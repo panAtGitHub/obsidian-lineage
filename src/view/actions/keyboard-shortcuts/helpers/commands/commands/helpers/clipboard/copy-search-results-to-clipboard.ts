@@ -1,7 +1,7 @@
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { getSearchResultsFromDocument } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/clipboard/get-search-results-from-document';
 
-export const copySearchResultsToClipboard = async (view: LineageView) => {
+export const copySearchResultsToClipboard = async (view: MandalaView) => {
     const results = Array.from(view.viewStore.getValue().search.results.keys());
     const documentState = view.documentStore.getValue();
     const outline = getSearchResultsFromDocument(

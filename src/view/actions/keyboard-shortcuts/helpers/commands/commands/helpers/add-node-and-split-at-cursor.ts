@@ -1,7 +1,7 @@
 import { Direction } from 'src/stores/document/document-store-actions';
 
 import { saveNodeAndInsertNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/save-node-and-insert-node';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { EditorPosition } from 'obsidian';
 
 const flattenEditorPosition = (value: string, cursor: EditorPosition) => {
@@ -18,7 +18,7 @@ const flattenEditorPosition = (value: string, cursor: EditorPosition) => {
 };
 
 export const addNodeAndSplitAtCursor = (
-    view: LineageView,
+    view: MandalaView,
     direction: Direction,
 ) => {
     let text: string = '';

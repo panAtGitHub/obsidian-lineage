@@ -1,4 +1,4 @@
-import Lineage from 'src/main';
+import MandalaGrid from 'src/main';
 import { App, Command, Hotkey } from 'obsidian';
 import { hotkeyToString } from 'src/view/actions/keyboard-shortcuts/helpers/keyboard-events/hotkey-to-string';
 
@@ -15,7 +15,7 @@ type ExtendedApp = App & {
 /* [hotkey_string]: command name */
 export type ConflictingHotkeys = Map<string, string>;
 
-export const getUsedHotkeys = (plugin: Lineage) => {
+export const getUsedHotkeys = (plugin: MandalaGrid) => {
     const app = plugin.app as ExtendedApp;
     const conflicting: ConflictingHotkeys = new Map<string, string>();
 

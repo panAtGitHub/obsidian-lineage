@@ -1,5 +1,5 @@
 import { StyleRule } from 'src/stores/settings/types/style-rules-types';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import { get } from 'svelte/store';
 import { DocumentStyleRulesStore } from 'src/stores/settings/derived/style-rules';
 
@@ -16,7 +16,7 @@ export const ruleDndAction = (
         rule: StyleRule;
         setDropTarget: (rule: StyleRule, position: 'before' | 'after') => void;
         resetDragState: () => void;
-        view: LineageView;
+        view: MandalaView;
     },
 ) => {
     const handleDragStart = (e: DragEvent) => {

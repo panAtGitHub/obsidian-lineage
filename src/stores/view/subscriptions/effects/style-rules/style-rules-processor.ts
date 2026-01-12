@@ -2,17 +2,17 @@ import { debounce } from 'obsidian';
 import { DocumentStoreAction } from 'src/stores/document/document-store-actions';
 import { rulesWorker } from 'src/workers/worker-instances';
 import { StyleRule } from 'src/stores/settings/types/style-rules-types';
-import { LineageView } from 'src/view/view';
+import { MandalaView } from 'src/view/view';
 import invariant from 'tiny-invariant';
 import { StyleRulesResult } from 'src/stores/view/subscriptions/effects/style-rules/helpers/process-style-rules';
 
 export type ExtendedStyleRule = StyleRule & { global?: boolean };
 
 export class StyleRulesProcessor {
-    private view: LineageView;
+    private view: MandalaView;
     private rules: ExtendedStyleRule[] = [];
 
-    constructor(view: LineageView) {
+    constructor(view: MandalaView) {
         this.view = view;
     }
 

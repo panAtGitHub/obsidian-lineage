@@ -1,4 +1,4 @@
-import { LineageDocument } from 'src/stores/document/document-state-type';
+import { MandalaGridDocument } from 'src/stores/document/document-state-type';
 import { SilentError } from 'src/lib/errors/errors';
 import { pasteNode } from 'src/stores/document/reducers/clipboard/paste-node/paste-node';
 import { deleteNode } from 'src/stores/document/reducers/delete-node/delete-node';
@@ -16,7 +16,7 @@ export type SplitNodeAction = {
 };
 
 export const splitNode = (
-    document: LineageDocument,
+    document: MandalaGridDocument,
     action: Pick<SplitNodeAction, 'payload'>,
 ) => {
     const targetNode = action.payload.target;
