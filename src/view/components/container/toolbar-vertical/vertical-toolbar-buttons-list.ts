@@ -137,7 +137,9 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
                                 b.id === 'center-active-node-h' ||
                                 b.id === 'center-active-node-v' ||
                                 b.id === 'mandala-mode' ||
-                                b.id === 'style-rules'
+                                b.id === 'style-rules' ||
+                                b.id === 'space-between-cards' ||
+                                b.id === 'hidden-card-info'
                             )
                                 return false;
 
