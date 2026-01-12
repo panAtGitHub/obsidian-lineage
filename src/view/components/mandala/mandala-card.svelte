@@ -10,7 +10,13 @@
     import { getView } from 'src/view/components/container/context';
     import { setActiveMainSplitNode } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/set-active-main-split-node';
     import { enableEditModeInMainSplit } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/enable-edit-mode-in-main-split';
-    import { ShowMandalaDetailSidebarStore } from 'src/stores/settings/derived/view-settings-store';
+    import { 
+        ShowMandalaDetailSidebarStore,
+        AlwaysShowCardButtons,
+        OutlineModeStore
+    } from 'src/stores/settings/derived/view-settings-store';
+    import CardButtons from 'src/view/components/container/column/components/group/components/card/components/card-buttons/card-buttons/card-buttons.svelte';
+    import { derived } from 'src/lib/store/derived';
 
     export let nodeId: string;
     export let section: string;
@@ -24,6 +30,20 @@
 
     const view = getView();
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
+    const alwaysShowCardButtons = AlwaysShowCardButtons(view);
+    const outlineMode = OutlineModeStore(view);
+
+    const hasChildrenStore = derived(view.documentStore, (state) => {
+        const section = state.sections.id_section[nodeId];
+        if (!section) return false;
+        return Object.keys(state.sections.section_id).some((s) =>
+            s.startsWith(section + '.'),
+        );
+    });
+
+    const collapsedStore = derived(view.viewStore, (state) =>
+        state.outline.collapsedParents.has(nodeId),
+    );
 
     const handleSelect = (e: MouseEvent) => {
         if (gridCell) {
@@ -48,6 +68,7 @@
         selected ? 'node-border--selected' : undefined,
         pinned ? 'node-border--pinned' : undefined,
         active ? 'node-border--active' : undefined,
+        $alwaysShowCardButtons ? 'always-show-buttons' : undefined,
     )}
     id={nodeId}
     use:droppable
@@ -78,6 +99,17 @@
         <Content nodeId={nodeId} isInSidebar={false} active={active ? ActiveStatus.node : null} />
     {/if}
 
+    <CardButtons
+        {editing}
+        {nodeId}
+        hasChildren={$hasChildrenStore}
+        isInSidebar={false}
+        collapsed={$collapsedStore}
+        active={active ? ActiveStatus.node : null}
+        alwaysShowCardButtons={$alwaysShowCardButtons}
+        outlineMode={$outlineMode}
+    />
+
     <div class="mandala-section-label">{section}</div>
 </div>
 
@@ -107,5 +139,13 @@
         opacity: 0.7;
         user-select: none;
         pointer-events: none;
+    }
+
+    .lineage-card.always-show-buttons :global(.lineage-floating-button) {
+        opacity: var(--opacity-inactive-node) !important;
+    }
+
+    .lineage-card.always-show-buttons.active-node :global(.lineage-floating-button) {
+        opacity: var(--opacity-active-node) !important;
     }
 </style>
