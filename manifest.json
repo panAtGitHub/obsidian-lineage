@@ -1,9 +1,9 @@
 {
 	"id": "mandala-grid",
 	"name": "Mandala Grid",
-	"version": "0.8.5",
+	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Mandala grid (3×3 / 9×9) editor built on Lineage.",
-	"author": "ycnmhd",
+	"author": "dusk",
 	"isDesktopOnly": false
 }
