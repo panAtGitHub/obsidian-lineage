@@ -9,10 +9,11 @@ import { selectionCommands } from 'src/view/actions/keyboard-shortcuts/helpers/c
 import { scrollCommands } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/scroll-commands';
 import { deleteNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/delete-node';
 import { LineageView } from 'src/view/view';
-import { Hotkey } from 'obsidian';
+import { Hotkey, Notice } from 'obsidian';
 import { CommandName, GroupName } from 'src/lang/hotkey-groups';
 import { get } from 'svelte/store';
 import { singleColumnStore } from 'src/stores/document/derived/columns-store';
+import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
 import {
     coreGrid,
     positions,
@@ -72,8 +73,9 @@ const swapMandalaCell = (view: LineageView, direction: SwapDirection) => {
         if (subgridTheme) {
             if (activeSectionRaw === subgridTheme) return { row: 1, col: 1 };
             if (activeSectionRaw.startsWith(`${subgridTheme}.`)) {
-                const slot = activeSectionRaw.split('.')[1] ?? '';
-                return slotPositions[slot] ?? null;
+                const suffix = activeSectionRaw.slice(subgridTheme.length + 1);
+                if (suffix.includes('.')) return null;
+                return slotPositions[suffix] ?? null;
             }
             return null;
         }
@@ -216,28 +218,40 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
             if (!docState.meta.isMandala) return;
 
             const state = view.viewStore.getValue();
-            if (state.ui.mandala.subgridTheme) return;
 
             const activeNodeId = state.document.activeNode;
             const activeSection = docState.sections.id_section[activeNodeId];
-            if (!activeSection) return;
+            if (!activeSection || activeSection === '1') return;
 
-            const theme = activeSection.includes('.')
-                ? activeSection.split('.')[0]
-                : activeSection;
+            const childGroup = findChildGroup(
+                docState.document.columns,
+                activeNodeId,
+            );
+            const childCount = childGroup?.nodes.length ?? 0;
 
-            if (!theme || theme === '1') return;
+            if (childCount < 8) {
+                if (childCount === 0) {
+                    const content =
+                        docState.document.content[activeNodeId]?.content ?? '';
+                    if (!content.trim()) {
+                        new Notice('请先填写内容，再展开九宫格');
+                        return;
+                    }
+                }
 
-            const themeNodeId = docState.sections.section_id[theme];
-            if (!themeNodeId) return;
+                view.documentStore.dispatch({
+                    type: 'document/mandala/ensure-children',
+                    payload: { parentNodeId: activeNodeId, count: 8 },
+                });
+            }
 
             view.viewStore.dispatch({
                 type: 'view/set-active-node/mouse-silent',
-                payload: { id: themeNodeId },
+                payload: { id: activeNodeId },
             });
             view.viewStore.dispatch({
                 type: 'view/mandala/subgrid/enter',
-                payload: { theme },
+                payload: { theme: activeSection },
             });
         },
         hotkeys: [],
@@ -254,16 +268,27 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
             const theme = state.ui.mandala.subgridTheme;
             if (!theme) return;
 
+            const lastDot = theme.lastIndexOf('.');
+            const parentTheme = lastDot === -1 ? null : theme.slice(0, lastDot);
+
             const docState = view.documentStore.getValue();
-            const themeNodeId = docState.sections.section_id[theme];
-            if (themeNodeId) {
+            const focusSection = parentTheme ?? theme;
+            const focusNodeId = docState.sections.section_id[focusSection];
+            if (focusNodeId) {
                 view.viewStore.dispatch({
                     type: 'view/set-active-node/mouse-silent',
-                    payload: { id: themeNodeId },
+                    payload: { id: focusNodeId },
                 });
             }
 
-            view.viewStore.dispatch({ type: 'view/mandala/subgrid/exit' });
+            if (parentTheme) {
+                view.viewStore.dispatch({
+                    type: 'view/mandala/subgrid/enter',
+                    payload: { theme: parentTheme },
+                });
+            } else {
+                view.viewStore.dispatch({ type: 'view/mandala/subgrid/exit' });
+            }
         },
         hotkeys: [],
     },

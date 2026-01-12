@@ -34,8 +34,9 @@ export const tryMandala3x3Navigation = (
         if (subgridTheme) {
             if (activeSectionRaw === subgridTheme) return { row: 1, col: 1 };
             if (activeSectionRaw.startsWith(`${subgridTheme}.`)) {
-                const slot = activeSectionRaw.split('.')[1] ?? '';
-                return slotPositions[slot] ?? null;
+                const suffix = activeSectionRaw.slice(subgridTheme.length + 1);
+                if (suffix.includes('.')) return null;
+                return slotPositions[suffix] ?? null;
             }
             return null;
         }

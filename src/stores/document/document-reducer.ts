@@ -35,7 +35,10 @@ import { refreshGroupParentIds } from 'src/stores/document/reducers/meta/refresh
 import { loadDocumentFromJSON } from 'src/stores/document/reducers/load-document-from-file/load-document-from-json';
 import { NO_UPDATE } from 'src/lib/store/store';
 import { sortDirectChildNodes } from 'src/stores/document/reducers/sort/sort-direct-child-nodes';
-import { swapMandalaNodes } from 'src/stores/document/reducers/mandala/swap-mandala-nodes';
+import {
+    ensureMandalaChildren,
+    swapMandalaNodes,
+} from 'src/stores/document/reducers/mandala/swap-mandala-nodes';
 
 const updateDocumentState = (
     state: DocumentState,
@@ -64,33 +67,55 @@ const updateDocumentState = (
         if (!update) return NO_UPDATE;
         newActiveNodeId = action.payload.nodeId;
     } else if (action.type === 'document/mandala/swap') {
-        const sourceSection = state.sections.id_section[action.payload.sourceNodeId];
-        const targetSection = state.sections.id_section[action.payload.targetNodeId];
+        const sourceSection =
+            state.sections.id_section[action.payload.sourceNodeId];
+        const targetSection =
+            state.sections.id_section[action.payload.targetNodeId];
         if (!sourceSection || !targetSection) return NO_UPDATE;
         if (sourceSection === '1' || targetSection === '1') return NO_UPDATE;
-        const sourceIsLeaf = sourceSection.includes('.');
-        const targetIsLeaf = targetSection.includes('.');
+
+        const sourceLastDot = sourceSection.lastIndexOf('.');
+        const targetLastDot = targetSection.lastIndexOf('.');
+        const sourceIsLeaf = sourceLastDot !== -1;
+        const targetIsLeaf = targetLastDot !== -1;
         if (sourceIsLeaf !== targetIsLeaf) return NO_UPDATE;
+
         if (!sourceIsLeaf) {
             const s = Number(sourceSection);
             const t = Number(targetSection);
             if (!(s >= 2 && s <= 9 && t >= 2 && t <= 9)) return NO_UPDATE;
         } else {
-            const [sParent, sIndex] = sourceSection.split('.');
-            const [tParent, tIndex] = targetSection.split('.');
-            const sp = Number(sParent);
-            const tp = Number(tParent);
-            const si = Number(sIndex);
-            const ti = Number(tIndex);
-            if (
-                !(sp >= 2 && sp <= 9 && tp >= 2 && tp <= 9 && si >= 1 && si <= 8 && ti >= 1 && ti <= 8)
-            )
+            const sourceParent = sourceSection.slice(0, sourceLastDot);
+            const targetParent = targetSection.slice(0, targetLastDot);
+            if (!sourceParent || sourceParent !== targetParent)
                 return NO_UPDATE;
+
+            const si = Number(sourceSection.slice(sourceLastDot + 1));
+            const ti = Number(targetSection.slice(targetLastDot + 1));
+            if (!(si >= 1 && si <= 8 && ti >= 1 && ti <= 8)) return NO_UPDATE;
         }
 
-        swapMandalaNodes(state.document, action.payload.sourceNodeId, action.payload.targetNodeId);
+        swapMandalaNodes(
+            state.document,
+            action.payload.sourceNodeId,
+            action.payload.targetNodeId,
+        );
         newActiveNodeId = action.payload.sourceNodeId;
         affectedNodeId = action.payload.sourceNodeId;
+    } else if (action.type === 'document/mandala/ensure-children') {
+        const section = state.sections.id_section[action.payload.parentNodeId];
+        if (!section || section === '1') return NO_UPDATE;
+
+        const createdNodes = ensureMandalaChildren(
+            state.document,
+            action.payload.parentNodeId,
+            8,
+        );
+        if (createdNodes.length === 0) return NO_UPDATE;
+
+        newActiveNodeId = action.payload.parentNodeId;
+        affectedNodeId = action.payload.parentNodeId;
+        affectedNodes = createdNodes;
     } else if (action.type === 'document/add-node') {
         newActiveNodeId = insertNode(
             state.document,
