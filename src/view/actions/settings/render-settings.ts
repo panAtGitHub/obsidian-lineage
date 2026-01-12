@@ -43,9 +43,21 @@ const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
     // general
     DefaultDocumentFormat(generalTab, settingsStore);
     LinkPaneType(generalTab, settingsStore);
-    MaintainEditMode(generalTab, settingsStore);
-    AlwaysShowCardButtons(generalTab, settingsStore);
-    ControlsBarButtons(generalTab, view);
+    MaintainEditMode(
+        generalTab,
+        settingsStore,
+        isMandala ? '自动聚焦详情编辑' : undefined,
+    );
+    AlwaysShowCardButtons(
+        generalTab,
+        settingsStore,
+        isMandala ? '始终显示格子操作图标' : undefined,
+    );
+    ControlsBarButtons(
+        generalTab,
+        view,
+        isMandala ? '顶部工具栏按钮管理' : undefined,
+    );
 
     // appearance
     BackgroundColor(
@@ -79,7 +91,8 @@ const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
         layoutTab,
         settingsStore,
         isMandala ? '网格间距' : undefined,
-        isMandala ? 10 : undefined,
+        isMandala ? 20 : undefined,
+        isMandala ? 2 : undefined,
     );
     if (!isMandala) {
         CardIndentationWidth(layoutTab, settingsStore);

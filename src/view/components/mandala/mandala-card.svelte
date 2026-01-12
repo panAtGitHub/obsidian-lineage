@@ -30,6 +30,14 @@
             view.mandalaActiveCell9x9 = { row: gridCell.row, col: gridCell.col };
         }
         setActiveMainSplitNode(view, nodeId, e);
+        const maintainEditMode =
+            view.plugin.settings.getValue().view.maintainEditMode;
+        if (maintainEditMode && $showDetailSidebar) {
+            view.viewStore.dispatch({
+                type: 'view/editor/enable-main-editor',
+                payload: { nodeId: nodeId, isInSidebar: true },
+            });
+        }
     };
 </script>
 

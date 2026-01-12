@@ -5,10 +5,11 @@ import { lang } from 'src/lang/lang';
 export const MaintainEditMode = (
     element: HTMLElement,
     settingsStore: SettingsStore,
+    label?: string,
 ) => {
     const settingsState = settingsStore.getValue();
     new Setting(element)
-        .setName(lang.settings_general_maintain_edit_mode)
+        .setName(label || lang.settings_general_maintain_edit_mode)
         .setDesc(lang.settings_general_maintain_edit_mode_desc)
         .addToggle((cb) => {
             cb.setValue(settingsState.view.maintainEditMode).onChange(

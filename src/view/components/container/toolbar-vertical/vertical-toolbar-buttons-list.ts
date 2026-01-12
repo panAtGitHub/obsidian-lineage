@@ -135,7 +135,8 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
                                 b.id === 'minimap' ||
                                 b.id === 'outline-mode' ||
                                 b.id === 'center-active-node-h' ||
-                                b.id === 'center-active-node-v'
+                                b.id === 'center-active-node-v' ||
+                                b.id === 'mandala-mode'
                             )
                                 return false;
 

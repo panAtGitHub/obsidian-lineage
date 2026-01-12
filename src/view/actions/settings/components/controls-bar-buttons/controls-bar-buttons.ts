@@ -6,9 +6,10 @@ import { VerticalToolbarButtonsModal } from 'src/view/modals/vertical-toolbar-bu
 export const ControlsBarButtons = (
     container: HTMLElement,
     view: LineageView,
+    label?: string,
 ) => {
     new Setting(container)
-        .setName(lang.settings_vertical_toolbar_icons)
+        .setName(label || lang.settings_vertical_toolbar_icons)
         .setDesc(lang.settings_vertical_toolbar_icons_desc)
         .addButton((cb) => {
             cb.setButtonText('Manage');

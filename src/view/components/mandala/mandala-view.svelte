@@ -28,7 +28,9 @@
 
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
 
-    $: view.mandalaMode = $mode;
+    // 强制锁定为 3x3 模式以支持无限嵌套逻辑，保留 9x9 代码备用
+    $: view.mandalaMode = '3x3';
+    // $: view.mandalaMode = $mode;
 
     const sectionToNodeId = derived(
         view.documentStore,
@@ -106,9 +108,10 @@
 >
     <div class="mandala-topbar">
         <VerticalToolbar />
-        <button class="mandala-toggle" on:click={toggleMode}>
+        <!-- 注释掉模式切换按钮，保留代码备用 -->
+        <!-- <button class="mandala-toggle" on:click={toggleMode}>
             {$mode === '3x3' ? '切换到 9×9' : '切换到 3×3'}
-        </button>
+        </button> -->
     </div>
 
     <div class="mandala-content-wrapper">
@@ -145,7 +148,8 @@
                     {/each}
                 </div>
             {:else}
-                <Mandala9x9Grid />
+                <!-- <Mandala9x9Grid /> -->
+                <div class="mandala-empty">9x9 预览已暂时禁用</div>
             {/if}
         </div>
 
