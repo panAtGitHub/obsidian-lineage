@@ -147,8 +147,9 @@
         width: var(--animated-sidebar-width);
         position: relative;
         overflow: hidden;
-        background-color: var(--background-primary);
-        border-left: 1px solid var(--background-modifier-border);
+        /* 移除背景色，使其显示父容器背景 */
+        background-color: transparent;
+        border-left: none;
         display: flex;
         flex-direction: column;
     }
@@ -166,12 +167,13 @@
         transition: background-color 0.2s;
         cursor: col-resize;
         left: 0px;
-        width: 4px;
+        width: 8px; /* 加宽响应区 */
         z-index: 10;
     }
 
     .resizer:hover {
         background-color: var(--color-accent);
+        opacity: 0.3;
     }
 
     .sidebar-content {
@@ -179,12 +181,20 @@
         display: flex;
         flex-direction: column;
         min-width: var(--sidebar-width);
-        padding: 16px;
+        /* 对齐九宫格的 12px 边距 */
+        padding: 12px 12px 12px 0; 
         overflow-y: auto;
     }
 
     .editor-wrapper {
         flex: 1;
+        background-color: var(--background-primary);
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid var(--background-modifier-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .no-selection {
@@ -194,16 +204,24 @@
         justify-content: center;
         color: var(--text-muted);
         font-style: italic;
+        background-color: var(--background-primary);
+        border-radius: 8px;
+        border: 1px dashed var(--background-modifier-border);
     }
 
     /* 适配 InlineEditor 在侧边栏的样式 */
     :global(.mandala-detail-sidebar .editor-container) {
         height: 100% !important;
-        min-height: 400px;
+        background-color: transparent !important;
     }
 
     :global(.mandala-detail-sidebar .view-content) {
-        background-color: var(--background-primary) !important;
-        padding: 0 !important;
+        background-color: transparent !important;
+        padding: 16px !important;
+    }
+
+    :global(.mandala-detail-sidebar .lng-prev) {
+        padding: 16px !important;
+        background-color: transparent !important;
     }
 </style>
