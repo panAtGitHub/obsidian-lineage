@@ -273,15 +273,6 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
 
             const docState = view.documentStore.getValue();
 
-            const focusSection = theme;
-            const focusNodeId = docState.sections.section_id[focusSection];
-            if (focusNodeId) {
-                view.viewStore.dispatch({
-                    type: 'view/set-active-node/mouse-silent',
-                    payload: { id: focusNodeId },
-                });
-            }
-
             if (parentTheme) {
                 view.viewStore.dispatch({
                     type: 'view/mandala/subgrid/enter',
@@ -289,6 +280,14 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
                 });
             } else {
                 view.viewStore.dispatch({ type: 'view/mandala/subgrid/exit' });
+            }
+
+            const focusNodeId = docState.sections.section_id[theme];
+            if (focusNodeId) {
+                view.viewStore.dispatch({
+                    type: 'view/set-active-node/mouse-silent',
+                    payload: { id: focusNodeId },
+                });
             }
         },
         hotkeys: [],
