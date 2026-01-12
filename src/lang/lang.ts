@@ -1,8 +1,8 @@
 export const lang = {
     // open
     ocm_open_in_editor: 'Open in editor',
-    ocm_open_in_lineage: 'Open in Lineage',
-    cmd_toggle_lineage_view: 'Toggle view',
+    ocm_open_in_lineage: 'Open in Mandala Grid',
+    cmd_toggle_lineage_view: 'Open Mandala Grid',
     card_btn_reveal_in_editor: 'Reveal in editor',
     error_parent_not_found: (full: string) =>
         `Could not find the parent section of ${full}`,
@@ -11,7 +11,7 @@ export const lang = {
     error_save_empty_data: "Can't save empty data",
 
     // create document
-    cmd_create_new_document: 'Create new document',
+    cmd_create_new_document: 'New Mandala Grid',
     ocm_new_document: 'New document',
     ocm_import_from_gingko: 'Import from Gingko',
 
@@ -134,7 +134,7 @@ export const lang = {
     hkg_history: 'History',
 
     // extract
-    cmd_extract_branch: 'Extract branch to a new document',
+    cmd_extract_branch: 'Extract to Mandala Grid',
     cm_extract_branch: 'Extract branch',
     cm_extract_section: 'Extract section',
     modals_snapshots_extracted_node: 'Extracted section ',

@@ -107,8 +107,8 @@ export default class Lineage extends Plugin {
 
     private loadRibbonIcon() {
         this.addRibbonIcon(
-            customIcons.cards.name,
-            'Toggle Lineage view',
+            customIcons.mandalaGrid.name,
+            'Open Mandala Grid',
             () => {
                 const file = getActiveFile(this);
                 if (file) toggleFileViewType(this, file, undefined);

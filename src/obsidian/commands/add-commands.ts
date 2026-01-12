@@ -24,7 +24,7 @@ const createCommands = (plugin: Lineage) => {
     })[] = [];
     commands.push({
         name: lang.cmd_toggle_lineage_view,
-        icon: customIcons.cards.name,
+        icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             const file = getActiveFile(plugin);
             if (file) {
@@ -38,7 +38,7 @@ const createCommands = (plugin: Lineage) => {
 
     commands.push({
         name: lang.cmd_create_new_document,
-        icon: customIcons.cards.name,
+        icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             if (checking) return true;
             createLineageDocument(plugin);
@@ -155,7 +155,7 @@ const createCommands = (plugin: Lineage) => {
 
     commands.push({
         name: lang.cmd_extract_branch,
-        icon: customIcons.cards.name,
+        icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             const view = getActiveLineageView(plugin);
             if (checking) {
