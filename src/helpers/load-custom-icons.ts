@@ -20,6 +20,22 @@ const cards: CustomIcon = {
     mode: 'fill',
 };
 
+const mandalaGrid: CustomIcon = {
+    name: 'mandala-grid-icon',
+    svg: `
+    <rect x="3" y="3" width="4.5" height="4.5" rx="1" />
+    <rect x="9.75" y="3" width="4.5" height="4.5" rx="1" />
+    <rect x="16.5" y="3" width="4.5" height="4.5" rx="1" />
+    <rect x="3" y="9.75" width="4.5" height="4.5" rx="1" />
+    <rect x="9.75" y="9.75" width="4.5" height="4.5" rx="1" />
+    <rect x="16.5" y="9.75" width="4.5" height="4.5" rx="1" />
+    <rect x="3" y="16.5" width="4.5" height="4.5" rx="1" />
+    <rect x="9.75" y="16.5" width="4.5" height="4.5" rx="1" />
+    <rect x="16.5" y="16.5" width="4.5" height="4.5" rx="1" />
+    `,
+    mode: 'fill',
+};
+
 const split: CustomIcon = {
     name: 'lineage-split',
     svg: `<path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/>`,
@@ -92,6 +108,7 @@ const cursor: CustomIcon = {
 };
 export const customIcons = {
     cards,
+    mandalaGrid,
     split,
     alignH,
     alignV,

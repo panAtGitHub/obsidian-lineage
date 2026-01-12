@@ -160,14 +160,14 @@ export class LineageView extends TextFileView {
     }
 
     getIcon(): IconName {
-        return customIcons.cards.name;
+        return customIcons.mandalaGrid.name;
     }
 
     getDisplayText() {
         return this.file ? this.file.basename : '';
     }
 
-    async onOpen() {}
+    async onOpen() { }
 
     async onClose() {
         return this.onUnloadFile();
@@ -361,9 +361,9 @@ export class LineageView extends TextFileView {
         const heading =
             result.type === 'heading'
                 ? {
-                      text: result.current.heading,
-                      level: result.current.level,
-                  }
+                    text: result.current.heading,
+                    level: result.current.level,
+                }
                 : null;
         const nodeId =
             (heading &&
