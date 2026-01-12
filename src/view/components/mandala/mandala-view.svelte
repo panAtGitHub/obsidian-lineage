@@ -13,6 +13,8 @@
     } from 'src/view/helpers/mandala/mandala-grid';
     import Mandala9x9Grid from 'src/view/components/mandala/mandala-9x9-grid.svelte';
     import VerticalToolbar from 'src/view/components/container/toolbar-vertical/vertical-toolbar.svelte';
+    import MandalaDetailSidebar from './mandala-detail-sidebar.svelte';
+    import { ShowMandalaDetailSidebarStore } from 'src/stores/settings/derived/view-settings-store';
 
     const view = getView();
 
@@ -23,6 +25,8 @@
         });
         focusContainer(view);
     };
+
+    const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
 
     $: view.mandalaMode = $mode;
 
@@ -107,39 +111,46 @@
         </button>
     </div>
 
-    <div
-        class="mandala-scroll"
-        bind:this={containerRef}
-        tabindex="0"
-        on:click={() => focusContainer(view)}
-    >
+    <div class="mandala-content-wrapper">
+        <div
+            class="mandala-scroll"
+            bind:this={containerRef}
+            tabindex="0"
+            on:click={() => focusContainer(view)}
+        >
+            {#if $mode === '3x3'}
+                {@const theme = $subgridTheme}
+                {@const sections = theme
+                    ? childSlots.map((slot) => (slot ? `${theme}.${slot}` : theme))
+                    : coreSlots}
+                <div class="mandala-grid mandala-grid--3 mandala-grid--core">
+                    {#each sections as section (section)}
+                        {@const nodeId = requireNodeId(section)}
+                        {#if nodeId}
+                            <MandalaCard
+                                {nodeId}
+                                {section}
+                                active={nodeId === $activeNodeId}
+                                editing={$editingState.activeNodeId === nodeId &&
+                                    !$editingState.isInSidebar &&
+                                    !$showDetailSidebar}
+                                selected={$selectedNodes.has(nodeId)}
+                                pinned={$pinnedNodes.has(nodeId)}
+                                style={$nodeStyles.get(nodeId)}
+                                draggable={section !== '1' && !$subgridTheme}
+                            />
+                        {:else}
+                            <div class="mandala-empty">{section}</div>
+                        {/if}
+                    {/each}
+                </div>
+            {:else}
+                <Mandala9x9Grid />
+            {/if}
+        </div>
+
         {#if $mode === '3x3'}
-            {@const theme = $subgridTheme}
-            {@const sections = theme
-                ? childSlots.map((slot) => (slot ? `${theme}.${slot}` : theme))
-                : coreSlots}
-            <div class="mandala-grid mandala-grid--3 mandala-grid--core">
-                {#each sections as section (section)}
-                    {@const nodeId = requireNodeId(section)}
-                    {#if nodeId}
-                        <MandalaCard
-                            {nodeId}
-                            {section}
-                            active={nodeId === $activeNodeId}
-                            editing={$editingState.activeNodeId === nodeId &&
-                                !$editingState.isInSidebar}
-                            selected={$selectedNodes.has(nodeId)}
-                            pinned={$pinnedNodes.has(nodeId)}
-                            style={$nodeStyles.get(nodeId)}
-                            draggable={section !== '1' && !$subgridTheme}
-                        />
-                    {:else}
-                        <div class="mandala-empty">{section}</div>
-                    {/if}
-                {/each}
-            </div>
-        {:else}
-            <Mandala9x9Grid />
+            <MandalaDetailSidebar />
         {/if}
     </div>
 </div>
@@ -180,6 +191,14 @@
         flex: 1 1 auto;
         overflow: auto;
         padding: 12px;
+    }
+
+    .mandala-content-wrapper {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: row;
+        min-height: 0;
+        overflow: hidden;
     }
 
     .mandala-blocks {

@@ -63,6 +63,8 @@ export type Settings = {
         zoomLevel: number;
         showMinimap: boolean;
         showLeftSidebar: boolean;
+        showMandalaDetailSidebar: boolean;
+        mandalaDetailSidebarWidth: number;
         leftSidebarWidth: number;
         leftSidebarActiveTab: LeftSidebarTab;
         applyGapBetweenCards: boolean;

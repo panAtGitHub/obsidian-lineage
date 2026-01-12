@@ -26,6 +26,8 @@ export const DEFAULT_SETTINGS = (): Settings => ({
         zoomLevel: 1,
         showMinimap: false,
         showLeftSidebar: false,
+        showMandalaDetailSidebar: false,
+        mandalaDetailSidebarWidth: 350,
         leftSidebarWidth: 500,
         leftSidebarActiveTab: 'pinned-cards',
         applyGapBetweenCards: false,

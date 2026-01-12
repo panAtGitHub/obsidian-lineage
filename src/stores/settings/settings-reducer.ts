@@ -129,9 +129,15 @@ const updateState = (store: Settings, action: SettingsActions) => {
                 ...store.view.scrolling,
             };
         }
-    } else if (action.type === 'settings/view/mandala/toggle-mode') {
         store.view.mandalaMode =
             store.view.mandalaMode === '9x9' ? '3x3' : '9x9';
+    } else if (action.type === 'view/mandala-detail-sidebar/toggle') {
+        store.view.showMandalaDetailSidebar =
+            !store.view.showMandalaDetailSidebar;
+    } else if (action.type === 'view/mandala-detail-sidebar/set-width') {
+        if (action.payload.width > 0) {
+            store.view.mandalaDetailSidebarWidth = action.payload.width;
+        }
     } else if (action.type === 'settings/view/set-node-indentation-width') {
         store.view.nodeIndentationWidth = action.payload.width;
     } else if (action.type === 'settings/view/set-maintain-edit-mode') {
@@ -224,7 +230,7 @@ const updateState = (store: Settings, action: SettingsActions) => {
     } else if (action.type === 'settings/general/set-link-pane-type') {
         store.general.linkPaneType = action.payload.position;
     } else if (action.type.startsWith('settings/style-rules')) {
-        updateStyleRules(store, action);
+        updateStyleRules(store, action as any);
     }
 };
 export const settingsReducer = (

@@ -89,7 +89,7 @@ const updateDocumentState = (
         if (state.document.activeNode !== action.payload.nodeId) {
             updateActiveNode(state.document, action.payload.nodeId, state);
         }
-        enableEditMode(state.document, action.payload.nodeId);
+        enableEditMode(state.document, action.payload.nodeId, action.payload.isInSidebar);
     } else if (action.type === 'view/editor/enable-sidebar-editor') {
         if (action.context.activeSidebarTab === 'pinned-cards') {
             if (state.pinnedNodes.activeNode !== action.payload.id) {
@@ -118,7 +118,7 @@ const updateDocumentState = (
             ...state.document.pendingConfirmation,
             deleteNode:
                 action.payload.includeSelection &&
-                state.document.selectedNodes.size > 1
+                    state.document.selectedNodes.size > 1
                     ? new Set(state.document.selectedNodes)
                     : new Set([action.payload.id]),
         };

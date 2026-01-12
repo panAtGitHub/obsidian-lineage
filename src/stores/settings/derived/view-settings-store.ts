@@ -32,6 +32,12 @@ export const AlwaysShowCardButtons = (view: LineageView) =>
 export const ShowHiddenCardInfoStore = (view: LineageView) =>
     derived(view.plugin.settings, (state) => state.view.showHiddenCardInfo);
 
+export const ShowMandalaDetailSidebarStore = (view: LineageView) =>
+    derived(view.plugin.settings, (state) => state.view.showMandalaDetailSidebar);
+
+export const MandalaDetailSidebarWidthStore = (view: LineageView) =>
+    derived(view.plugin.settings, (state) => state.view.mandalaDetailSidebarWidth);
+
 export const HiddenVerticalToolbarButtons = (plugin: Lineage) =>
     derived(
         plugin.settings,

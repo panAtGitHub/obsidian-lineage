@@ -6,7 +6,7 @@ import { lang } from 'src/lang/lang';
 import {
     Keyboard,
     Palette,
-    PanelRightInactive as PanelRight,
+    PanelRight,
     Settings,
     Eye,
 } from 'lucide-svelte';
@@ -72,6 +72,16 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
                         onClick: h.toggleMandalaMode,
                         icon: customIcons.cards,
                         id: 'mandala-mode',
+                    },
+                    {
+                        label: '详情侧边栏',
+                        onClick: () => {
+                            view.plugin.settings.dispatch({
+                                type: 'view/mandala-detail-sidebar/toggle',
+                            });
+                        },
+                        icon: PanelRight,
+                        id: 'mandala-detail-sidebar' as any,
                     },
                 ],
             },

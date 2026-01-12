@@ -19,12 +19,12 @@ import { SelectAllNodesAction } from 'src/stores/view/reducers/selection/select-
 
 export type MandalaActions =
     | {
-          type: 'view/mandala/subgrid/enter';
-          payload: { theme: string };
-      }
+        type: 'view/mandala/subgrid/enter';
+        payload: { theme: string };
+    }
     | {
-          type: 'view/mandala/subgrid/exit';
-      };
+        type: 'view/mandala/subgrid/exit';
+    };
 
 export type ViewStoreAction =
     | SearchAction
@@ -59,6 +59,7 @@ export type ToggleEditModeAction = {
     type: 'view/editor/enable-main-editor';
     payload: {
         nodeId: string;
+        isInSidebar?: boolean;
     };
 };
 
@@ -76,24 +77,24 @@ export type ViewDocumentAction =
     | SetDragCanceled
     | UpdateActiveBranchAction
     | {
-          type: 'view/editor/disable/reset-confirmation';
-      }
+        type: 'view/editor/disable/reset-confirmation';
+    }
     | {
-          type: 'view/delete-node/reset-confirmation';
-      }
+        type: 'view/delete-node/reset-confirmation';
+    }
     | {
-          type: 'view/delete-node/confirm';
-          payload: {
-              id: string;
-              includeSelection?: boolean;
-          };
-      }
+        type: 'view/delete-node/confirm';
+        payload: {
+            id: string;
+            includeSelection?: boolean;
+        };
+    }
     | {
-          type: 'view/editor/disable/confirm';
-          payload: {
-              id: string;
-          };
-      }
+        type: 'view/editor/disable/confirm';
+        payload: {
+            id: string;
+        };
+    }
     | { type: 'view/selection/clear-selection' };
 type ToggleHistorySidebarAction = {
     type: 'view/snapshots/toggle-modal';
@@ -154,11 +155,11 @@ export type UpdateStyleRulesResultAction = {
 
 export type KeyboardEventAction =
     | {
-          type: 'view/keyboard/shift/down';
-      }
+        type: 'view/keyboard/shift/down';
+    }
     | {
-          type: 'view/keyboard/shift/up';
-      };
+        type: 'view/keyboard/shift/up';
+    };
 
 export type ViewHotkeysAction =
     | SetSearchTermAction
@@ -178,15 +179,15 @@ export type UpdateConflictingHotkeysAction = {
 
 export type OutlineAction =
     | {
-          type: 'view/outline/toggle-collapse-node';
-          payload: { id: string };
-      }
+        type: 'view/outline/toggle-collapse-node';
+        payload: { id: string };
+    }
     | {
-          type: 'view/outline/refresh-collapsed-nodes';
-      }
+        type: 'view/outline/refresh-collapsed-nodes';
+    }
     | {
-          type: 'view/outline/toggle-collapse-all';
-      };
+        type: 'view/outline/toggle-collapse-all';
+    };
 
 export type SelectionActions = {
     type: 'view/selection/set-selection';

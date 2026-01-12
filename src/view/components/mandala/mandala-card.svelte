@@ -10,6 +10,7 @@
     import { getView } from 'src/view/components/container/context';
     import { setActiveMainSplitNode } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/set-active-main-split-node';
     import { enableEditModeInMainSplit } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/enable-edit-mode-in-main-split';
+    import { ShowMandalaDetailSidebarStore } from 'src/stores/settings/derived/view-settings-store';
 
     export let nodeId: string;
     export let section: string;
@@ -22,6 +23,7 @@
     export let gridCell: { mode: '9x9'; row: number; col: number } | null = null;
 
     const view = getView();
+    const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
 
     const handleSelect = (e: MouseEvent) => {
         if (gridCell) {
@@ -44,7 +46,14 @@
     on:click={handleSelect}
     on:dblclick={(e) => {
         handleSelect(e);
-        enableEditModeInMainSplit(view, nodeId);
+        if ($showDetailSidebar) {
+            view.viewStore.dispatch({
+                type: 'view/editor/enable-main-editor',
+                payload: { nodeId: nodeId, isInSidebar: true },
+            });
+        } else {
+            enableEditModeInMainSplit(view, nodeId);
+        }
     }}
 >
     {#if style}
