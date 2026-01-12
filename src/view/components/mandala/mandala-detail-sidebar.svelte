@@ -20,6 +20,7 @@
     let startX = 0;
 
     const view = getView();
+    const showSidebarStore = ShowMandalaDetailSidebarStore(view);
     const savedWidthStore = MandalaDetailSidebarWidthStore(view);
     const editingState = derived(view.viewStore, (state) => state.document.editing);
     const activeNodeId = derived(
@@ -28,17 +29,32 @@
     );
     const styleRules = NodeStylesStore(view);
 
+    let editorContainer: HTMLElement;
+
     $: isEditingInSidebar =
         $editingState.activeNodeId === $activeNodeId &&
         $editingState.isInSidebar;
 
+    const focusEditor = async () => {
+        await tick();
+        if (editorContainer) {
+            const editor = editorContainer.querySelector(
+                '.common-editor',
+            ) as HTMLTextAreaElement | HTMLDivElement;
+            if (editor) {
+                editor.focus();
+            }
+        }
+    };
+
     // 自动聚焦逻辑
     $: if (isEditingInSidebar) {
+        focusEditor();
+    } else if (!$editingState.activeNodeId) {
+        // 当退出编辑时，尝试将焦点还给网格根容器，确保方向键继续工作
         tick().then(() => {
-            const editor = view.contentEl.querySelector(
-                '.mandala-detail-sidebar .common-editor',
-            ) as HTMLTextAreaElement | HTMLDivElement;
-            if (editor) editor.focus();
+            const root = view.contentEl.querySelector('.mandala-scroll') as HTMLElement;
+            if (root) root.focus();
         });
     }
 
@@ -102,15 +118,17 @@
             {#if $activeNodeId}
                 <div class="editor-wrapper">
                     {#if isEditingInSidebar}
-                        <InlineEditor
-                            nodeId={$activeNodeId}
-                            style={$styleRules.get($activeNodeId)}
-                        />
+                        <div bind:this={editorContainer} class="sidebar-editor-container">
+                            <InlineEditor
+                                nodeId={$activeNodeId}
+                                style={$styleRules.get($activeNodeId)}
+                            />
+                        </div>
                     {:else}
                         <Content
                             nodeId={$activeNodeId}
                             isInSidebar={true}
-                            active={ActiveStatus.node}
+                            active={null}
                         />
                     {/if}
                 </div>
