@@ -272,7 +272,8 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
             const parentTheme = lastDot === -1 ? null : theme.slice(0, lastDot);
 
             const docState = view.documentStore.getValue();
-            const focusSection = parentTheme ?? theme;
+
+            const focusSection = theme;
             const focusNodeId = docState.sections.section_id[focusSection];
             if (focusNodeId) {
                 view.viewStore.dispatch({
