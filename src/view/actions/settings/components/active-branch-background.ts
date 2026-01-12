@@ -6,10 +6,11 @@ import { ColorSetting } from 'src/view/actions/settings/components/shared/color-
 export const ActiveBranchBackground = (
     container: HTMLElement,
     settingsStore: SettingsStore,
+    label?: string,
 ) => {
     ColorSetting(container, settingsStore, {
         defaultValue: getDefaultTheme().activeBranchBg,
-        label: lang.settings_theme_active_branch_bg,
+        label: label || lang.settings_theme_active_branch_bg,
         valueSelector: (settings) => settings.view.theme.activeBranchBg,
         onChange: (color) => {
             settingsStore.dispatch({

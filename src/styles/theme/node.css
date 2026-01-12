@@ -2,6 +2,7 @@
 .active-node,
 .active-child {
     background-color: var(--background-active-node);
+    --text-normal: var(--color-active-node);
 }
 
 .active-parent,

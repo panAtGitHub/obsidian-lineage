@@ -2,8 +2,8 @@ import { Theme } from 'src/stores/settings/settings-type';
 
 export const cssVariables = {
     colors: {
-        activeBranchBg: '--background-active-parent',
-        activeBranchColor: '--color-active-parent',
+        activeBranchBg: '--background-active-node',
+        activeBranchColor: '--color-active-node',
         containerBg: '--background-container',
     } satisfies Partial<Record<keyof Theme, string>>,
     cardWidth: '--node-width',

@@ -122,11 +122,35 @@ export const VerticalToolbarButtonsList = (view: LineageView) => {
             },
         ];
 
+        const viewType = view.getViewType();
+        const isMandala = viewType === 'mandala-grid';
+
         return buttons
             .map((group) => {
                 return {
                     id: group.id,
-                    buttons: group.buttons.filter((b) => !set.has(b.id)),
+                    buttons: group.buttons.filter((b) => {
+                        if (isMandala) {
+                            if (
+                                b.id === 'minimap' ||
+                                b.id === 'outline-mode' ||
+                                b.id === 'center-active-node-h' ||
+                                b.id === 'center-active-node-v'
+                            )
+                                return false;
+
+                            if (
+                                (b.id as string) === 'mandala-detail-sidebar'
+                            ) {
+                                // Only show detail sidebar in 3x3 mode
+                                const mandalaMode =
+                                    view.plugin.settings.getValue().view
+                                        .mandalaMode;
+                                if (mandalaMode !== '3x3') return false;
+                            }
+                        }
+                        return !set.has(b.id);
+                    }),
                 };
             })
             .filter((g) => g.buttons.length > 0);

@@ -6,10 +6,11 @@ import { ColorSetting } from 'src/view/actions/settings/components/shared/color-
 export const BackgroundColor = (
     container: HTMLElement,
     settingsStore: SettingsStore,
+    label?: string,
 ) => {
     ColorSetting(container, settingsStore, {
         defaultValue: getDefaultTheme().containerBg,
-        label: lang.settings_theme_bg,
+        label: label || lang.settings_theme_bg,
         valueSelector: (settings) => settings.view.theme.containerBg,
         onChange: (color) => {
             settingsStore.dispatch({

@@ -6,6 +6,7 @@ import { RangeSetting } from 'src/view/actions/settings/components/shared/range-
 export const InactiveCardOpacity = (
     element: HTMLElement,
     settingsStore: SettingsStore,
+    label?: string,
 ) => {
     RangeSetting(element, settingsStore, {
         defaultValue: DEFAULT_INACTIVE_NODE_OPACITY,
@@ -19,7 +20,7 @@ export const InactiveCardOpacity = (
         },
         valueSelector: (settingsState) =>
             settingsState.view.theme.inactiveNodeOpacity,
-        label: lang.settings_appearance_inactive_node_opacity,
+        label: label || lang.settings_appearance_inactive_node_opacity,
         max: 100,
         min: 0,
         step: 5,

@@ -189,7 +189,7 @@
     .editor-wrapper {
         flex: 1;
         background-color: var(--background-primary);
-        border-radius: 8px;
+        border-radius: 0px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         border: 1px solid var(--background-modifier-border);
         display: flex;
@@ -205,7 +205,7 @@
         color: var(--text-muted);
         font-style: italic;
         background-color: var(--background-primary);
-        border-radius: 8px;
+        border-radius: 0px;
         border: 1px dashed var(--background-modifier-border);
     }
 

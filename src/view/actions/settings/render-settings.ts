@@ -31,6 +31,7 @@ const setVisibleTab = (tabs: Tab[], activeTab: SettingsTab) => {
 
 const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
     const settingsStore = view.plugin.settings;
+    const isMandala = view.getViewType() === 'mandala-grid';
     const generalTab = activeDocument.createElement('div');
     const appearanceTab = activeDocument.createElement('div');
     const layoutTab = activeDocument.createElement('div');
@@ -47,17 +48,37 @@ const render = (view: LineageView, element: HTMLElement, tabs: Tab[]) => {
     ControlsBarButtons(generalTab, view);
 
     // appearance
-    BackgroundColor(appearanceTab, settingsStore);
-    ActiveBranchBackground(appearanceTab, settingsStore);
-    ActiveBranchColor(appearanceTab, settingsStore);
-    InactiveCardOpacity(appearanceTab, settingsStore);
+    BackgroundColor(
+        appearanceTab,
+        settingsStore,
+        isMandala ? '网格容器背景颜色' : undefined,
+    );
+    ActiveBranchBackground(
+        appearanceTab,
+        settingsStore,
+        isMandala ? '活跃格子背景颜色' : undefined,
+    );
+    ActiveBranchColor(
+        appearanceTab,
+        settingsStore,
+        isMandala ? '活跃格子文字颜色' : undefined,
+    );
+    InactiveCardOpacity(
+        appearanceTab,
+        settingsStore,
+        isMandala ? '非活跃格子透明度' : undefined,
+    );
     FontSize(appearanceTab, settingsStore);
     HeadingsFontSize(appearanceTab, settingsStore);
 
     // layout
-    CardWidth(layoutTab, settingsStore);
+    if (!isMandala) {
+        CardWidth(layoutTab, settingsStore);
+    }
     CardsGap(layoutTab, settingsStore);
-    CardIndentationWidth(layoutTab, settingsStore);
+    if (!isMandala) {
+        CardIndentationWidth(layoutTab, settingsStore);
+    }
     LimitCardHeight(layoutTab, settingsStore);
 
     element.append(generalTab, appearanceTab, layoutTab);
