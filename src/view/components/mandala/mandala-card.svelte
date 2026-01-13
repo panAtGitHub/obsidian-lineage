@@ -10,6 +10,13 @@
     import { getView } from 'src/view/components/container/context';
     import { setActiveMainSplitNode } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/set-active-main-split-node';
     import { enableEditModeInMainSplit } from 'src/view/components/container/column/components/group/components/card/components/content/store-actions/enable-edit-mode-in-main-split';
+    import { Platform } from 'obsidian';
+    import { mobileInteractionMode } from 'src/stores/view/mobile-interaction-store';
+    import { 
+        enterSubgridForNode, 
+        exitCurrentSubgrid, 
+        isGridCenter 
+    } from 'src/view/helpers/mandala/mobile-navigation';
     import { 
         ShowMandalaDetailSidebarStore,
         // AlwaysShowCardButtons,
@@ -50,6 +57,12 @@
             view.mandalaActiveCell9x9 = { row: gridCell.row, col: gridCell.col };
         }
         setActiveMainSplitNode(view, nodeId, e);
+        
+        // 移动端锁定模式下，绝对禁止触发编辑逻辑
+        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+            return;
+        }
+
         const maintainEditMode =
             view.plugin.settings.getValue().view.maintainEditMode;
         if (maintainEditMode && $showDetailSidebar) {
@@ -74,14 +87,42 @@
     use:droppable
     on:click={handleSelect}
     on:dblclick={(e) => {
-        handleSelect(e);
-        if ($showDetailSidebar) {
+        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+            // 锁定模式下，使用静默选择并执行导航，避免触发任何编辑副作用
             view.viewStore.dispatch({
-                type: 'view/editor/enable-main-editor',
-                payload: { nodeId: nodeId, isInSidebar: true },
+                type: 'view/set-active-node/mouse-silent',
+                payload: { id: nodeId },
             });
+            if (isGridCenter(view, nodeId, section)) {
+                exitCurrentSubgrid(view);
+            } else {
+                enterSubgridForNode(view, nodeId);
+            }
+            return;
+        }
+
+        handleSelect(e);
+        
+        if (Platform.isMobile) {
+            // 移动端解锁模式：触发编辑逻辑
+            if ($showDetailSidebar) {
+                view.viewStore.dispatch({
+                    type: 'view/editor/enable-main-editor',
+                    payload: { nodeId: nodeId, isInSidebar: true },
+                });
+            } else {
+                enableEditModeInMainSplit(view, nodeId);
+            }
         } else {
-            enableEditModeInMainSplit(view, nodeId);
+            // 桌面端：保持原有逻辑
+            if ($showDetailSidebar) {
+                view.viewStore.dispatch({
+                    type: 'view/editor/enable-main-editor',
+                    payload: { nodeId: nodeId, isInSidebar: true },
+                });
+            } else {
+                enableEditModeInMainSplit(view, nodeId);
+            }
         }
     }}
 >

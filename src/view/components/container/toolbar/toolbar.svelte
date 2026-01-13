@@ -20,6 +20,12 @@
     const toggleShowControls = () => {
         showControls.update((v) => !v);
     };
+
+    import { 
+        mobileInteractionMode, 
+        toggleMobileInteractionMode 
+    } from 'src/stores/view/mobile-interaction-store';
+    import { Lock, Unlock } from 'lucide-svelte';
 </script>
 
 <div class="navigation-history-container">
@@ -31,6 +37,21 @@
             tooltipPosition="bottom"
         >
             <Menu class="svg-icon" />
+        </Button>
+    </div>
+
+    <div class="lock-toggle-container">
+        <Button
+            active={$mobileInteractionMode === 'unlocked'}
+            label={$mobileInteractionMode === 'locked' ? '锁定模式 (导航优先)' : '解锁模式 (编辑优先)'}
+            on:click={toggleMobileInteractionMode}
+            tooltipPosition="bottom"
+        >
+            {#if $mobileInteractionMode === 'locked'}
+                <Lock class="svg-icon" size="18" />
+            {:else}
+                <Unlock class="svg-icon" size="18" />
+            {/if}
         </Button>
     </div>
 
@@ -71,13 +92,24 @@
         gap: var(--size-4-2);
     }
 
-    .mobile-toggle {
+    .lock-toggle-container {
         display: none;
     }
 
     :global(.is-mobile) {
+        & .navigation-history-container {
+            width: 100%;
+            justify-content: space-between;
+        }
         & .mobile-toggle {
             display: block;
+        }
+        & .lock-toggle-container {
+            display: block;
+            /* 居中处理，考虑到两边按钮的宽度 */
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
         & .buttons-group-wrapper[data-visible='false'] {
             display: none;

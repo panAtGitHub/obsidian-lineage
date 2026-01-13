@@ -65,8 +65,21 @@
         );
     };
 
+    import { 
+        mobileInteractionMode 
+    } from '../../../../../../../../../../stores/view/mobile-interaction-store';
+    import { Platform } from 'obsidian';
+
     const handleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
+        
+        // 移动端锁定模式：仅激活节点，禁止任何编辑相关的副作用
+        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+            setActiveNode(e);
+            e.stopPropagation(); // 防止冒泡到 MandalaCard 再次触发选择逻辑
+            return;
+        }
+
         const maintainEditMode = get(MaintainEditMode(view));
         const enableEditOnSingleClick =
             maintainEditMode && !isInSidebar && anotherNodeIsBeingEdited();
@@ -81,6 +94,12 @@
 
     const handleDoubleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
+
+        // 移动端锁定模式：绝对禁止双击触发编辑，由父组件 MandalaCard 处理导航
+        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+            return;
+        }
+
         enableEditModeAtCursor(e);
     };
 </script>

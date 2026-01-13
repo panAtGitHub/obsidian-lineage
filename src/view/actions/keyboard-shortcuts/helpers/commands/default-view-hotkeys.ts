@@ -12,6 +12,10 @@ import { moveNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/c
 import { MandalaView } from 'src/view/view';
 import { Hotkey, Notice } from 'obsidian';
 import { CommandName, GroupName } from 'src/lang/hotkey-groups';
+import {
+    enterSubgridForNode,
+    exitCurrentSubgrid
+} from 'src/view/helpers/mandala/mobile-navigation';
 import { get } from 'svelte/store';
 import { singleColumnStore } from 'src/stores/document/derived/columns-store';
 import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
@@ -273,47 +277,9 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
             e.preventDefault();
             e.stopPropagation();
 
-            if (view.mandalaMode !== '3x3') return;
-
-            const docState = view.documentStore.getValue();
-            if (!docState.meta.isMandala) return;
-
             const state = view.viewStore.getValue();
-
             const activeNodeId = state.document.activeNode;
-            const activeSection = docState.sections.id_section[activeNodeId];
-            if (!activeSection || activeSection === '1') return;
-
-            const childGroup = findChildGroup(
-                docState.document.columns,
-                activeNodeId,
-            );
-            const childCount = childGroup?.nodes.length ?? 0;
-
-            if (childCount < 8) {
-                if (childCount === 0) {
-                    const content =
-                        docState.document.content[activeNodeId]?.content ?? '';
-                    if (!content.trim()) {
-                        new Notice('请先填写内容，再展开九宫格');
-                        return;
-                    }
-                }
-
-                view.documentStore.dispatch({
-                    type: 'document/mandala/ensure-children',
-                    payload: { parentNodeId: activeNodeId, count: 8 },
-                });
-            }
-
-            view.viewStore.dispatch({
-                type: 'view/set-active-node/mouse-silent',
-                payload: { id: activeNodeId },
-            });
-            view.viewStore.dispatch({
-                type: 'view/mandala/subgrid/enter',
-                payload: { theme: activeSection },
-            });
+            enterSubgridForNode(view, activeNodeId);
         },
         hotkeys: [],
     },
@@ -322,34 +288,7 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
         callback: (view, e) => {
             e.preventDefault();
             e.stopPropagation();
-
-            if (view.mandalaMode !== '3x3') return;
-
-            const state = view.viewStore.getValue();
-            const theme = state.ui.mandala.subgridTheme;
-            if (!theme) return;
-
-            const lastDot = theme.lastIndexOf('.');
-            const parentTheme = lastDot === -1 ? null : theme.slice(0, lastDot);
-
-            const docState = view.documentStore.getValue();
-
-            if (parentTheme) {
-                view.viewStore.dispatch({
-                    type: 'view/mandala/subgrid/enter',
-                    payload: { theme: parentTheme },
-                });
-            } else {
-                view.viewStore.dispatch({ type: 'view/mandala/subgrid/exit' });
-            }
-
-            const focusNodeId = docState.sections.section_id[theme];
-            if (focusNodeId) {
-                view.viewStore.dispatch({
-                    type: 'view/set-active-node/mouse-silent',
-                    payload: { id: focusNodeId },
-                });
-            }
+            exitCurrentSubgrid(view);
         },
         hotkeys: [],
     },
