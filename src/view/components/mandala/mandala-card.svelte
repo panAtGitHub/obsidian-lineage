@@ -24,6 +24,7 @@
     } from 'src/stores/settings/derived/view-settings-store';
     // import CardButtons from 'src/view/components/container/column/components/group/components/card/components/card-buttons/card-buttons/card-buttons.svelte';
     import { derived } from 'src/lib/store/derived';
+    import { localFontStore } from 'src/stores/local-font-store';
 
     // 缓存平台状态，避免每次渲染都读取
     const isMobile = Platform.isMobile;
@@ -88,11 +89,6 @@
         handleCancel();
     };
 
-    // 使用 derived store 仅订阅需要的字段，避免过度渲染
-    const fontSizeOffsetStore = derived(
-        view.plugin.settings,
-        (s) => s.view.mobileEditFontSizeOffset
-    );
 
     // 防抖定时器
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -104,35 +100,11 @@
     };
 
     const handleIncreaseFontSize = () => {
-        const currentOffset = view.plugin.settings.getValue().view.mobileEditFontSizeOffset;
-        const newOffset = currentOffset + 1;
-        
-        // 立即更新 UI
-        fontSizeOffsetStore.set?.(newOffset);
-        
-        // 防抖延迟持久化
-        if (debounceTimer) clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            view.plugin.settings.dispatch({
-                type: 'settings/view/set-mobile-edit-font-size-offset',
-                payload: { offset: newOffset },
-            });
-        }, 300);
+        localFontStore.setFontSize($localFontStore + 1);
     };
 
     const handleDecreaseFontSize = () => {
-        const currentOffset = view.plugin.settings.getValue().view.mobileEditFontSizeOffset;
-        const newOffset = Math.max(-10, currentOffset - 1);
-        
-        fontSizeOffsetStore.set?.(newOffset);
-        
-        if (debounceTimer) clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            view.plugin.settings.dispatch({
-                type: 'settings/view/set-mobile-edit-font-size-offset',
-                payload: { offset: newOffset },
-            });
-        }, 300);
+        localFontStore.setFontSize($localFontStore - 1);
     };
 </script>
 
@@ -146,7 +118,6 @@
         // $alwaysShowCardButtons ? 'always-show-buttons' : undefined,
     )}
     class:is-floating-mobile={isMobile && editing && !$showDetailSidebar}
-    style="--local-font-size-offset: {$fontSizeOffsetStore}px"
     id={nodeId}
     use:droppable
     on:click={handleSelect}
@@ -199,14 +170,14 @@
                         <span class="settings-label">字号</span>
                         <div class="font-size-controls">
                             <button class="control-btn" on:click|stopPropagation={handleDecreaseFontSize}>-</button>
-                            <span class="font-value">{$fontSizeOffsetStore >= 0 ? '+' : ''}{$fontSizeOffsetStore}</span>
+                            <span class="font-value">{$localFontStore}px</span>
                             <button class="control-btn" on:click|stopPropagation={handleIncreaseFontSize}>+</button>
                         </div>
                     </div>
                 </div>
             {/if}
         {/if}
-        <InlineEditor nodeId={nodeId} {style} fontSizeOffset={isMobile ? $fontSizeOffsetStore : 0} />
+        <InlineEditor nodeId={nodeId} {style} fontSizeOffset={$localFontStore - 16} />
     {:else if draggable}
         <Draggable nodeId={nodeId} isInSidebar={false}>
             <Content nodeId={nodeId} isInSidebar={false} active={active ? ActiveStatus.node : null} />
@@ -237,7 +208,8 @@
         display: flex;
         flex-direction: column;
         position: relative;
-        font-size: calc(var(--font-text-size, 16px) + var(--local-font-size-offset, 0px));
+        font-size: var(--font-text-size, 16px);
+        line-height: 1.4;
         overflow: var(--mandala-card-overflow, visible);
         --scrollbar-thumb-bg: var(--color-base-30);
         --scrollbar-active-thumb-bg: var(--color-base-40);
@@ -256,6 +228,7 @@
         user-select: none;
         pointer-events: none;
     }
+
 
     /* .mandala-card.always-show-buttons :global(.mandala-floating-button) {
         opacity: var(--opacity-inactive-node) !important;

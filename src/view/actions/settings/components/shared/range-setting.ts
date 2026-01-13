@@ -93,4 +93,7 @@ export const RangeSetting = (
                 .setTooltip(lang.settings_reset);
         });
     setValues();
+    return {
+        setValues,
+    };
 };

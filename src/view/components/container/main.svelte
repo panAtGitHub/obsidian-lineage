@@ -12,6 +12,7 @@
     import SnapshotsListModal from 'src/view/components/container/modals/snapshots-list/file-histoy.svelte';
     import StyleRulesModal from 'src/view/components/container/style-rules/style-rules.svelte';
     import { MandalaView } from 'src/view/view';
+    import { localFontStore } from 'src/stores/local-font-store';
 
     export let plugin: MandalaGrid;
     export let view: MandalaView;
@@ -24,6 +25,7 @@
 
 <div
     class="mandala-view"
+    style="--font-text-size: {$localFontStore}px;"
     use:viewHotkeysAction={{ view }}
     use:showContextMenu={view}
     tabindex="0"
