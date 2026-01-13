@@ -120,6 +120,9 @@
         display: none;
     }
     :global(.is-mobile) {
+        & .controls-container {
+            flex-direction: row-reverse;
+        }
         & .controls-toggle {
             display: block;
         }
