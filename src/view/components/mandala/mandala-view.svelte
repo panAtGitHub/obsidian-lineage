@@ -13,12 +13,22 @@
         sectionAtCell9x9,
     } from 'src/view/helpers/mandala/mandala-grid';
     import Mandala9x9Grid from 'src/view/components/mandala/mandala-9x9-grid.svelte';
+    import MandalaOverviewSimple from 'src/view/components/mandala/mandala-overview-simple.svelte';
     import VerticalToolbar from 'src/view/components/container/toolbar-vertical/vertical-toolbar.svelte';
     import Toolbar from 'src/view/components/container/toolbar/toolbar.svelte';
     import MandalaDetailSidebar from './mandala-detail-sidebar.svelte';
     import { ShowMandalaDetailSidebarStore } from 'src/stores/settings/derived/view-settings-store';
+    import { createLayoutStore } from 'src/stores/view/orientation-store';
+
+    import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
+    import { mobilePopupFontSizeStore } from 'src/stores/mobile-popup-font-store';
 
     const view = getView();
+    const layout = createLayoutStore();
+
+    // 默认九宫格大小（如果是移动端且开启该逻辑）
+    $: squareSize = $layout.squareSize;
+    $: isPortrait = $layout.isPortrait;
 
     const mode = MandalaModeStore(view);
     const toggleMode = () => {
@@ -31,8 +41,8 @@
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
 
     // 强制锁定为 3x3 模式以支持无限嵌套逻辑，保留 9x9 代码备用
-    $: view.mandalaMode = '3x3';
-    // $: view.mandalaMode = $mode;
+    // $: view.mandalaMode = '3x3';
+    $: view.mandalaMode = $mode;
 
     const sectionToNodeId = derived(
         view.documentStore,
@@ -55,14 +65,6 @@
         view.viewStore,
         (state) => state.ui.mandala.subgridTheme,
     );
-    const editingState = derived(
-        view.viewStore,
-        (state) => state.document.editing,
-    );
-    const selectedNodes = derived(
-        view.viewStore,
-        (state) => state.document.selectedNodes,
-    );
     const nodeStyles = derived(
         view.viewStore,
         (state) => state.styleRules.nodeStyles,
@@ -78,6 +80,16 @@
         const nodeId = $sectionToNodeId[section];
         return nodeId || null;
     };
+
+    const editingState = derived(
+        view.viewStore,
+        (state) => state.document.editing,
+    );
+
+    const selectedNodes = derived(
+        view.viewStore,
+        (state) => state.document.selectedNodes,
+    );
 
     $: {
         if ($mode !== '3x3' && $subgridTheme) {
@@ -101,66 +113,118 @@
             }
         }
     }
+    // 手机端全屏编辑状态判断
+    $: isMobilePopupEditing = Platform.isMobile && $editingState.activeNodeId && !$editingState.isInSidebar;
+
+    let showSettings = false;
+    const toggleSettings = () => {
+        showSettings = !showSettings;
+    };
+
+    const handleSave = () => {
+        if ($editingState.activeNodeId) {
+            view.inlineEditor.unloadNode($editingState.activeNodeId, false);
+            view.viewStore.dispatch({
+                type: 'view/editor/disable-main-editor',
+            });
+        }
+    };
+
+    const handleIncreaseFontSize = () => {
+        mobilePopupFontSizeStore.setFontSize($mobilePopupFontSizeStore + 1);
+    };
+
+    const handleDecreaseFontSize = () => {
+        mobilePopupFontSizeStore.setFontSize($mobilePopupFontSizeStore - 1);
+    };
 </script>
 
 <div
     class="mandala-root"
     class:mandala-root--3={$mode === '3x3'}
     class:mandala-root--9={$mode === '9x9'}
-    class:is-editing-mobile={Platform.isMobile && $editingState.activeNodeId}
+    class:is-editing-mobile={isMobilePopupEditing}
+    class:is-square-layout={Platform.isMobile && $showDetailSidebar}
+    class:is-portrait={isPortrait}
+    style="--mandala-square-size: {squareSize}px;"
 >
-    <div class="mandala-topbar">
-        <Toolbar />
-        <VerticalToolbar />
-        <!-- 注释掉模式切换按钮，保留代码备用 -->
-        <!-- <button class="mandala-toggle" on:click={toggleMode}>
-            {$mode === '3x3' ? '切换到 9×9' : '切换到 3×3'}
-        </button> -->
-    </div>
-
-    <div class="mandala-content-wrapper">
-        <div
-            class="mandala-scroll"
-            bind:this={containerRef}
-            tabindex="0"
-            on:click={() => focusContainer(view)}
-        >
-            {#if $mode === '3x3'}
-                {@const theme = $subgridTheme}
-                {@const sections = theme
-                    ? childSlots.map((slot) => (slot ? `${theme}.${slot}` : theme))
-                    : coreSlots}
-                <div class="mandala-grid mandala-grid--3 mandala-grid--core">
-                    {#each sections as section (section)}
-                        {@const nodeId = requireNodeId(section)}
-                        {#if nodeId}
-                            <MandalaCard
-                                {nodeId}
-                                {section}
-                                active={nodeId === $activeNodeId}
-                                editing={$editingState.activeNodeId === nodeId &&
-                                    !$editingState.isInSidebar &&
-                                    !$showDetailSidebar}
-                                selected={$selectedNodes.has(nodeId)}
-                                pinned={$pinnedNodes.has(nodeId)}
-                                style={$nodeStyles.get(nodeId)}
-                                draggable={section !== '1' && !$subgridTheme}
-                            />
-                        {:else}
-                            <div class="mandala-empty">{section}</div>
-                        {/if}
-                    {/each}
-                </div>
-            {:else}
-                <!-- <Mandala9x9Grid /> -->
-                <div class="mandala-empty">9x9 预览已暂时禁用</div>
-            {/if}
+    {#if isMobilePopupEditing}
+        <div class="mobile-edit-header">
+            <button class="header-btn settings-btn" on:click|stopPropagation={toggleSettings} aria-label="设置">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings">
+                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+            <div class="mobile-edit-title">编辑格子</div>
+            <button class="header-btn save-btn" on:click|stopPropagation={handleSave}>保存</button>
         </div>
+        <div class="mobile-popup-editor-container">
+            {#if showSettings}
+                <div class="mobile-settings-panel" on:click|stopPropagation>
+                    <div class="settings-row">
+                        <span class="settings-label">字号</span>
+                        <div class="font-size-controls">
+                            <button class="control-btn" on:click|stopPropagation={handleDecreaseFontSize}>-</button>
+                            <span class="font-value">{$mobilePopupFontSizeStore}px</span>
+                            <button class="control-btn" on:click|stopPropagation={handleIncreaseFontSize}>+</button>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+            <div class="mobile-popup-editor-body">
+                <InlineEditor
+                    nodeId={$editingState.activeNodeId}
+                    style={$nodeStyles.get($editingState.activeNodeId)}
+                    absoluteFontSize={$mobilePopupFontSizeStore}
+                />
+            </div>
+        </div>
+    {:else}
+        <div class="mandala-topbar">
+            <Toolbar />
+            <VerticalToolbar />
+        </div>
+        <div class="mandala-content-wrapper">
+            <div
+                class="mandala-scroll"
+                bind:this={containerRef}
+                tabindex="0"
+                on:click={() => focusContainer(view)}
+            >
+                {#if $mode === '3x3'}
+                    {@const theme = $subgridTheme}
+                    {@const sections = theme
+                        ? childSlots.map((slot) => (slot ? `${theme}.${slot}` : theme))
+                        : coreSlots}
+                    <div class="mandala-grid mandala-grid--3 mandala-grid--core">
+                        {#each sections as section (section)}
+                            {@const nodeId = requireNodeId(section)}
+                            {#if nodeId}
+                                <MandalaCard
+                                    {nodeId}
+                                    {section}
+                                    active={nodeId === $activeNodeId}
+                                    editing={$editingState.activeNodeId === nodeId &&
+                                        !$editingState.isInSidebar &&
+                                        !$showDetailSidebar}
+                                    selected={$selectedNodes.has(nodeId)}
+                                    pinned={$pinnedNodes.has(nodeId)}
+                                    style={$nodeStyles.get(nodeId)}
+                                    draggable={section !== '1' && !$subgridTheme}
+                                />
+                            {:else}
+                                <div class="mandala-empty">{section}</div>
+                            {/if}
+                        {/each}
+                    </div>
+                {:else}
+                    <MandalaOverviewSimple />
+                {/if}
+            </div>
 
-        {#if $mode === '3x3'}
             <MandalaDetailSidebar />
-        {/if}
-    </div>
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -170,6 +234,7 @@
         height: 100%;
         width: 100%;
         overflow: hidden;
+        overscroll-behavior: contain;
         --mandala-core-gap: clamp(10px, 1vw, 18px);
         --mandala-gap: var(--node-gap-setting, calc(var(--mandala-core-gap) / 4));
         --mandala-block-gap: var(--mandala-gap);
@@ -213,6 +278,32 @@
         flex-direction: row;
         min-height: 0;
         overflow: hidden;
+    }
+
+    /* 移动端正方形优先布局 */
+    .is-square-layout .mandala-content-wrapper {
+        flex-direction: row; /* 横排 */
+    }
+    .is-square-layout.is-portrait .mandala-content-wrapper {
+        flex-direction: column; /* 竖排 */
+    }
+
+    /* 锁定网格为正方形 */
+    .is-square-layout .mandala-scroll {
+        flex: 0 0 auto;
+        width: var(--mandala-square-size);
+        height: 100%;
+        padding: 12px;
+    }
+
+    .is-square-layout.is-portrait .mandala-scroll {
+        width: 100%;
+        height: var(--mandala-square-size);
+    }
+
+    /* 竖屏模式：纵向堆叠 */
+    .is-portrait .mandala-content-wrapper {
+        flex-direction: column;
     }
 
     .mandala-blocks {
@@ -351,8 +442,149 @@
         opacity: 0.35;
         pointer-events: none;
     }
-    .mandala-root.is-editing-mobile .mandala-scroll {
-        padding: 0 !important;
-        overflow: visible !important;
+    .is-editing-mobile.mandala-root {
+        height: 100dvh !important;
+        overflow: hidden !important;
+    }
+
+    /* 移动端全屏编辑器样式 */
+    .mobile-popup-editor-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100dvh;
+        background-color: var(--background-primary);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-top: calc(env(safe-area-inset-top, 20px) + 50px);
+    }
+
+    .mobile-popup-editor-body {
+        padding: 16px;
+        flex: 1;
+        background-color: var(--background-primary);
+    }
+
+    .mobile-edit-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(env(safe-area-inset-top, 20px) + 50px);
+        background-color: var(--background-primary-alt);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--background-modifier-border);
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding: 0 16px 12px 16px;
+        z-index: 1001;
+        pointer-events: auto;
+    }
+
+    .mobile-edit-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        font-weight: 600;
+        font-size: 16px;
+        color: var(--text-normal);
+        pointer-events: none;
+    }
+
+    .header-btn {
+        background: none;
+        border: none;
+        padding: 4px 8px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: none !important;
+        color: var(--interactive-accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+    }
+
+    .header-btn:active {
+        background-color: var(--background-modifier-hover);
+    }
+
+    .save-btn {
+        font-weight: 600;
+        color: var(--text-accent);
+    }
+
+    .settings-btn {
+        opacity: 0.8;
+        color: var(--text-muted);
+    }
+    .settings-btn:active {
+        opacity: 1;
+        color: var(--text-normal);
+    }
+
+    /* 设置面板 */
+    .mobile-settings-panel {
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 20px) + 50px);
+        left: 0;
+        width: 100%;
+        background: var(--background-secondary);
+        border-bottom: 1px solid var(--background-modifier-border);
+        padding: 16px;
+        z-index: 1002;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        animation: slideDown 0.2s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { transform: translateY(-10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .settings-label {
+        font-size: 15px;
+        color: var(--text-normal);
+    }
+
+    .font-size-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .control-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: var(--background-primary);
+        border: 1px solid var(--background-modifier-border);
+        font-size: 18px;
+        color: var(--text-normal);
+        cursor: pointer;
+    }
+
+    .font-value {
+        min-width: 40px;
+        text-align: center;
+        font-size: 14px;
+        color: var(--text-muted);
+    }
+
+    /* 全屏下隐藏一些卡片特有装饰 */
+    .mobile-popup-editor-body :global(.mandala-section-label) {
+        display: none;
     }
 </style>

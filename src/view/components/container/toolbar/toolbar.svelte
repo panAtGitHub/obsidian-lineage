@@ -25,7 +25,15 @@
         mobileInteractionMode, 
         toggleMobileInteractionMode 
     } from 'src/stores/view/mobile-interaction-store';
-    import { Lock, Unlock } from 'lucide-svelte';
+    import { Lock, Unlock, Grid3x3, Grid2x2 } from 'lucide-svelte';
+    import { MandalaModeStore } from 'src/stores/settings/derived/view-settings-store';
+
+    const mode = MandalaModeStore(view);
+    const toggleMandalaMode = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/toggle-mode',
+        });
+    };
 </script>
 
 <div class="navigation-history-container">
@@ -41,6 +49,19 @@
     </div>
 
     <div class="lock-toggle-container">
+        <Button
+            active={$mode === '9x9'}
+            label={$mode === '3x3' ? '切换到 9x9' : '切换到 3x3'}
+            on:click={toggleMandalaMode}
+            tooltipPosition="bottom"
+        >
+            {#if $mode === '3x3'}
+                <Grid3x3 class="svg-icon" size="18" />
+            {:else}
+                <Grid2x2 class="svg-icon" size="18" />
+            {/if}
+        </Button>
+        <div class="divider"></div>
         <Button
             active={$mobileInteractionMode === 'unlocked'}
             label={$mobileInteractionMode === 'locked' ? '锁定模式 (导航优先)' : '解锁模式 (编辑优先)'}
@@ -97,6 +118,13 @@
         display: none;
     }
 
+    .divider {
+        width: 1px;
+        height: 16px;
+        background-color: var(--background-modifier-border);
+        margin: 0 4px;
+    }
+
     :global(.is-mobile) {
         & .navigation-history-container {
             width: auto;
@@ -106,12 +134,19 @@
             display: block;
         }
         & .lock-toggle-container {
-            display: block;
+            display: flex;
+            align-items: center;
             position: absolute;
             left: 50%;
             top: 4px;
             transform: translateX(-50%);
             z-index: 1002;
+            gap: 4px;
+            background: var(--background-primary);
+            padding: 2px 6px;
+            border-radius: 16px;
+            border: 1px solid var(--background-modifier-border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         & .buttons-group-wrapper[data-visible='true'] {
             display: flex;

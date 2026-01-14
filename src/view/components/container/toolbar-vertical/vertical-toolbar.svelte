@@ -15,6 +15,7 @@
         MandalaModeStore,
         OutlineModeStore,
         ShowHiddenCardInfoStore,
+        ShowMandalaDetailSidebarStore,
     } from '../../../../stores/settings/derived/view-settings-store';
     import { VerticalToolbarButtonsList } from './vertical-toolbar-buttons-list';
     import { ToolbarButton } from 'src/view/modals/vertical-toolbar-buttons/vertical-toolbar-buttons';
@@ -33,6 +34,7 @@
     const outlineMode = OutlineModeStore(view);
     const mandalaMode = MandalaModeStore(view);
     const showHiddenCardInfo = ShowHiddenCardInfoStore(view);
+    const showMandalaDetailSidebar = ShowMandalaDetailSidebarStore(view);
 
     const buttons = VerticalToolbarButtonsList(view);
     const activeStates = derived(
@@ -44,6 +46,7 @@
             mandalaMode,
             applyGapBetweenCards,
             showHiddenCardInfo,
+            showMandalaDetailSidebar,
         ],
         ([
             showMinimap,
@@ -53,6 +56,7 @@
             mandalaMode,
             applyGapBetweenCards,
             showHiddenCardInfo,
+            showMandalaDetailSidebar,
         ]) => {
             return {
                 minimap: showMinimap,
@@ -63,6 +67,7 @@
                 'center-active-node-v': scrollSettingsStore.centerActiveNodeV,
                 'outline-mode': outlineMode,
                 'mandala-mode': mandalaMode === '9x9',
+                'mandala-detail-sidebar': showMandalaDetailSidebar,
                 'space-between-cards': applyGapBetweenCards,
                 'hidden-card-info': showHiddenCardInfo,
             } as Partial<Record<ToolbarButton, boolean>>;

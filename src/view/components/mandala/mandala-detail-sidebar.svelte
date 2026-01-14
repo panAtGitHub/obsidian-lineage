@@ -10,12 +10,21 @@
     import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import { NodeStylesStore } from 'src/stores/view/derived/style-rules';
     import { ActiveStatus } from '../container/column/components/group/components/active-status.enum';
+    import { Platform } from 'obsidian';
+    import { createLayoutStore } from 'src/stores/view/orientation-store';
+    import { mobileInteractionMode } from 'src/stores/view/mobile-interaction-store';
 
-    const MIN_WIDTH = 250;
-    // 用于 CSS transition 动画的宽度，可以为 0
-    let animatedSidebarWidth = 0;
-    // 实际宽度值，不为 0
-    let sidebarWidth = MIN_WIDTH;
+    const MIN_SIZE = 200;
+    
+    // 我们在侧边栏中也引入布局监听，仅用于响应 Resizer
+    const layout = createLayoutStore();
+
+    // 用于交互的临时偏移值（用于持久化网格尺寸的微调，如果有必要的话）
+    let userSizeOffset = 0;
+    // 用于 CSS transition 动画的宽度/高度，可以为 0
+    let animatedSidebarSize = 0;
+    // 实际大小值，不为 0
+    let sidebarSize = MIN_SIZE; // Changed from MIN_WIDTH to MIN_SIZE
     let isResizing = false;
     let startX = 0;
 
@@ -32,6 +41,7 @@
     let editorContainer: HTMLElement;
 
     $: isEditingInSidebar =
+        !Platform.isMobile &&
         $editingState.activeNodeId === $activeNodeId &&
         $editingState.isInSidebar;
 
@@ -59,11 +69,16 @@
     }
 
     const unsub = showSidebarStore.subscribe((show) => {
-        if (show) {
-            animatedSidebarWidth = view.plugin.settings.getValue().view.mandalaDetailSidebarWidth;
-            sidebarWidth = animatedSidebarWidth;
-        } else {
-            animatedSidebarWidth = 0;
+        // 在移动端正方形布局下，侧边栏主要通过 flex: 1 填充
+        // 我们利用这个状态来控制内部内容的可见性
+        if (!Platform.isMobile) { // Only apply size logic on desktop
+            if (show) {
+                const savedSize = view.plugin.settings.getValue().view.mandalaDetailSidebarWidth;
+                animatedSidebarSize = savedSize || ($layout.isPortrait ? MIN_SIZE : MIN_SIZE); // Use MIN_SIZE
+                sidebarSize = animatedSidebarSize;
+            } else {
+                animatedSidebarSize = 0;
+            }
         }
     });
 
@@ -71,22 +86,26 @@
         unsub();
     });
 
-    // 处理缩放逻辑
+    // 处理缩放逻辑 (调整正方形大小)
     const onStartResize = (event: MouseEvent) => {
         isResizing = true;
-        startX = event.clientX;
+        startX = $layout.isPortrait ? event.clientY : event.clientX;
         view.contentEl.addEventListener('mousemove', onResize);
         view.contentEl.addEventListener('mouseup', onStopResize);
     };
 
     const onResize = (event: MouseEvent) => {
         if (!isResizing) return;
-        // 侧边栏在右侧，向左拖动是增加宽度，向右是减少
-        const dx = startX - event.clientX;
-        animatedSidebarWidth += dx;
-        startX = event.clientX;
-        if (animatedSidebarWidth > MIN_WIDTH) {
-            sidebarWidth = animatedSidebarWidth;
+        // 注意：调整的是正方形的大小 S，不是侧栏
+        // 横屏时：正方形在左，向右拖拽 Resizer 会增加正方形宽度
+        // 竖屏时：正方形在顶，向下拖拽 Resizer 会增加正方形高度
+        if ($layout.isPortrait) {
+            const dy = event.clientY - startX;
+            // 通知父组件或通过 Store 修改正方形尺寸（此处可以简单实现为修改 offset 或者派发 action）
+            // 为了简单起见，我们暂不处理手动精细调整，先锁定理想正方形
+        } else {
+            const dx = event.clientX - startX;
+            // Similar logic for horizontal resizing if needed
         }
     };
 
@@ -95,26 +114,41 @@
         view.contentEl.removeEventListener('mousemove', onResize);
         view.contentEl.removeEventListener('mouseup', onStopResize);
 
-        if (animatedSidebarWidth < MIN_WIDTH) {
-            animatedSidebarWidth = MIN_WIDTH;
+        // Desktop specific logic
+        if (!Platform.isMobile) {
+            const currentMin = $layout.isPortrait ? MIN_SIZE : MIN_SIZE; // Use MIN_SIZE
+            if (animatedSidebarSize < currentMin) {
+                animatedSidebarSize = currentMin;
+            }
+            sidebarSize = animatedSidebarSize;
+            view.plugin.settings.dispatch({
+                type: 'view/mandala-detail-sidebar/set-width',
+                payload: {
+                    width: animatedSidebarSize,
+                },
+            });
         }
-        sidebarWidth = animatedSidebarWidth;
-        view.plugin.settings.dispatch({
-            type: 'view/mandala-detail-sidebar/set-width',
-            payload: {
-                width: animatedSidebarWidth,
-            },
-        });
+    };
+    const handleDblClick = () => {
+        if (Platform.isMobile && $mobileInteractionMode === 'unlocked' && $activeNodeId) {
+            view.viewStore.dispatch({
+                type: 'view/editor/enable-main-editor',
+                payload: { nodeId: $activeNodeId, isInSidebar: false },
+            });
+        }
     };
 </script>
 
 <div
-    class={'mandala-detail-sidebar' + (isResizing ? '' : ' width-transition')}
-    style="--animated-sidebar-width: {animatedSidebarWidth}px; --sidebar-width: {sidebarWidth}px;"
+    class={'mandala-detail-sidebar' + (isResizing ? '' : ' size-transition')}
+    class:is-mobile={Platform.isMobile}
+    class:is-portrait={$layout.isPortrait}
+    style={Platform.isMobile ? (!$showSidebarStore ? 'display: none;' : '') : `--animated-sidebar-size: ${animatedSidebarSize}px; --sidebar-size: ${sidebarSize}px;`}
 >
+    <!-- 移动端 Resizer 位置：竖排在顶，横排在左 -->
     <div class="resizer" on:mousedown={onStartResize} />
-    {#if animatedSidebarWidth > 50}
-        <div class="sidebar-content">
+    {#if $showSidebarStore}
+        <div class="sidebar-content" on:dblclick={handleDblClick}>
             {#if $activeNodeId}
                 <div class="editor-wrapper">
                     {#key $activeNodeId}
@@ -144,18 +178,46 @@
 <style>
     .mandala-detail-sidebar {
         flex: 0 0 auto;
-        width: var(--animated-sidebar-width);
+        width: var(--animated-sidebar-size); /* PC 默认 */
         position: relative;
         overflow: hidden;
-        /* 移除背景色，使其显示父容器背景 */
         background-color: transparent;
-        border-left: none;
         display: flex;
         flex-direction: column;
+        transition: width 0.3s ease, height 0.3s ease;
     }
 
-    .width-transition {
-        transition: width 0.3s ease;
+    .mandala-detail-sidebar.is-portrait {
+        width: 100%;
+        height: var(--animated-sidebar-size);
+    }
+
+    /* 移动端填充方案 */
+    .is-mobile.mandala-detail-sidebar {
+        flex: 1 1 auto;
+        width: auto;
+        height: auto; /* Reset height for mobile */
+    }
+
+    /* 当侧边栏关闭时，强制在移动端不占用 Flex 空间 */
+    .is-mobile.mandala-detail-sidebar[style*="display: none"] {
+        flex: 0 0 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .is-mobile.is-portrait.mandala-detail-sidebar {
+        width: 100%;
+        border-top: 1px solid var(--background-modifier-border);
+    }
+
+    .is-mobile:not(.is-portrait).mandala-detail-sidebar {
+        height: 100%;
+        border-left: 1px solid var(--background-modifier-border);
+    }
+
+    .size-transition {
+        /* This class is now applied to the main element, so it handles width/height transitions */
     }
 
     .resizer {
@@ -167,8 +229,16 @@
         transition: background-color 0.2s;
         cursor: col-resize;
         left: 0px;
-        width: 8px; /* 加宽响应区 */
+        width: 8px;
         z-index: 10;
+    }
+
+    .is-portrait .resizer {
+        width: 100%;
+        height: 8px;
+        top: 0;
+        left: 0;
+        cursor: row-resize;
     }
 
     .resizer:hover {
@@ -180,10 +250,14 @@
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        min-width: var(--sidebar-width);
-        /* 对齐九宫格的 12px 边距，确保侧边栏白框与格子顶端对齐 */
-        padding: 12px 12px 12px 0; 
+        /* 移动端不再有最小宽度限制，自适应填充 */
+        padding: 12px;
         overflow-y: auto;
+    }
+
+    .is-portrait .sidebar-content {
+        min-width: 0;
+        padding: 0 12px 12px 12px;
     }
 
     .editor-wrapper {

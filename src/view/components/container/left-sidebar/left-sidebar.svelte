@@ -5,10 +5,11 @@
         ShowLeftSidebarStore,
     } from 'src/stores/settings/derived/view-settings-store';
     import TabHeader from './components/tab-header/tab-header.svelte';
-    import { onDestroy } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
     import PinnedCards from 'src/view/components/container/left-sidebar/components/pinned-cards/pinned-cards-sidebar.svelte';
     import RecentCards from 'src/view/components/container/left-sidebar/components/recent-cards/recent-cards.svelte';
     import { limitPreviewHeightStore } from 'src/stores/settings/derived/limit-preview-height-store';
+    import { Platform } from 'obsidian';
 
     const MIN_WIDTH = 250;
     // used to animate using CSS transition width, can go to 0
@@ -23,6 +24,7 @@
     const showSidebarStore = ShowLeftSidebarStore(view);
 
     const unsub = showSidebarStore.subscribe((show) => {
+
         if (show) {
             animatedSidebarWidth =
                 view.plugin.settings.getValue().view.leftSidebarWidth;
@@ -31,6 +33,18 @@
             animatedSidebarWidth = 0;
         }
     });
+
+    onMount(() => {
+        if (Platform.isMobile) {
+            const isShown = view.plugin.settings.getValue().view.showLeftSidebar;
+            if (isShown) {
+                 view.plugin.settings.dispatch({
+                    type: 'view/left-sidebar/toggle',
+                });
+            }
+        }
+    });
+
     onDestroy(() => {
         unsub();
     });
@@ -136,4 +150,15 @@
             outline: 6px solid var(--background-active-parent) !important;
         }
     }*/
+
+    :global(.is-mobile) .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        height: 100% !important;
+        z-index: 2000;
+        box-shadow: var(--shadow-l);
+        border-right: 1px solid var(--background-modifier-border);
+    }
 </style>

@@ -7,11 +7,12 @@
     export let nodeId: NodeId;
     export let style: NodeStyle | undefined;
     export let fontSizeOffset: number = 0;
+    export let absoluteFontSize: number | undefined = undefined;
 </script>
 
 <div
     class={'editor-container' + (style ? ' apply-style-rule' : '')}
-    style="--local-font-size-offset: {fontSizeOffset}px"
+    style="--local-font-size-offset: {absoluteFontSize ? 0 : fontSizeOffset}px; {absoluteFontSize ? `--font-text-size: ${absoluteFontSize}px; font-size: ${absoluteFontSize}px;` : ''}"
     use:expandableTextareaAction
     use:loadInlineEditor={nodeId}
 ></div>

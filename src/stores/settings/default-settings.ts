@@ -38,6 +38,7 @@ export const DEFAULT_SETTINGS = (): Settings => ({
         alwaysShowCardButtons: false,
         showHiddenCardInfo: true,
         mobileEditFontSizeOffset: 0,
+        show9x9TitleOnly: false,
         hiddenVerticalToolbarButtons: [],
     },
     general: {

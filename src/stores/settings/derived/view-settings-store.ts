@@ -38,6 +38,9 @@ export const ShowMandalaDetailSidebarStore = (view: MandalaView) =>
 export const MandalaDetailSidebarWidthStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.mandalaDetailSidebarWidth);
 
+export const Show9x9TitleOnlyStore = (view: MandalaView) =>
+    derived(view.plugin.settings, (state) => state.view.show9x9TitleOnly);
+
 export const HiddenVerticalToolbarButtons = (plugin: MandalaGrid) =>
     derived(
         plugin.settings,

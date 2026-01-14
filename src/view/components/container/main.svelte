@@ -13,6 +13,8 @@
     import StyleRulesModal from 'src/view/components/container/style-rules/style-rules.svelte';
     import { MandalaView } from 'src/view/view';
     import { localFontStore } from 'src/stores/local-font-store';
+    import LeftSidebar from 'src/view/components/container/left-sidebar/left-sidebar.svelte';
+    import LeftSidebar from 'src/view/components/container/left-sidebar/left-sidebar.svelte';
 
     export let plugin: MandalaGrid;
     export let view: MandalaView;
@@ -31,8 +33,10 @@
     tabindex="0"
 >
     <div class={`mandala-main`} use:mouseWheelZoom={view}>
+        <LeftSidebar />
         <MandalaViewComponent />
-
+        
+        
         {#if $controls.showHistorySidebar}
             <SnapshotsListModal />
         {/if}

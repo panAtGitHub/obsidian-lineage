@@ -131,6 +131,9 @@ const updateState = (store: Settings, action: SettingsActions) => {
         }
         store.view.mandalaMode =
             store.view.mandalaMode === '9x9' ? '3x3' : '9x9';
+    } else if (action.type === 'settings/view/mandala/toggle-mode') {
+        store.view.mandalaMode =
+            store.view.mandalaMode === '9x9' ? '3x3' : '9x9';
     } else if (action.type === 'view/mandala-detail-sidebar/toggle') {
         store.view.showMandalaDetailSidebar =
             !store.view.showMandalaDetailSidebar;
@@ -231,6 +234,8 @@ const updateState = (store: Settings, action: SettingsActions) => {
         store.general.linkPaneType = action.payload.position;
     } else if (action.type === 'settings/view/set-mobile-edit-font-size-offset') {
         store.view.mobileEditFontSizeOffset = action.payload.offset;
+    } else if (action.type === 'settings/view/toggle-9x9-title-only') {
+        store.view.show9x9TitleOnly = !store.view.show9x9TitleOnly;
     } else if (action.type.startsWith('settings/style-rules')) {
         updateStyleRules(store, action as any);
     }

@@ -199,6 +199,9 @@ export type SettingsActions =
         payload: {
             offset: number;
         };
+    }
+    | {
+        type: 'settings/view/toggle-9x9-title-only';
     };
 export type PersistCollapsedSectionsAction = {
     type: 'settings/document/persist-collapsed-sections';

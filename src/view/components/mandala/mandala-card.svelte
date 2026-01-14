@@ -138,7 +138,16 @@
 
         handleSelect(e);
         
-        // 移动端和桌面端逻辑统一
+        if (isMobile && $mobileInteractionMode === 'unlocked') {
+            // 解锁模式下双击：强制进入全屏 Popup (场景 3, 4, 7, 8)
+            view.viewStore.dispatch({
+                type: 'view/editor/enable-main-editor',
+                payload: { nodeId: nodeId, isInSidebar: false },
+            });
+            return;
+        }
+
+        // PC 端逻辑：根据侧栏状态决定编辑位置
         if ($showDetailSidebar) {
             view.viewStore.dispatch({
                 type: 'view/editor/enable-main-editor',
@@ -154,30 +163,12 @@
     {/if}
 
     {#if active && editing && !$showDetailSidebar}
-        {#if isMobile}
-            <div class="mobile-edit-header" on:click|stopPropagation>
-                <button class="header-btn settings-btn" on:click|stopPropagation={toggleSettings}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                </button>
-                <button class="header-btn save-btn" on:click|stopPropagation={handleSave}>完成</button>
-            </div>
-            {#if showSettings}
-                <div class="mobile-settings-panel" on:click|stopPropagation>
-                    <div class="settings-row">
-                        <span class="settings-label">字号</span>
-                        <div class="font-size-controls">
-                            <button class="control-btn" on:click|stopPropagation={handleDecreaseFontSize}>-</button>
-                            <span class="font-value">{$localFontStore}px</span>
-                            <button class="control-btn" on:click|stopPropagation={handleIncreaseFontSize}>+</button>
-                        </div>
-                    </div>
-                </div>
-            {/if}
-        {/if}
-        <InlineEditor nodeId={nodeId} {style} fontSizeOffset={$localFontStore - 16} />
+        <InlineEditor 
+            nodeId={nodeId} 
+            {style} 
+            fontSizeOffset={isMobile ? ($localFontStore - 16) : 0} 
+            absoluteFontSize={isMobile ? $localFontStore : undefined}
+        />
     {:else if draggable}
         <Draggable nodeId={nodeId} isInSidebar={false}>
             <Content nodeId={nodeId} isInSidebar={false} active={active ? ActiveStatus.node : null} />
@@ -238,121 +229,5 @@
         opacity: var(--opacity-active-node) !important;
     } */
 
-    /* 移动端悬浮编辑模式：脱离九宫格约束 */
-    :global(.is-mobile) .is-floating-mobile {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        z-index: 1000 !important;
-        background-color: var(--background-primary) !important;
-        /* 增加顶部间距以避让药丸屏/刘海屏 */
-        padding-top: calc(env(safe-area-inset-top, 20px) + 50px) !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        overflow-y: auto !important;
-    }
-
-    /* 移动端编辑头部 */
-    .mobile-edit-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: calc(env(safe-area-inset-top, 20px) + 50px);
-        background-color: var(--background-primary);
-        border-bottom: 1px solid var(--background-modifier-border);
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        padding: 0 16px 10px 16px;
-        z-index: 1001;
-    }
-
-
-    .header-title {
-        font-weight: 600;
-        font-size: 17px;
-        color: var(--text-normal);
-        margin-bottom: 2px;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .header-btn {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 16px;
-        cursor: pointer;
-        box-shadow: none !important;
-        color: var(--interactive-accent);
-    }
-
-    .save-btn {
-        font-weight: 600;
-    }
-
-    .settings-btn {
-        opacity: 0.7;
-    }
-    .settings-btn:active {
-        opacity: 1;
-    }
-
-    /* 设置面板 */
-    .mobile-settings-panel {
-        position: fixed;
-        top: calc(env(safe-area-inset-top, 20px) + 50px);
-        left: 0;
-        width: 100%;
-        background: var(--background-secondary);
-        border-bottom: 1px solid var(--background-modifier-border);
-        padding: 12px 16px;
-        z-index: 1001;
-    }
-
-    .settings-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .settings-label {
-        font-size: 15px;
-        color: var(--text-normal);
-    }
-
-    .font-size-controls {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .control-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        background: var(--background-primary);
-        border: 1px solid var(--background-modifier-border);
-        font-size: 18px;
-        color: var(--text-normal);
-        cursor: pointer;
-    }
-
-    .font-value {
-        min-width: 40px;
-        text-align: center;
-        font-size: 14px;
-        color: var(--text-muted);
-    }
-
-    /* 悬浮模式下的内容区优化 */
-    :global(.is-mobile) .is-floating-mobile :global(.lng-prev),
-    :global(.is-mobile) .is-floating-mobile :global(.editor-container) {
-        min-height: 50vh !important;
-    }
+    /* 悬浮模式下的内容区优化 (目前统一由顶层逻辑处理) */
 </style>
