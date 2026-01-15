@@ -271,6 +271,11 @@
         overflow: auto;
         padding: 12px;
     }
+    
+    /* 桌面端调整格子右侧间距为 6px，为 6+6=12px 做准备 */
+    :global(body:not(.is-mobile)) .mandala-scroll {
+        padding: 12px 6px 12px 12px;
+    }
 
     .mandala-content-wrapper {
         flex: 1 1 auto;

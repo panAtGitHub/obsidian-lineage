@@ -269,6 +269,16 @@
         overflow-y: auto;
     }
 
+    /* 桌面端调整侧边栏左侧间距为 6px，实现总计 6+6=12px 间距 */
+    :global(body:not(.is-mobile)) .sidebar-content {
+        padding: 12px 12px 12px 6px;
+    }
+
+    /* 桌面端竖屏时，调整顶部间距为 6px */
+    :global(body:not(.is-mobile)) .is-portrait .sidebar-content {
+        padding: 6px 12px 12px 12px;
+    }
+
     .is-portrait .sidebar-content {
         min-width: 0;
         padding: 0 12px 12px 12px;
