@@ -29,20 +29,20 @@
         right: 0;
         top: 0;
         bottom: 0;
-        width: 100vw;
-        height: 100vh;
-        max-width: 100vw;
-        max-height: 100vh;
+        /* 核心修复：使用 100% 配合 safe-area 确保内容不溢出系统视觉范围 */
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
         border-radius: 0;
         border: none;
-        padding: 0;
+        padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
         background-color: var(--background-primary-alt);
         z-index: 1000;
         overflow: hidden;
         overscroll-behavior: none;
-        /* 防止过度滚动带来的回弹导致的不稳固感 */
         user-select: none;
     }
 }

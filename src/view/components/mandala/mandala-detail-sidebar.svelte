@@ -27,6 +27,7 @@
     let sidebarSize = MIN_SIZE; // Changed from MIN_WIDTH to MIN_SIZE
     let isResizing = false;
     let startX = 0;
+    let startSize = 0;
 
     const view = getView();
     const showSidebarStore = ShowMandalaDetailSidebarStore(view);
@@ -86,33 +87,43 @@
         unsub();
     });
 
-    // 处理缩放逻辑 (调整正方形大小)
+    // 处理缩放逻辑 (PC 端侧边栏大小)
     const onStartResize = (event: MouseEvent) => {
+        if (Platform.isMobile) return;
         isResizing = true;
         startX = $layout.isPortrait ? event.clientY : event.clientX;
+        startSize = animatedSidebarSize;
         view.contentEl.addEventListener('mousemove', onResize);
         view.contentEl.addEventListener('mouseup', onStopResize);
+        
+        // 设置全局光标，防止拖动过快导致光标闪烁
+        document.body.style.cursor = $layout.isPortrait ? 'row-resize' : 'col-resize';
+        
+        event.preventDefault();
+        event.stopPropagation();
     };
 
     const onResize = (event: MouseEvent) => {
-        if (!isResizing) return;
-        // 注意：调整的是正方形的大小 S，不是侧栏
-        // 横屏时：正方形在左，向右拖拽 Resizer 会增加正方形宽度
-        // 竖屏时：正方形在顶，向下拖拽 Resizer 会增加正方形高度
+        if (!isResizing || Platform.isMobile) return;
+        event.preventDefault();
+        
         if ($layout.isPortrait) {
             const dy = event.clientY - startX;
-            // 通知父组件或通过 Store 修改正方形尺寸（此处可以简单实现为修改 offset 或者派发 action）
-            // 为了简单起见，我们暂不处理手动精细调整，先锁定理想正方形
+            animatedSidebarSize = Math.max(MIN_SIZE, startSize - dy);
         } else {
             const dx = event.clientX - startX;
-            // Similar logic for horizontal resizing if needed
+            animatedSidebarSize = Math.max(MIN_SIZE, startSize - dx);
         }
     };
 
     const onStopResize = () => {
+        if (!isResizing || Platform.isMobile) return;
         isResizing = false;
         view.contentEl.removeEventListener('mousemove', onResize);
         view.contentEl.removeEventListener('mouseup', onStopResize);
+        
+        // 恢复全局光标
+        document.body.style.cursor = '';
 
         // Desktop specific logic
         if (!Platform.isMobile) {
@@ -184,6 +195,9 @@
         background-color: transparent;
         display: flex;
         flex-direction: column;
+    }
+
+    .size-transition {
         transition: width 0.3s ease, height 0.3s ease;
     }
 
