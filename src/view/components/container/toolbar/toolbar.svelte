@@ -8,10 +8,14 @@
     import SearchNavigationButtons from './components/search/search-navigation-buttons.svelte';
     import DocumentHistoryButtons from './components/document-history-buttons.svelte';
     import SearchActions from './components/search-actions.svelte';
-    import { writable } from 'svelte/store';
+    import { writable, derived } from 'svelte/store';
     import { Menu } from 'lucide-svelte';
     import Button from '../shared/button.svelte';
     import { lang } from 'src/lang/lang';
+    
+    // Mandala 搜索相关导入
+    import MandalaSearchResults from 'src/view/components/mandala/mandala-search-results.svelte';
+    import { convertToMandalaResults } from 'src/view/helpers/mandala/search-utils';
 
     const view = getView();
     const search = searchStore(view);
@@ -34,6 +38,23 @@
             type: 'settings/view/mandala/toggle-mode',
         });
     };
+    
+    // 检测是否是 Mandala 模式
+    const isMandalaMode = derived(
+        view.viewStore,
+        (state) => view.mandalaMode !== null
+    );
+    
+    // Mandala 搜索结果
+    const mandalaSearchResults = derived(
+        [search, view.documentStore],
+        ([$search, $doc]) => {
+            if (!$search.results || $search.results.size === 0) {
+                return [];
+            }
+            return convertToMandalaResults($search.results, $doc.sections.id_section);
+        }
+    );
 </script>
 
 <div class="navigation-history-container">
@@ -84,15 +105,26 @@
     </div>
 
     {#if $search.showInput}
-        <SearchInput />
-        {#if $search.query.length > 0}
-            <SearchNavigationButtons
-                results={Array.from($search.results.keys())}
-            />
-            {#if $search.results.size > 0}
-                <SearchActions />
+        <div class="search-input-wrapper" style="position: relative;">
+            <SearchInput />
+            
+            {#if $search.query.length > 0}
+                {#if $isMandalaMode}
+                    <!-- Mandala 模式：显示搜索结果下拉列表 -->
+                    {#if $mandalaSearchResults.length > 0}
+                        <MandalaSearchResults results={$mandalaSearchResults} />
+                    {/if}
+                {:else}
+                    <!-- Lineage 模式：显示导航按钮 -->
+                    <SearchNavigationButtons
+                        results={Array.from($search.results.keys())}
+                    />
+                    {#if $search.results.size > 0}
+                        <SearchActions />
+                    {/if}
+                {/if}
             {/if}
-        {/if}
+        </div>
     {/if}
 </div>
 

@@ -4,6 +4,11 @@ export const updateActiveNodeAfterSearch = (
     view: MandalaView,
     results: string[],
 ) => {
+    // Mandala 模式下不自动跳转，让用户通过 Hover 或键盘手动选择
+    if (view.mandalaMode !== null) {
+        return;
+    }
+
     const activeNode = view.viewStore.getValue().document.activeNode;
     const shouldUpdateActiveNode =
         results.length > 0 && !results.find((r) => r === activeNode);

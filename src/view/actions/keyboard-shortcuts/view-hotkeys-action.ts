@@ -43,10 +43,13 @@ export const viewHotkeysAction = (
         }
 
         // 仅在没有匹配到命令时拦截输入控件
+        const targetEl = event.target as HTMLElement;
         if (
-            (event.target as HTMLElement).localName === 'input' ||
-            (event.target as HTMLElement).localName === 'textarea' ||
-            (event.target as HTMLElement).isContentEditable
+            targetEl.localName === 'input' ||
+            targetEl.localName === 'textarea' ||
+            targetEl.isContentEditable ||
+            // 搜索结果列表（或其子元素）获得焦点时，跳过全局快捷键
+            targetEl.closest('.mandala-search-results')
         )
             return;
         if (event.shiftKey !== state.shift) {
