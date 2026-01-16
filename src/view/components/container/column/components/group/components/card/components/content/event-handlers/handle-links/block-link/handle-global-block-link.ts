@@ -1,4 +1,5 @@
 import { MandalaView } from 'src/view/view';
+import { Platform } from 'obsidian';
 
 export const getLinkPaneType = (view: MandalaView, modKey: boolean) => {
     const linkPaneType = view.plugin.settings.getValue().general.linkPaneType;
@@ -14,6 +15,11 @@ export const handleGlobalBlockLink = (
     link: string,
     modKey: boolean,
 ) => {
+    if (Platform.isMobile) {
+        const sourcePath = view.file?.path || view.file!.basename;
+        view.plugin.app.workspace.openLinkText(link, sourcePath, false);
+        return;
+    }
     view.plugin.app.workspace.openLinkText(
         link,
         view.file!.basename,
