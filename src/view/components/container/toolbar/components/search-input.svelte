@@ -102,6 +102,7 @@
         style={'right: 49px; top: -1px;'+($search.query ? '' : ' display: none;')}
     ></div>
 
+    <!-- Mandala 模式下不需要"显示所有节点"按钮，已注释
     {#if $search.query.length > 0}
         <div
             aria-label={lang.tlb_search_show_all_nodes}
@@ -117,6 +118,7 @@
             <Eye class="svg-icon" />
         </div>
     {/if}
+    -->
     <div
         aria-label={lang.tlb_search_fuzzy_search}
         class={'input-right-decorator clickable-icon' +

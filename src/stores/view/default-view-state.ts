@@ -6,7 +6,7 @@ export const defaultViewState = (): ViewState => ({
         results: new Map(),
         searching: false,
         showInput: false,
-        fuzzySearch: false,
+        fuzzySearch: true,
         showAllNodes: true,
     },
     ui: {
