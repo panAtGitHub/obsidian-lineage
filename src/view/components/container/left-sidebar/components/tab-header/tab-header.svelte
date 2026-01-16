@@ -1,40 +1,5 @@
-<script lang="ts">
-    import { Clock, Pin } from 'lucide-svelte';
-    import ClickableIcon from './components/clickable-icon.svelte';
-    import { LeftSidebarActiveTabStore } from '../../../../../../stores/settings/derived/view-settings-store';
-    import { LeftSidebarTab } from '../../../../../../stores/settings/settings-type';
-    import { getView } from '../../../context';
-    import { lang } from 'src/lang/lang';
-
-    const view = getView();
-    const activeTab = LeftSidebarActiveTabStore(view);
-    const setActiveTab = (tab: LeftSidebarTab) => {
-        view.plugin.settings.dispatch({
-            type: 'view/left-sidebar/set-active-tab',
-            payload: { tab },
-        });
-    };
-
-</script>
-
-<div class="sidebar-tabs-header">
-    <div class="tab-header-buttons">
-        <ClickableIcon
-            isActive={$activeTab==="pinned-cards"}
-            label={lang.sidebar_tab_pinned_nodes}
-            onClick={() => setActiveTab("pinned-cards")}
-        >
-            <Pin class="svg-icon" />
-        </ClickableIcon>
-        <ClickableIcon
-            isActive={$activeTab==="recent-cards"}
-            label={lang.sidebar_tab_recent_nodes}
-            onClick={() => setActiveTab("recent-cards")}
-        >
-            <Clock class="svg-icon" />
-        </ClickableIcon>
-    </div>
-</div>
+<!-- Tab header buttons hidden by request -->
+<div class="sidebar-tabs-header"></div>
 
 <style>
     .sidebar-tabs-header {
