@@ -6,7 +6,7 @@
     import SearchInput from './components/search-input.svelte';
     import LeftSidebarToggle from './components/left-sidebar-toggle.svelte';
     import SearchNavigationButtons from './components/search/search-navigation-buttons.svelte';
-    import DocumentHistoryButtons from './components/document-history-buttons.svelte';
+    // import DocumentHistoryButtons from './components/document-history-buttons.svelte';
     import SearchActions from './components/search-actions.svelte';
     import { writable, derived } from 'svelte/store';
     import { Menu } from 'lucide-svelte';
@@ -100,7 +100,7 @@
     <div class="buttons-group-wrapper" data-visible={$showControls}>
         <LeftSidebarToggle />
         <NavigationHistory />
-        <DocumentHistoryButtons />
+        <!-- <DocumentHistoryButtons /> -->
         <SearchToggle />
     </div>
 
@@ -144,6 +144,10 @@
     .buttons-group-wrapper {
         display: flex;
         gap: var(--size-4-2);
+    }
+
+    .mobile-toggle {
+        display: none;
     }
 
     .lock-toggle-container {
