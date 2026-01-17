@@ -272,5 +272,16 @@
     }
     .simple-cell.is-title-only .cell-content {
         justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .simple-cell.is-title-only .cell-title {
+        display: block;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: unset;
+        text-align: center;
+        white-space: normal;
+        word-break: break-word;
     }
 </style>
