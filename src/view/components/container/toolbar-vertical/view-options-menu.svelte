@@ -151,6 +151,24 @@
             return;
         }
 
+        view.viewStore.dispatch({ type: 'view/mandala/subgrid/exit' });
+        const centerNodeId = state.sections.section_id['1'];
+        if (!centerNodeId) {
+            new Notice('未找到中心格子。');
+            closeMenu();
+            return;
+        }
+
+        view.viewStore.dispatch({
+            type: 'view/set-active-node/document',
+            payload: { id: centerNodeId },
+        });
+        view.viewStore.dispatch({
+            type: 'view/selection/set-selection',
+            payload: { ids: [centerNodeId] },
+        });
+        view.alignBranch.align({ type: 'view/align-branch/center-node' });
+
         const plan = createClearEmptyMandalaSubgridsPlan(state.document);
         if (plan.parentIds.length === 0) {
             new Notice('没有可清空的空白九宫格。');
@@ -160,7 +178,7 @@
 
         view.documentStore.dispatch({
             type: 'document/mandala/clear-empty-subgrids',
-            payload: { parentIds: plan.parentIds },
+            payload: { parentIds: plan.parentIds, activeNodeId: centerNodeId },
         });
 
         new Notice(

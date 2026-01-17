@@ -11,6 +11,25 @@ const isEmptyContent = (document: MandalaGridDocument, nodeId: string) => {
     return value.trim().length === 0;
 };
 
+const getDirectChildren = (document: MandalaGridDocument, parentId: string) => {
+    for (const column of document.columns) {
+        for (const group of column.groups) {
+            if (group.parentId === parentId) {
+                return group.nodes;
+            }
+        }
+    }
+    return [];
+};
+
+const isSubtreeEmpty = (document: MandalaGridDocument, nodeId: string) => {
+    if (!isEmptyContent(document, nodeId)) return false;
+    const descendants = getAllChildren(document.columns, nodeId);
+    return descendants.every((descendantId) =>
+        isEmptyContent(document, descendantId),
+    );
+};
+
 export const createClearEmptyMandalaSubgridsPlan = (
     document: MandalaGridDocument,
 ): ClearEmptySubgridsPlan => {
@@ -28,13 +47,12 @@ export const createClearEmptyMandalaSubgridsPlan = (
 
     const candidates: string[] = [];
     for (const parentId of parentsWithChildren) {
-        if (!isEmptyContent(document, parentId)) continue;
-        const children = getAllChildren(document.columns, parentId);
+        const children = getDirectChildren(document, parentId);
         if (children.length === 0) continue;
-        const allDescendantsEmpty = children.every((childId) =>
-            isEmptyContent(document, childId),
+        const allChildrenEmpty = children.every((childId) =>
+            isSubtreeEmpty(document, childId),
         );
-        if (!allDescendantsEmpty) continue;
+        if (!allChildrenEmpty) continue;
         candidates.push(parentId);
     }
 

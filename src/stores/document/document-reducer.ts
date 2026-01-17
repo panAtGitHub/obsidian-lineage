@@ -123,8 +123,8 @@ const updateDocumentState = (
         for (const parentId of parentIds) {
             deleteChildNodes(state.document, parentId);
         }
-        newActiveNodeId = parentIds[0];
-        affectedNodeId = parentIds[0];
+        newActiveNodeId = action.payload.activeNodeId;
+        affectedNodeId = action.payload.activeNodeId;
     } else if (action.type === 'document/add-node') {
         newActiveNodeId = insertNode(
             state.document,
