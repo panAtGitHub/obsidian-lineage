@@ -237,6 +237,7 @@ export const lang = {
     settings_theme_active_branch_bg: 'Active branch background color',
     settings_theme_active_branch_color: 'Active branch text color',
     settings_appearance_font_size: 'Font size',
+    settings_appearance_font_sizes_group: 'Font settings',
     settings_appearance_mandala_font_size_3x3_desktop:
         '3x3 grid font size (desktop)',
     settings_appearance_mandala_font_size_3x3_mobile:

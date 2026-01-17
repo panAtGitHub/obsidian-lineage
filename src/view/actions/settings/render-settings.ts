@@ -16,6 +16,7 @@ import { HeadingsFontSize } from 'src/view/actions/settings/components/headings-
 import { MandalaFontSizes } from 'src/view/actions/settings/components/mandala-font-sizes';
 import { LinkPaneType } from 'src/view/actions/settings/components/link-pane-type';
 import { MandalaView } from 'src/view/view';
+import { lang } from 'src/lang/lang';
 
 export type SettingsTab = 'General' | 'Appearance' | 'Layout';
 type Tab = { element: HTMLDivElement; name: SettingsTab };
@@ -81,11 +82,21 @@ const render = (view: MandalaView, element: HTMLElement, tabs: Tab[]) => {
         settingsStore,
         isMandala ? '非活跃格子透明度' : undefined,
     );
-    FontSize(appearanceTab, settingsStore);
+    const fontDetails = appearanceTab.createEl('details', {
+        cls: 'mandala-font-settings',
+    });
+    fontDetails.open = false;
+    fontDetails.createEl('summary', {
+        text: lang.settings_appearance_font_sizes_group,
+    });
+    const fontContent = fontDetails.createEl('div', {
+        cls: 'mandala-font-settings__content',
+    });
+    FontSize(fontContent, settingsStore);
     if (isMandala) {
-        MandalaFontSizes(appearanceTab, settingsStore);
+        MandalaFontSizes(fontContent, settingsStore);
     }
-    HeadingsFontSize(appearanceTab, settingsStore);
+    HeadingsFontSize(fontContent, settingsStore);
 
     // layout
     if (!isMandala) {
