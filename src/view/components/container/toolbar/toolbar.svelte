@@ -58,74 +58,82 @@
 </script>
 
 <div class="navigation-history-container">
-    <div class="mobile-toggle">
-        <Button
-            active={$showControls}
-            label={lang.controls_toggle_bar}
-            on:click={toggleShowControls}
-            tooltipPosition="bottom"
-        >
-            <Menu class="svg-icon" />
-        </Button>
-    </div>
+    <div class="toolbar-group toolbar-group--left">
+        <div class="mobile-toggle">
+            <Button
+                active={$showControls}
+                label={lang.controls_toggle_bar}
+                on:click={toggleShowControls}
+                tooltipPosition="bottom"
+            >
+                <Menu class="svg-icon" />
+            </Button>
+        </div>
 
-    <div class="lock-toggle-container">
-        <Button
-            active={$mode === '9x9'}
-            label={$mode === '3x3' ? '切换到 9x9' : '切换到 3x3'}
-            on:click={toggleMandalaMode}
-            tooltipPosition="bottom"
-        >
-            {#if $mode === '3x3'}
-                <Grid3x3 class="svg-icon" size="18" />
-            {:else}
-                <Grid2x2 class="svg-icon" size="18" />
-            {/if}
-        </Button>
-        <div class="divider"></div>
-        <Button
-            active={$mobileInteractionMode === 'unlocked'}
-            label={$mobileInteractionMode === 'locked' ? '锁定模式 (导航优先)' : '解锁模式 (编辑优先)'}
-            on:click={toggleMobileInteractionMode}
-            tooltipPosition="bottom"
-        >
-            {#if $mobileInteractionMode === 'locked'}
-                <Lock class="svg-icon" size="18" />
-            {:else}
-                <Unlock class="svg-icon" size="18" />
-            {/if}
-        </Button>
-    </div>
+        <div class="buttons-group-wrapper" data-visible={$showControls}>
+            <LeftSidebarToggle />
+            <NavigationHistory />
+            <!-- <DocumentHistoryButtons /> -->
+            <SearchToggle />
+        </div>
 
-    <div class="buttons-group-wrapper" data-visible={$showControls}>
-        <LeftSidebarToggle />
-        <NavigationHistory />
-        <!-- <DocumentHistoryButtons /> -->
-        <SearchToggle />
-    </div>
-
-    {#if $search.showInput}
-        <div class="search-input-wrapper" style="position: relative;">
-            <SearchInput />
-            
-            {#if $search.query.length > 0}
-                {#if $isMandalaMode}
-                    <!-- Mandala 模式：显示搜索结果下拉列表 -->
-                    {#if $mandalaSearchResults.length > 0}
-                        <MandalaSearchResults results={$mandalaSearchResults} />
-                    {/if}
-                {:else}
-                    <!-- Lineage 模式：显示导航按钮 -->
-                    <SearchNavigationButtons
-                        results={Array.from($search.results.keys())}
-                    />
-                    {#if $search.results.size > 0}
-                        <SearchActions />
+        {#if $search.showInput}
+            <div class="search-input-wrapper" style="position: relative;">
+                <SearchInput />
+                
+                {#if $search.query.length > 0}
+                    {#if $isMandalaMode}
+                        <!-- Mandala 模式：显示搜索结果下拉列表 -->
+                        {#if $mandalaSearchResults.length > 0}
+                            <MandalaSearchResults results={$mandalaSearchResults} />
+                        {/if}
+                    {:else}
+                        <!-- Lineage 模式：显示导航按钮 -->
+                        <SearchNavigationButtons
+                            results={Array.from($search.results.keys())}
+                        />
+                        {#if $search.results.size > 0}
+                            <SearchActions />
+                        {/if}
                     {/if}
                 {/if}
-            {/if}
+            </div>
+        {/if}
+    </div>
+
+    <div class="toolbar-spacer" />
+
+    <div class="toolbar-group toolbar-group--center">
+        <div class="lock-toggle-container">
+            <Button
+                active={$mode === '9x9'}
+                label={$mode === '3x3' ? '切换到 9x9' : '切换到 3x3'}
+                on:click={toggleMandalaMode}
+                tooltipPosition="bottom"
+            >
+                {#if $mode === '3x3'}
+                    <Grid3x3 class="svg-icon" size="18" />
+                {:else}
+                    <Grid2x2 class="svg-icon" size="18" />
+                {/if}
+            </Button>
+            <div class="divider"></div>
+            <Button
+                active={$mobileInteractionMode === 'unlocked'}
+                label={$mobileInteractionMode === 'locked' ? '锁定模式 (导航优先)' : '解锁模式 (编辑优先)'}
+                on:click={toggleMobileInteractionMode}
+                tooltipPosition="bottom"
+            >
+                {#if $mobileInteractionMode === 'locked'}
+                    <Lock class="svg-icon" size="18" />
+                {:else}
+                    <Unlock class="svg-icon" size="18" />
+                {/if}
+            </Button>
         </div>
-    {/if}
+    </div>
+
+    <div class="toolbar-spacer" />
 </div>
 
 <style>
@@ -134,10 +142,10 @@
         display: flex;
         gap: var(--size-4-2);
         flex-wrap: wrap;
-        max-width: fit-content;
+        width: 100%;
         pointer-events: none;
-        position: relative;
-        flex: 1 1 auto;
+        align-items: center;
+        justify-content: space-between;
     }
     .navigation-history-container :global(> *) {
         pointer-events: auto;
@@ -148,6 +156,24 @@
         gap: var(--size-4-2);
     }
 
+    .toolbar-group {
+        display: flex;
+        align-items: center;
+        gap: var(--size-4-2);
+    }
+
+    .toolbar-group--left {
+        flex: 0 1 auto;
+    }
+
+    .toolbar-group--center {
+        flex: 0 0 auto;
+    }
+
+    .toolbar-spacer {
+        flex: 1 1 auto;
+    }
+
     .mobile-toggle {
         display: none;
     }
@@ -156,10 +182,6 @@
         display: flex;
         align-items: center;
         gap: 4px;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
     }
 
     .divider {
@@ -173,6 +195,9 @@
         & .navigation-history-container {
             width: auto;
             position: static;
+        }
+        & .toolbar-spacer {
+            flex: 0 0 auto;
         }
         & .mobile-toggle {
             display: block;
