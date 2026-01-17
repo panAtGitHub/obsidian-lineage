@@ -151,7 +151,9 @@
     }
 
     .lock-toggle-container {
-        display: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     .divider {
@@ -170,14 +172,11 @@
             display: block;
         }
         & .lock-toggle-container {
-            display: flex;
-            align-items: center;
             position: absolute;
             left: 50%;
             top: 4px;
             transform: translateX(-50%);
             z-index: 1002;
-            gap: 4px;
             background: var(--background-primary);
             padding: 2px 6px;
             border-radius: 16px;

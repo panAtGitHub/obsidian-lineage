@@ -63,7 +63,7 @@
         setActiveMainSplitNode(view, nodeId, e);
         
         // 移动端锁定模式下，绝对禁止触发编辑逻辑
-        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+        if ($mobileInteractionMode === 'locked') {
             return;
         }
 
@@ -88,6 +88,18 @@
         // 触发卸载并自动保存
         handleCancel();
     };
+
+    const DOUBLE_CLICK_THRESHOLD_MS = 250;
+    let lastClickAt = 0;
+    let prevClickAt = 0;
+
+    const recordClick = () => {
+        prevClickAt = lastClickAt;
+        lastClickAt = Date.now();
+    };
+
+    const isFastDoubleClick = () =>
+        lastClickAt - prevClickAt <= DOUBLE_CLICK_THRESHOLD_MS;
 
 
     // 防抖定时器
@@ -120,19 +132,21 @@
     class:is-floating-mobile={isMobile && editing && !$showDetailSidebar}
     id={nodeId}
     use:droppable
-    on:click={handleSelect}
-    on:dblclick={(e) => {
-        if (isMobile && $mobileInteractionMode === 'locked') {
-            // 锁定模式下，使用静默选择并执行导航
-            view.viewStore.dispatch({
-                type: 'view/set-active-node/mouse-silent',
-                payload: { id: nodeId },
-            });
+    on:click={(e) => {
+        recordClick();
+        if (!isMobile && $mobileInteractionMode === 'locked') {
             if (isGridCenter(view, nodeId, section)) {
                 exitCurrentSubgrid(view);
             } else {
                 enterSubgridForNode(view, nodeId);
             }
+            return;
+        }
+        handleSelect(e);
+    }}
+    on:dblclick={(e) => {
+        if (!isFastDoubleClick()) return;
+        if ($mobileInteractionMode === 'locked') {
             return;
         }
 

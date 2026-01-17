@@ -70,8 +70,21 @@
     } from '../../../../../../../../../../stores/view/mobile-interaction-store';
     import { Platform } from 'obsidian';
 
+    const DOUBLE_CLICK_THRESHOLD_MS = 250;
+    let lastClickAt = 0;
+    let prevClickAt = 0;
+
+    const recordClick = () => {
+        prevClickAt = lastClickAt;
+        lastClickAt = Date.now();
+    };
+
+    const isFastDoubleClick = () =>
+        lastClickAt - prevClickAt <= DOUBLE_CLICK_THRESHOLD_MS;
+
     const handleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
+        recordClick();
         
         // 移动端锁定模式：仅激活节点，禁止任何编辑相关的副作用
         if (Platform.isMobile && $mobileInteractionMode === 'locked') {
@@ -83,6 +96,16 @@
             }
             setActiveNode(e);
             e.stopPropagation(); // 防止冒泡到 MandalaCard 再次触发选择逻辑
+            return;
+        }
+
+        // PC 锁定模式：允许卡片处理导航，不改变选中
+        if (!Platform.isMobile && $mobileInteractionMode === 'locked') {
+            const target = e.target as HTMLElement | null;
+            const anchor = target?.closest('a.internal-link');
+            if (anchor) {
+                handleLinks(view, e);
+            }
             return;
         }
 
@@ -100,9 +123,10 @@
 
     const handleDoubleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
+        if (!isFastDoubleClick()) return;
 
         // 移动端锁定模式：绝对禁止双击触发编辑，由父组件 MandalaCard 处理导航
-        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+        if ($mobileInteractionMode === 'locked') {
             return;
         }
 

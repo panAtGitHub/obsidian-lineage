@@ -123,6 +123,11 @@
     const onCellDblClick = (nodeId: string) => {
         if (!nodeId) return;
 
+        if ($mobileInteractionMode === 'locked') {
+            // 锁定模式：双击不进入编辑
+            return;
+        }
+
         if (Platform.isMobile) {
             if ($mobileInteractionMode === 'unlocked') {
                 // 场景 7, 8: 弹出全屏编辑
