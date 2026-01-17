@@ -35,6 +35,7 @@ import { refreshGroupParentIds } from 'src/stores/document/reducers/meta/refresh
 import { loadDocumentFromJSON } from 'src/stores/document/reducers/load-document-from-file/load-document-from-json';
 import { NO_UPDATE } from 'src/lib/store/store';
 import { sortDirectChildNodes } from 'src/stores/document/reducers/sort/sort-direct-child-nodes';
+import { deleteChildNodes } from 'src/lib/tree-utils/delete/delete-child-nodes';
 import {
     ensureMandalaChildren,
     swapMandalaNodes,
@@ -116,6 +117,14 @@ const updateDocumentState = (
         newActiveNodeId = action.payload.parentNodeId;
         affectedNodeId = action.payload.parentNodeId;
         affectedNodes = createdNodes;
+    } else if (action.type === 'document/mandala/clear-empty-subgrids') {
+        const parentIds = action.payload.parentIds.filter(Boolean);
+        if (parentIds.length === 0) return NO_UPDATE;
+        for (const parentId of parentIds) {
+            deleteChildNodes(state.document, parentId);
+        }
+        newActiveNodeId = parentIds[0];
+        affectedNodeId = parentIds[0];
     } else if (action.type === 'document/add-node') {
         newActiveNodeId = insertNode(
             state.document,

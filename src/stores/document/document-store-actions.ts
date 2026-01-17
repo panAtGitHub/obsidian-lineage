@@ -19,6 +19,7 @@ import { LoadPinnedNodesAction } from 'src/stores/document/reducers/pinned-nodes
 import { RefreshGroupParentIdsAction } from 'src/stores/document/reducers/meta/refresh-group-parent-ids';
 import { SortChildNodesAction } from 'src/stores/document/reducers/sort/sort-direct-child-nodes';
 import {
+    MandalaClearEmptySubgridsAction,
     MandalaEnsureChildrenAction,
     MandalaSwapAction,
 } from 'src/stores/document/reducers/mandala/swap-mandala-nodes';
@@ -40,6 +41,7 @@ export type DocumentAction =
     | SetNodeContentAction
     | MandalaSwapAction
     | MandalaEnsureChildrenAction
+    | MandalaClearEmptySubgridsAction
     | DropAction
     | DeleteNodeAction
     | MoveNodeAction
@@ -65,6 +67,7 @@ export type UndoableAction =
     | DeleteNodeAction
     | MandalaSwapAction
     | MandalaEnsureChildrenAction
+    | MandalaClearEmptySubgridsAction
     | DropAction
     | MoveNodeAction
     | MergeNodeAction

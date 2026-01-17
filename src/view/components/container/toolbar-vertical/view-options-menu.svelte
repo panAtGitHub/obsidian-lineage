@@ -1,9 +1,10 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
-    import { Square, Palette, Printer, X } from 'lucide-svelte';
+    import { Square, Palette, Printer, Trash2, X } from 'lucide-svelte';
     import { Notice, Platform } from 'obsidian';
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
+    import { createClearEmptyMandalaSubgridsPlan } from 'src/lib/mandala/clear-empty-subgrids';
 
     const dispatch = createEventDispatcher();
     const view = getView();
@@ -142,6 +143,32 @@
         closeMenu();
     };
 
+    const clearEmptySubgrids = () => {
+        const state = view.documentStore.getValue();
+        if (!state.meta.isMandala) {
+            new Notice('当前文档不是九宫格格式。');
+            closeMenu();
+            return;
+        }
+
+        const plan = createClearEmptyMandalaSubgridsPlan(state.document);
+        if (plan.parentIds.length === 0) {
+            new Notice('没有可清空的空白九宫格。');
+            closeMenu();
+            return;
+        }
+
+        view.documentStore.dispatch({
+            type: 'document/mandala/clear-empty-subgrids',
+            payload: { parentIds: plan.parentIds },
+        });
+
+        new Notice(
+            `已清空 ${plan.parentIds.length} 个空白九宫格，删除 ${plan.nodesToRemove.length} 个子格。`,
+        );
+        closeMenu();
+    };
+
     const closeMenu = () => {
         dispatch('close');
     };
@@ -204,6 +231,18 @@
                 <div class="view-options-menu__content">
                     <div class="view-options-menu__label">导出 PNG</div>
                     <div class="view-options-menu__desc">保存当前视图为 PNG</div>
+                </div>
+            </button>
+
+            <button class="view-options-menu__item" on:click={clearEmptySubgrids}>
+                <div class="view-options-menu__icon">
+                    <Trash2 class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">清空空白九宫格</div>
+                    <div class="view-options-menu__desc">
+                        删除空白子主题分支，保留中心格
+                    </div>
                 </div>
             </button>
         </div>

@@ -44,6 +44,13 @@ export type MandalaEnsureChildrenAction = {
     };
 };
 
+export type MandalaClearEmptySubgridsAction = {
+    type: 'document/mandala/clear-empty-subgrids';
+    payload: {
+        parentIds: string[];
+    };
+};
+
 export const ensureMandalaChildren = (
     document: MandalaGridDocument,
     parentNodeId: string,
