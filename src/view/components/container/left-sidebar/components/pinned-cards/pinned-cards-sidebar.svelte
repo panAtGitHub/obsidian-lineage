@@ -91,6 +91,7 @@
         flex: 1 1 auto;
         padding: 8px 8px 10px;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .pinned-list {
@@ -138,5 +139,9 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         line-height: 1.4;
+    }
+
+    :global(.is-mobile) .pinned-cards-container {
+        padding-bottom: 24px;
     }
 </style>

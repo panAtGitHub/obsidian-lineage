@@ -102,8 +102,11 @@
         flex: 1 1 auto;
         padding-bottom: 10px;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
-
+    :global(.is-mobile) .recent-cards-container {
+        padding-bottom: 24px;
+    }
 
 </style>

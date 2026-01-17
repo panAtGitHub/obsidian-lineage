@@ -13,7 +13,11 @@
     import StyleRulesModal from 'src/view/components/container/style-rules/style-rules.svelte';
     import { MandalaView } from 'src/view/view';
     import { localFontStore } from 'src/stores/local-font-store';
-    import { WhiteThemeModeStore } from 'src/stores/settings/derived/view-settings-store';
+    import {
+        LeftSidebarWidthStore,
+        ShowLeftSidebarStore,
+        WhiteThemeModeStore,
+    } from 'src/stores/settings/derived/view-settings-store';
     import LeftSidebar from 'src/view/components/container/left-sidebar/left-sidebar.svelte';
     import { Platform } from 'obsidian';
 
@@ -25,6 +29,8 @@
 
     const controls = uiControlsStore(view);
     const whiteThemeMode = WhiteThemeModeStore(view);
+    const showLeftSidebar = ShowLeftSidebarStore(view);
+    const leftSidebarWidth = LeftSidebarWidthStore(view);
 </script>
 
 <div
@@ -37,6 +43,17 @@
 >
     <div class={`mandala-main`} use:mouseWheelZoom={view}>
         <LeftSidebar />
+        {#if Platform.isMobile && $showLeftSidebar}
+            <div
+                class="left-sidebar-overlay"
+                style={`left: ${$leftSidebarWidth}px;`}
+                on:click={() => {
+                    view.plugin.settings.dispatch({
+                        type: 'view/left-sidebar/toggle',
+                    });
+                }}
+            />
+        {/if}
         <MandalaViewComponent />
         {#if $controls.showHistorySidebar}
             <SnapshotsListModal />
@@ -60,6 +77,15 @@
         flex: 1 1 auto;
         width: 0; /* ensures it shrinks properly when the minimap is visible */
         position: relative;
+    }
+
+    .left-sidebar-overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        background: transparent;
+        z-index: 1500;
     }
 
     .mandala-view {
