@@ -63,13 +63,13 @@
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const grayBackground = MandalaGrayBackgroundStore(view);
 
-    const graySections = new Set(['3', '5', '6', '8']);
-    const getSectionBackground = (section: string) => {
+    const grayPositions = new Set([1, 3, 5, 7]);
+    const getSectionBackground = (section: string, index: number) => {
         const opacity = $sectionColorOpacity / 100;
         if ($showSectionColors && $sectionColors[section]) {
             return applyOpacityToHex($sectionColors[section], opacity);
         }
-        if ($grayBackground && graySections.has(section)) {
+        if ($grayBackground && grayPositions.has(index)) {
             return 'var(--background-secondary-alt)';
         }
         return null;
@@ -293,11 +293,11 @@
                         ? childSlots.map((slot) => (slot ? `${theme}.${slot}` : theme))
                         : coreSlots}
                     <div class="mandala-grid mandala-grid--3 mandala-grid--core">
-                        {#each sections as section (section)}
+                        {#each sections as section, index (section)}
+                            {@const sectionBackground =
+                                getSectionBackground(section, index)}
                             {@const nodeId = requireNodeId(section)}
                             {#if nodeId}
-                                {@const sectionBackground =
-                                    getSectionBackground(section)}
                                 <MandalaCard
                                     {nodeId}
                                     {section}
@@ -312,7 +312,14 @@
                                     draggable={section !== '1' && !$subgridTheme}
                                 />
                             {:else}
-                                <div class="mandala-empty">{section}</div>
+                                <div
+                                    class="mandala-empty"
+                                    style={sectionBackground
+                                        ? `background-color: ${sectionBackground};`
+                                        : undefined}
+                                >
+                                    {section}
+                                </div>
                             {/if}
                         {/each}
                     </div>

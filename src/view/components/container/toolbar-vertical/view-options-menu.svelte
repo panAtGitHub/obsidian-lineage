@@ -1,6 +1,14 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
-    import { FileText, Palette, Printer, Square, Trash2, X } from 'lucide-svelte';
+    import {
+        Frame,
+        Image,
+        Palette,
+        Printer,
+        Square,
+        Trash2,
+        X,
+    } from 'lucide-svelte';
     import { Notice, Platform } from 'obsidian';
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
@@ -13,14 +21,18 @@
         MandalaGrayBackgroundStore,
         MandalaSectionColorOpacityStore,
         MandalaShowSectionColorsStore,
+        SquareLayoutStore,
+        WhiteThemeModeStore,
     } from 'src/stores/settings/derived/view-settings-store';
 
     const dispatch = createEventDispatcher();
     const view = getView();
 
     export let show = false;
-    let showA4Options = false;
-    let showViewStyleOptions = false;
+    let showViewOptions = false;
+    let showBackgroundOptions = false;
+    let showBackgroundColorOptions = false;
+    let showBorderOptions = false;
 
     const a4Mode = MandalaA4ModeStore(view);
     const a4Orientation = MandalaA4OrientationStore(view);
@@ -29,25 +41,31 @@
     const showSectionColors = MandalaShowSectionColorsStore(view);
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const grayBackground = MandalaGrayBackgroundStore(view);
-
-    const toggleSquareLayout = () => {
-        view.plugin.settings.dispatch({
-            type: 'settings/view/toggle-square-layout',
-        });
-        closeMenu();
-    };
+    const whiteThemeMode = WhiteThemeModeStore(view);
+    const squareLayout = SquareLayoutStore(view);
 
     const toggleWhiteTheme = () => {
         view.plugin.settings.dispatch({
             type: 'settings/view/toggle-white-theme',
         });
-        closeMenu();
     };
 
     const toggleA4Mode = () => {
         view.plugin.settings.dispatch({
             type: 'settings/view/mandala/toggle-a4-mode',
         });
+    };
+
+    const updateA4Mode = (enabled: boolean) => {
+        if (enabled !== $a4Mode) {
+            toggleA4Mode();
+        }
+    };
+
+    const updateWhiteThemeMode = (enabled: boolean) => {
+        if (enabled !== $whiteThemeMode) {
+            toggleWhiteTheme();
+        }
     };
 
     const updateA4Orientation = (event: Event) => {
@@ -72,22 +90,32 @@
         });
     };
 
+    const clampOpacity = (value: number) => Math.min(100, Math.max(0, value));
+
+    const updateBorderOpacityValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-border-opacity',
+            payload: { opacity: clampOpacity(value) },
+        });
+    };
+
+    const updateSectionColorOpacityValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-section-color-opacity',
+            payload: { opacity: clampOpacity(value) },
+        });
+    };
+
     const updateBorderOpacity = (event: Event) => {
         const target = event.target;
         if (!(target instanceof HTMLInputElement)) return;
-        view.plugin.settings.dispatch({
-            type: 'settings/view/mandala/set-border-opacity',
-            payload: { opacity: Number(target.value) },
-        });
+        updateBorderOpacityValue(Number(target.value));
     };
 
     const updateSectionColorOpacity = (event: Event) => {
         const target = event.target;
         if (!(target instanceof HTMLInputElement)) return;
-        view.plugin.settings.dispatch({
-            type: 'settings/view/mandala/set-section-color-opacity',
-            payload: { opacity: Number(target.value) },
-        });
+        updateSectionColorOpacityValue(Number(target.value));
     };
 
     type ElectronDialog = {
@@ -267,8 +295,10 @@
 
     const closeMenu = () => {
         dispatch('close');
-        showA4Options = false;
-        showViewStyleOptions = false;
+        showViewOptions = false;
+        showBackgroundOptions = false;
+        showBackgroundColorOptions = false;
+        showBorderOptions = false;
     };
 
     // 点击外部关闭菜单 - 使用全局点击事件
@@ -302,113 +332,132 @@
         </div>
         
         <div class="view-options-menu__items">
-            <button class="view-options-menu__item" on:click={toggleSquareLayout}>
-                <div class="view-options-menu__icon">
-                    <Square class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">正方形布局</div>
-                    <div class="view-options-menu__desc">将格子规整为正方形</div>
-                </div>
-            </button>
-
-            <button class="view-options-menu__item" on:click={toggleWhiteTheme}>
-                <div class="view-options-menu__icon">
-                    <Palette class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">纯白背景</div>
-                    <div class="view-options-menu__desc">切换为纯白主题</div>
-                </div>
-            </button>
-
             <button
                 class="view-options-menu__item"
-                on:click={() => {
-                    toggleA4Mode();
-                    showA4Options = true;
-                }}
+                on:click={() => (showViewOptions = !showViewOptions)}
             >
                 <div class="view-options-menu__icon">
-                    <FileText class="view-options-menu__icon-svg" size={18} />
+                    <Frame class="view-options-menu__icon-svg" size={18} />
                 </div>
                 <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">A4 视图</div>
+                    <div class="view-options-menu__label">视图选项</div>
                     <div class="view-options-menu__desc">
-                        切换为固定画布大小
+                        选择画布大小
                     </div>
                 </div>
             </button>
 
-            {#if showA4Options}
+            {#if showViewOptions}
                 <div class="view-options-menu__submenu">
                     <label class="view-options-menu__row">
-                        <span>启用 A4 视图</span>
+                        <span>A4 大小</span>
                         <input
-                            type="checkbox"
+                            type="radio"
+                            name="mandala-view-size"
                             checked={$a4Mode}
-                            on:change={toggleA4Mode}
+                            on:change={() => updateA4Mode(true)}
                         />
                     </label>
                     <label class="view-options-menu__row">
-                        <span>方向</span>
-                        <select
-                            value={$a4Orientation}
-                            on:change={updateA4Orientation}
-                        >
-                            <option value="portrait">竖向</option>
-                            <option value="landscape">横向</option>
-                        </select>
+                        <span>屏幕大小</span>
+                        <input
+                            type="radio"
+                            name="mandala-view-size"
+                            checked={!$a4Mode}
+                            on:change={() => updateA4Mode(false)}
+                        />
                     </label>
                     <label class="view-options-menu__row">
-                        <span>DPI</span>
-                        <select value={$a4Dpi} on:change={updateA4Dpi}>
-                            <option value="96">96</option>
-                            <option value="150">150</option>
-                            <option value="300">300</option>
-                        </select>
+                        <span>正方形布局</span>
+                        <input
+                            type="checkbox"
+                            checked={$squareLayout}
+                            on:change={() =>
+                                view.plugin.settings.dispatch({
+                                    type: 'settings/view/toggle-square-layout',
+                                })
+                            }
+                        />
+                    </label>
+                    {#if $a4Mode}
+                        <label class="view-options-menu__row">
+                            <span>方向</span>
+                            <select
+                                value={$a4Orientation}
+                                on:change={updateA4Orientation}
+                            >
+                                <option value="portrait">竖向</option>
+                                <option value="landscape">横向</option>
+                            </select>
+                        </label>
+                        <label class="view-options-menu__row">
+                            <span>DPI</span>
+                            <select value={$a4Dpi} on:change={updateA4Dpi}>
+                                <option value="96">96</option>
+                                <option value="150">150</option>
+                                <option value="300">300</option>
+                            </select>
+                        </label>
+                    {/if}
+                </div>
+            {/if}
+
+            <button
+                class="view-options-menu__item"
+                on:click={() => (showBackgroundOptions = !showBackgroundOptions)}
+            >
+                <div class="view-options-menu__icon">
+                    <Image class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">背景选项</div>
+                    <div class="view-options-menu__desc">
+                        默认或纯白背景
+                    </div>
+                </div>
+            </button>
+
+            {#if showBackgroundOptions}
+                <div class="view-options-menu__submenu">
+                    <label class="view-options-menu__row">
+                        <span>默认背景</span>
+                        <input
+                            type="radio"
+                            name="mandala-background"
+                            checked={!$whiteThemeMode}
+                            on:change={() => updateWhiteThemeMode(false)}
+                        />
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>纯白背景</span>
+                        <input
+                            type="radio"
+                            name="mandala-background"
+                            checked={$whiteThemeMode}
+                            on:change={() => updateWhiteThemeMode(true)}
+                        />
                     </label>
                 </div>
             {/if}
 
-            <button class="view-options-menu__item" on:click={exportCurrentView}>
-                <div class="view-options-menu__icon">
-                    <Printer class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">导出 PNG</div>
-                    <div class="view-options-menu__desc">保存当前视图为 PNG</div>
-                </div>
-            </button>
-
             <button
                 class="view-options-menu__item"
                 on:click={() =>
-                    (showViewStyleOptions = !showViewStyleOptions)}
+                    (showBackgroundColorOptions = !showBackgroundColorOptions)}
             >
                 <div class="view-options-menu__icon">
                     <Palette class="view-options-menu__icon-svg" size={18} />
                 </div>
                 <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">视图样式</div>
+                    <div class="view-options-menu__label">背景色选项</div>
                     <div class="view-options-menu__desc">
-                        边框与背景显示
+                        色块显示与透明度
                     </div>
                 </div>
             </button>
 
-            {#if showViewStyleOptions}
+            {#if showBackgroundColorOptions}
                 <div class="view-options-menu__submenu">
-                    <label class="view-options-menu__row">
-                        <span>边框透明度</span>
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={$borderOpacity}
-                            on:input={updateBorderOpacity}
-                        />
-                    </label>
                     <label class="view-options-menu__row">
                         <span>显示背景色</span>
                         <input
@@ -422,17 +471,7 @@
                         />
                     </label>
                     <label class="view-options-menu__row">
-                        <span>背景透明度</span>
-                        <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={$sectionColorOpacity}
-                            on:input={updateSectionColorOpacity}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>灰白相间背景</span>
+                        <span>显示默认间隔色块</span>
                         <input
                             type="checkbox"
                             checked={$grayBackground}
@@ -443,8 +482,76 @@
                             }
                         />
                     </label>
+                    <label class="view-options-menu__row">
+                        <span>背景色透明度</span>
+                        <div class="view-options-menu__range">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={$sectionColorOpacity}
+                                on:input={updateSectionColorOpacity}
+                            />
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                value={$sectionColorOpacity}
+                                on:input={updateSectionColorOpacity}
+                            />
+                        </div>
+                    </label>
                 </div>
             {/if}
+
+            <button
+                class="view-options-menu__item"
+                on:click={() => (showBorderOptions = !showBorderOptions)}
+            >
+                <div class="view-options-menu__icon">
+                    <Square class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">线框选项</div>
+                    <div class="view-options-menu__desc">
+                        调整线框透明度
+                    </div>
+                </div>
+            </button>
+
+            {#if showBorderOptions}
+                <div class="view-options-menu__submenu">
+                    <label class="view-options-menu__row">
+                        <span>线框透明度</span>
+                        <div class="view-options-menu__range">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={$borderOpacity}
+                                on:input={updateBorderOpacity}
+                            />
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                value={$borderOpacity}
+                                on:input={updateBorderOpacity}
+                            />
+                        </div>
+                    </label>
+                </div>
+            {/if}
+
+            <button class="view-options-menu__item" on:click={exportCurrentView}>
+                <div class="view-options-menu__icon">
+                    <Printer class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">导出 PNG</div>
+                    <div class="view-options-menu__desc">保存当前视图为 PNG</div>
+                </div>
+            </button>
 
             <button class="view-options-menu__item" on:click={clearEmptySubgrids}>
                 <div class="view-options-menu__icon">
@@ -556,6 +663,22 @@
     .view-options-menu__row select,
     .view-options-menu__row input[type='range'] {
         flex: 1 1 auto;
+    }
+
+    .view-options-menu__range {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .view-options-menu__range input[type='range'] {
+        flex: 1 1 auto;
+    }
+
+    .view-options-menu__range input[type='number'] {
+        width: 56px;
+        padding: 2px 4px;
     }
 
     .view-options-menu__item {
