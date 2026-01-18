@@ -156,6 +156,8 @@ export const createSingleNodeContextMenuItems = (
                                   '--swatch-color',
                                   SECTION_COLOR_PALETTE[key],
                               );
+                              button.style.backgroundColor =
+                                  SECTION_COLOR_PALETTE[key];
                               button.setAttribute(
                                   'aria-label',
                                   `${lang.cm_section_color} ${key}`,
