@@ -29,6 +29,21 @@ export const SECTION_COLOR_PALETTE: Record<SectionColorKey, string> = {
 
 export type SectionColorMap = Record<SectionColorKey, string[]>;
 
+export const compareSectionIds = (a: string, b: string) => {
+    const aParts = a.split('.').map((part) => Number(part));
+    const bParts = b.split('.').map((part) => Number(part));
+    const maxLen = Math.max(aParts.length, bParts.length);
+    for (let i = 0; i < maxLen; i += 1) {
+        const aVal = aParts[i];
+        const bVal = bParts[i];
+        if (aVal === undefined) return -1;
+        if (bVal === undefined) return 1;
+        if (aVal === bVal) continue;
+        return aVal - bVal;
+    }
+    return 0;
+};
+
 const createEmptySectionColorMap = (): SectionColorMap => ({
     '1_white': [],
     '2_rose': [],
@@ -57,7 +72,10 @@ const normalizeSectionColorMap = (value: unknown): SectionColorMap => {
                 .map((section) =>
                     typeof section === 'number' ? String(section) : section,
                 )
-                .filter((section): section is string => typeof section === 'string');
+                .filter(
+                    (section): section is string => typeof section === 'string',
+                )
+                .sort(compareSectionIds);
         } else if (typeof raw === 'string') {
             map[key] = [raw];
         } else if (typeof raw === 'number') {
@@ -116,7 +134,7 @@ export const setSectionColor = (
         next[key] = map[key].filter((item) => item !== section);
     }
     if (colorKey) {
-        next[colorKey] = [...next[colorKey], section];
+        next[colorKey] = [...next[colorKey], section].sort(compareSectionIds);
     }
     return next;
 };

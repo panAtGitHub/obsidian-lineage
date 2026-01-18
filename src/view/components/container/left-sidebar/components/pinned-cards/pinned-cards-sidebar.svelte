@@ -14,6 +14,12 @@
         setActiveSidebarNode
     } from 'src/stores/view/subscriptions/actions/set-active-sidebar-node';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
+    import {
+        createSectionColorIndex,
+        parseSectionColorsFromFrontmatter,
+        SECTION_COLOR_KEYS,
+    } from 'src/view/helpers/mandala/section-colors';
+    import { Palette, Pin } from 'lucide-svelte';
 
     const view = getView();
     const pinnedNodesArray = PinnedNodesStore(view);
@@ -26,6 +32,7 @@
         section: string;
         title: string;
         body: string;
+        colorKey: string | null;
     };
 
     const parsePinnedContent = (content: string) => {
@@ -39,25 +46,111 @@
         return { title, body: bodyLine.trimEnd() };
     };
 
-    const pinnedItems = derived(
+    const pinnedState = derived(
         [pinnedNodesArray, view.documentStore],
-        ([$pinnedNodesArray, $doc]): PinnedItem[] => {
-            return $pinnedNodesArray
+        ([$pinnedNodesArray, $doc]) => {
+            const orderMap = new Map<string, number>();
+            $pinnedNodesArray.forEach((nodeId, index) => {
+                const section = $doc.sections.id_section[nodeId];
+                if (section) {
+                    orderMap.set(section, index);
+                }
+            });
+            const colorMap = parseSectionColorsFromFrontmatter(
+                $doc.file.frontmatter,
+            );
+            const colorIndex = createSectionColorIndex(colorMap);
+            const colorOrderMap = new Map<string, number>();
+            for (const key of SECTION_COLOR_KEYS) {
+                const sections = colorMap[key] || [];
+                sections.forEach((section, idx) => {
+                    colorOrderMap.set(section, idx);
+                });
+            }
+            const items = $pinnedNodesArray
                 .map((nodeId) => {
                     const section = $doc.sections.id_section[nodeId];
                     if (!section) return null;
-                    const content = $doc.document.content[nodeId]?.content || '';
+                    const content =
+                        $doc.document.content[nodeId]?.content || '';
                     const preview = parsePinnedContent(content);
                     return {
                         nodeId,
                         section,
                         title: preview.title,
                         body: preview.body,
+                        colorKey: colorIndex[section] || null,
                     };
                 })
                 .filter((item): item is PinnedItem => Boolean(item));
+            const coloredItems: PinnedItem[] = [];
+            for (const key of SECTION_COLOR_KEYS) {
+                const sections = colorMap[key] || [];
+                for (const section of sections) {
+                    const nodeId = $doc.sections.section_id[section];
+                    if (!nodeId) continue;
+                    const content =
+                        $doc.document.content[nodeId]?.content || '';
+                    const preview = parsePinnedContent(content);
+                    coloredItems.push({
+                        nodeId,
+                        section,
+                        title: preview.title,
+                        body: preview.body,
+                        colorKey: key,
+                    });
+                }
+            }
+            return { items, orderMap, colorOrderMap, coloredItems };
         },
     );
+
+    let sortMode: 'section' | 'color' | 'colored' = 'section';
+
+    const getColorRank = (colorKey: string | null) => {
+        if (!colorKey) return Number.POSITIVE_INFINITY;
+        const index = SECTION_COLOR_KEYS.indexOf(
+            colorKey as (typeof SECTION_COLOR_KEYS)[number],
+        );
+        return index === -1 ? Number.POSITIVE_INFINITY : index;
+    };
+
+    const getPinnedOrder = (
+        orderMap: Map<string, number>,
+        section: string,
+    ) => orderMap.get(section) ?? Number.POSITIVE_INFINITY;
+
+    const getColorOrder = (
+        orderMap: Map<string, number>,
+        section: string,
+    ) => orderMap.get(section) ?? Number.POSITIVE_INFINITY;
+
+    const sortByColor = (a: PinnedItem, b: PinnedItem) => {
+        const aRank = getColorRank(a.colorKey);
+        const bRank = getColorRank(b.colorKey);
+        if (aRank !== bRank) return aRank - bRank;
+        if (!a.colorKey || !b.colorKey) {
+            return (
+                getPinnedOrder($pinnedState.orderMap, a.section) -
+                getPinnedOrder($pinnedState.orderMap, b.section)
+            );
+        }
+        return (
+            getColorOrder($pinnedState.colorOrderMap, a.section) -
+            getColorOrder($pinnedState.colorOrderMap, b.section)
+        );
+    };
+
+    $: pinnedItems =
+        sortMode === 'color'
+            ? [...$pinnedState.items].sort(sortByColor)
+            : sortMode === 'colored'
+              ? $pinnedState.coloredItems
+              : [...$pinnedState.items].sort(
+                    (a, b) =>
+                        getPinnedOrder($pinnedState.orderMap, a.section) -
+                        getPinnedOrder($pinnedState.orderMap, b.section),
+                );
 
     const handleClick = (item: PinnedItem) => {
         setActiveSidebarNode(view, item.nodeId);
@@ -72,9 +165,35 @@
 </script>
 
 <div class="pinned-cards-container" use:scrollActivePinnedNode>
-    {#if $pinnedItems.length > 0}
+    {#if $pinnedState.items.length > 0}
+        <div class="pinned-sort-toggle">
+            <button
+                class:active={sortMode === 'section'}
+                on:click={() => (sortMode = 'section')}
+                type="button"
+            >
+                <Pin class="svg-icon" size="12" />
+                列表
+            </button>
+            <button
+                class:active={sortMode === 'color'}
+                on:click={() => (sortMode = 'color')}
+                type="button"
+            >
+                <Pin class="svg-icon" size="12" />
+                分类
+            </button>
+            <button
+                class:active={sortMode === 'colored'}
+                on:click={() => (sortMode = 'colored')}
+                type="button"
+            >
+                <Palette class="svg-icon" size="12" />
+                色块
+            </button>
+        </div>
         <div class="pinned-list">
-            {#each $pinnedItems as item (item.nodeId)}
+            {#each pinnedItems as item (item.nodeId)}
                 <div
                     class="pinned-list-item"
                     class:selected={$activePinnedCard === item.nodeId}
@@ -123,6 +242,30 @@
         flex-direction: column;
         gap: 8px;
         width: 100%;
+    }
+
+    .pinned-sort-toggle {
+        display: flex;
+        gap: 6px;
+        padding: 0 8px;
+    }
+
+    .pinned-sort-toggle button {
+        border: 1px solid var(--background-modifier-border);
+        background: var(--background-primary);
+        color: var(--text-normal);
+        border-radius: 6px;
+        padding: 4px 8px;
+        font-size: 12px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .pinned-sort-toggle button.active {
+        border-color: var(--interactive-accent);
+        color: var(--interactive-accent);
     }
 
     .pinned-list-item {
