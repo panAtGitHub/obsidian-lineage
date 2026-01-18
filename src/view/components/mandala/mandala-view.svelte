@@ -27,6 +27,7 @@
 
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import { mobilePopupFontSizeStore } from 'src/stores/mobile-popup-font-store';
+    import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
 
     const view = getView();
     const layout = createLayoutStore();
@@ -47,6 +48,7 @@
     const detailSidebarWidth = MandalaDetailSidebarWidthStore(view);
     const squareLayout = SquareLayoutStore(view);
     const whiteThemeMode = WhiteThemeModeStore(view);
+    const sectionColors = SectionColorBySectionStore(view);
 
     const MIN_DESKTOP_DETAIL_SIDEBAR_SIZE = 200;
 
@@ -266,6 +268,7 @@
                                     selected={$selectedNodes.has(nodeId)}
                                     pinned={$pinnedNodes.has(nodeId)}
                                     style={$nodeStyles.get(nodeId)}
+                                    sectionColor={$sectionColors[section] || null}
                                     draggable={section !== '1' && !$subgridTheme}
                                 />
                             {:else}

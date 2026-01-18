@@ -2,6 +2,10 @@ import { Menu } from 'obsidian';
 
 export type MenuItemObject =
     | { type: 'separator' }
+    | {
+          type: 'custom';
+          render: (menu: Menu, container: HTMLElement) => void;
+      }
     | ({
           title: string;
           icon: string;
@@ -20,6 +24,16 @@ export type MenuItemObject =
 const addMenuItem = (menu: Menu, menuItem: MenuItemObject) => {
     if ('type' in menuItem && menuItem.type === 'separator') {
         menu.addSeparator();
+    } else if ('type' in menuItem && menuItem.type === 'custom') {
+        menu.addItem((item) => {
+            item.setTitle('');
+            item.setIcon('');
+            const itemDom = (item as unknown as { dom?: HTMLElement }).dom;
+            if (!itemDom) return;
+            itemDom.textContent = '';
+            itemDom.classList.add('mandala-context-menu-custom');
+            menuItem.render(menu, itemDom);
+        });
     } else if ('title' in menuItem) {
         menu.addItem((item) => {
             item.setTitle(menuItem.title)

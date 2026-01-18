@@ -14,6 +14,14 @@ import { pasteNode } from 'src/view/actions/keyboard-shortcuts/helpers/commands/
 import { extractBranch } from 'src/obsidian/commands/helpers/extract-branch/extract-branch';
 import { exportSelection } from 'src/view/actions/context-menu/card-context-menu/helpers/export-selection';
 import { togglePinNode } from 'src/view/actions/context-menu/card-context-menu/create-sidebar-context-menu-items';
+import {
+    createSectionColorIndex,
+    parseSectionColorsFromFrontmatter,
+    SECTION_COLOR_KEYS,
+    SECTION_COLOR_PALETTE,
+    setSectionColor,
+    writeSectionColorsToFrontmatter,
+} from 'src/view/helpers/mandala/section-colors';
 
 type Props = {
     activeNode: string;
@@ -24,6 +32,12 @@ export const createSingleNodeContextMenuItems = (
     view: MandalaView,
     { hasChildren, isPinned, activeNode }: Props,
 ) => {
+    const section = view.documentStore.getValue().sections.id_section[activeNode];
+    const frontmatter = view.documentStore.getValue().file.frontmatter;
+    const sectionColorMap = parseSectionColorsFromFrontmatter(frontmatter);
+    const sectionColorIndex = createSectionColorIndex(sectionColorMap);
+    const activeColorKey = section ? sectionColorIndex[section] : undefined;
+
     const menuItems: MenuItemObject[] = [
         {
             title: lang.cm_split_node,
@@ -122,6 +136,64 @@ export const createSingleNodeContextMenuItems = (
                 togglePinNode(view, activeNode, isPinned, false);
             },
         },
+        { type: 'separator' },
+        ...(section
+            ? ([
+                  {
+                      type: 'custom',
+                      render: (menu, container) => {
+                          const palette = document.createElement('div');
+                          palette.className = 'mandala-color-palette';
+                          for (const key of SECTION_COLOR_KEYS) {
+                              const button =
+                                  document.createElement('button');
+                              button.type = 'button';
+                              button.className = 'mandala-color-swatch';
+                              if (activeColorKey === key) {
+                                  button.classList.add('is-active');
+                              }
+                              button.style.setProperty(
+                                  '--swatch-color',
+                                  SECTION_COLOR_PALETTE[key],
+                              );
+                              button.setAttribute(
+                                  'aria-label',
+                                  `${lang.cm_section_color} ${key}`,
+                              );
+                              button.addEventListener('click', (event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  const next = setSectionColor(
+                                      sectionColorMap,
+                                      section,
+                                      key,
+                                  );
+                                  void writeSectionColorsToFrontmatter(
+                                      view,
+                                      next,
+                                  );
+                                  menu.hide();
+                              });
+                              palette.appendChild(button);
+                          }
+                          container.appendChild(palette);
+                      },
+                  },
+                  {
+                      title: lang.cm_clear_section_color,
+                      icon: 'reset',
+                      disabled: !activeColorKey,
+                      action: () => {
+                          const next = setSectionColor(
+                              sectionColorMap,
+                              section,
+                              null,
+                          );
+                          void writeSectionColorsToFrontmatter(view, next);
+                      },
+                  },
+              ] as MenuItemObject[])
+            : []),
         { type: 'separator' },
         {
             title: hasChildren

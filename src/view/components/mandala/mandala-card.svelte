@@ -36,6 +36,7 @@
     export let selected: boolean;
     export let pinned: boolean;
     export let style: NodeStyle | undefined;
+    export let sectionColor: string | null = null;
     export let draggable: boolean;
     export let gridCell: { mode: '9x9'; row: number; col: number } | null = null;
 
@@ -131,6 +132,7 @@
     )}
     class:is-floating-mobile={isMobile && editing && !$showDetailSidebar}
     id={nodeId}
+    style={sectionColor ? `background-color: ${sectionColor};` : undefined}
     use:droppable
     on:click={(e) => {
         recordClick();
@@ -173,7 +175,7 @@
         }
     }}
 >
-    {#if style}
+    {#if style && !(sectionColor && style.styleVariant === 'background-color')}
         <CardStyle {style} />
     {/if}
 
@@ -218,6 +220,7 @@
         font-size: var(--font-text-size, 16px);
         line-height: 1.4;
         overflow: var(--mandala-card-overflow, visible);
+        background-color: var(--background-primary);
         --scrollbar-thumb-bg: var(--color-base-30);
         --scrollbar-active-thumb-bg: var(--color-base-40);
     }

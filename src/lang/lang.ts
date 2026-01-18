@@ -66,6 +66,8 @@ export const lang = {
     hk_copy_node_unformatted: 'Copy branch as plain text',
     hk_copy_node_without_subitems: 'Copy section',
     cm_copy_link_to_block: 'Copy link to block',
+    cm_section_color: 'Section color',
+    cm_clear_section_color: 'Clear color',
     toolbar_copy_search_results: 'Copy search results',
     toolbar_copy_search_results_wo_subitems:
         'Copy search results without sub-items',

@@ -3,6 +3,7 @@
     import { getView } from 'src/view/components/container/context';
     import { sectionAtCell9x9 } from 'src/view/helpers/mandala/mandala-grid';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
+    import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
 
     const view = getView();
 
@@ -35,6 +36,7 @@
         view.viewStore,
         (state) => state.styleRules.nodeStyles,
     );
+    const sectionColors = SectionColorBySectionStore(view);
 </script>
 
 <div class="mandala-9x9-grid">
@@ -56,6 +58,7 @@
                     selected={$selectedNodes.has(nodeId)}
                     pinned={$pinnedNodes.has(nodeId)}
                     style={$nodeStyles.get(nodeId)}
+                    sectionColor={$sectionColors[section] || null}
                     draggable={section !== '1'}
                     gridCell={{ mode: '9x9', row, col }}
                 />

@@ -10,10 +10,12 @@
 
     import { Platform } from 'obsidian';
     import { mobileInteractionMode } from 'src/stores/view/mobile-interaction-store';
+    import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
 
     const view = getView();
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
     const showTitleOnly = Show9x9TitleOnlyStore(view);
+    const sectionColors = SectionColorBySectionStore(view);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
@@ -162,6 +164,9 @@
             class:is-theme-center={cell.isThemeCenter}
             class:is-title-only={$showTitleOnly}
             class:is-active={cell.nodeId && cell.nodeId === $activeNodeId}
+            style={cell.section && $sectionColors[cell.section]
+                ? `background-color: ${$sectionColors[cell.section]};`
+                : undefined}
             data-node-id={cell.nodeId || undefined}
             id={cell.nodeId || undefined}
             on:click={() => onCellClick(cell.nodeId)}

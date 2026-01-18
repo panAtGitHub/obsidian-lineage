@@ -14,9 +14,11 @@
     import {
         setActiveSidebarNode
     } from 'src/stores/view/subscriptions/actions/set-active-sidebar-node';
+    import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
 
     const view = getView();
     const pinnedNodesArray = PinnedNodesStore(view);
+    const sectionColors = SectionColorBySectionStore(view);
 
     const activePinnedCard = ActivePinnedCardStore(view);
 
@@ -63,6 +65,9 @@
                 <div
                     class="pinned-list-item"
                     class:selected={$activePinnedCard === item.nodeId}
+                    style={item.section && $sectionColors[item.section]
+                        ? `--pinned-item-bg: ${$sectionColors[item.section]};`
+                        : undefined}
                     id={item.nodeId}
                     on:click={() => handleClick(item)}
                     on:keydown={(event) => handleKeydown(event, item)}
@@ -106,20 +111,20 @@
         cursor: pointer;
         border: 1px solid var(--background-modifier-border);
         border-radius: var(--radius-m);
-        background: #fff;
+        background: var(--pinned-item-bg, #fff);
         transition: background-color 0.1s ease, border-color 0.1s ease;
     }
 
     .pinned-list-item:hover {
-        background: #f5f5f5;
+        background: var(--pinned-item-bg, #f5f5f5);
     }
 
     .pinned-list-item:active {
-        background: var(--background-modifier-active-hover);
+        background: var(--pinned-item-bg, var(--background-modifier-active-hover));
     }
 
     .pinned-list-item.selected {
-        background: #fff;
+        background: var(--pinned-item-bg, #fff);
         outline: 2px solid var(--interactive-accent);
         outline-offset: -2px;
     }

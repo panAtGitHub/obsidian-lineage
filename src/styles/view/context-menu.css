@@ -1,0 +1,24 @@
+.mandala-context-menu-custom {
+    padding: 6px 8px;
+}
+
+.mandala-context-menu-custom .mandala-color-palette {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.mandala-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    padding: 0;
+    cursor: pointer;
+    background: var(--swatch-color);
+}
+
+.mandala-color-swatch.is-active {
+    outline: 2px solid var(--interactive-accent);
+    outline-offset: 1px;
+}
