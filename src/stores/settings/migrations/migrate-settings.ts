@@ -20,11 +20,23 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
     }
 
     const viewSettings = settings.view as {
+        mandalaA4Mode?: boolean;
+        mandalaA4Orientation?: 'portrait' | 'landscape';
+        mandalaA4Dpi?: number;
         mandalaGridBorderOpacity?: number;
         mandalaShowSectionColors?: boolean;
         mandalaSectionColorOpacity?: number;
         mandalaGrayBackground?: boolean;
     };
+    if (viewSettings.mandalaA4Mode === undefined) {
+        viewSettings.mandalaA4Mode = false;
+    }
+    if (viewSettings.mandalaA4Orientation === undefined) {
+        viewSettings.mandalaA4Orientation = 'portrait';
+    }
+    if (viewSettings.mandalaA4Dpi === undefined) {
+        viewSettings.mandalaA4Dpi = 150;
+    }
     if (viewSettings.mandalaGridBorderOpacity === undefined) {
         viewSettings.mandalaGridBorderOpacity = 100;
     }

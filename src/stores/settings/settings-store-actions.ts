@@ -234,6 +234,17 @@ export type SettingsActions =
         type: 'settings/view/toggle-white-theme';
     }
     | {
+        type: 'settings/view/mandala/toggle-a4-mode';
+    }
+    | {
+        type: 'settings/view/mandala/set-a4-orientation';
+        payload: { orientation: 'portrait' | 'landscape' };
+    }
+    | {
+        type: 'settings/view/mandala/set-a4-dpi';
+        payload: { dpi: number };
+    }
+    | {
         type: 'settings/view/mandala/set-border-opacity';
         payload: { opacity: number };
     }

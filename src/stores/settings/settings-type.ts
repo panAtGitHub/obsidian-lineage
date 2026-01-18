@@ -76,6 +76,9 @@ export type Settings = {
         applyGapBetweenCards: boolean;
         outlineMode: boolean;
         mandalaMode: MandalaMode;
+        mandalaA4Mode: boolean;
+        mandalaA4Orientation: 'portrait' | 'landscape';
+        mandalaA4Dpi: number;
         mandalaGridBorderOpacity: number;
         mandalaShowSectionColors: boolean;
         mandalaSectionColorOpacity: number;

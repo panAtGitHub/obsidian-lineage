@@ -1,11 +1,14 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
-    import { Square, Palette, Printer, Trash2, X } from 'lucide-svelte';
+    import { FileText, Palette, Printer, Square, Trash2, X } from 'lucide-svelte';
     import { Notice, Platform } from 'obsidian';
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
     import { createClearEmptyMandalaSubgridsPlan } from 'src/lib/mandala/clear-empty-subgrids';
     import {
+        MandalaA4DpiStore,
+        MandalaA4ModeStore,
+        MandalaA4OrientationStore,
         MandalaBorderOpacityStore,
         MandalaGrayBackgroundStore,
         MandalaSectionColorOpacityStore,
@@ -16,10 +19,12 @@
     const view = getView();
 
     export let show = false;
-    let showExportOptions = false;
-    let a4Orientation: 'portrait' | 'landscape' = 'portrait';
-    let a4Dpi = '150';
+    let showA4Options = false;
+    let showViewStyleOptions = false;
 
+    const a4Mode = MandalaA4ModeStore(view);
+    const a4Orientation = MandalaA4OrientationStore(view);
+    const a4Dpi = MandalaA4DpiStore(view);
     const borderOpacity = MandalaBorderOpacityStore(view);
     const showSectionColors = MandalaShowSectionColorsStore(view);
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
@@ -37,6 +42,34 @@
             type: 'settings/view/toggle-white-theme',
         });
         closeMenu();
+    };
+
+    const toggleA4Mode = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/toggle-a4-mode',
+        });
+    };
+
+    const updateA4Orientation = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement)) return;
+        const orientation =
+            target.value === 'landscape' ? 'landscape' : 'portrait';
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-a4-orientation',
+            payload: { orientation },
+        });
+    };
+
+    const updateA4Dpi = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement)) return;
+        const dpi = Number(target.value);
+        if (!Number.isFinite(dpi)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-a4-dpi',
+            payload: { dpi },
+        });
     };
 
     const updateBorderOpacity = (event: Event) => {
@@ -188,50 +221,6 @@
         await exportToPNG(target);
     };
 
-    const getA4Size = (dpi: number, orientation: 'portrait' | 'landscape') => {
-        const widthIn = 8.27;
-        const heightIn = 11.69;
-        const width = Math.round(widthIn * dpi);
-        const height = Math.round(heightIn * dpi);
-        return orientation === 'portrait'
-            ? { width, height }
-            : { width: height, height: width };
-    };
-
-    const exportA4View = async () => {
-        const source = view.contentEl.querySelector(
-            '.mandala-content-wrapper',
-        ) as HTMLElement | null;
-        if (!source) {
-            new Notice('未找到可导出的视图区域。');
-            return;
-        }
-        const size = getA4Size(Number(a4Dpi), a4Orientation);
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'fixed';
-        wrapper.style.left = '-10000px';
-        wrapper.style.top = '0';
-        wrapper.style.width = `${size.width}px`;
-        wrapper.style.height = `${size.height}px`;
-        wrapper.style.background = getComputedStyle(
-            document.documentElement,
-        ).getPropertyValue('--background-primary');
-        const clone = source.cloneNode(true) as HTMLElement;
-        clone.style.width = '100%';
-        clone.style.height = '100%';
-        wrapper.appendChild(clone);
-        document.body.appendChild(wrapper);
-        try {
-            await exportToPNG(wrapper, {
-                width: size.width,
-                height: size.height,
-                pixelRatio: 1,
-            });
-        } finally {
-            wrapper.remove();
-        }
-    };
-
     const clearEmptySubgrids = () => {
         const state = view.documentStore.getValue();
         if (!state.meta.isMandala) {
@@ -278,7 +267,8 @@
 
     const closeMenu = () => {
         dispatch('close');
-        showExportOptions = false;
+        showA4Options = false;
+        showViewStyleOptions = false;
     };
 
     // 点击外部关闭菜单 - 使用全局点击事件
@@ -334,8 +324,54 @@
 
             <button
                 class="view-options-menu__item"
-                on:click={() => (showExportOptions = !showExportOptions)}
+                on:click={() => {
+                    toggleA4Mode();
+                    showA4Options = true;
+                }}
             >
+                <div class="view-options-menu__icon">
+                    <FileText class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">A4 视图</div>
+                    <div class="view-options-menu__desc">
+                        切换为固定画布大小
+                    </div>
+                </div>
+            </button>
+
+            {#if showA4Options}
+                <div class="view-options-menu__submenu">
+                    <label class="view-options-menu__row">
+                        <span>启用 A4 视图</span>
+                        <input
+                            type="checkbox"
+                            checked={$a4Mode}
+                            on:change={toggleA4Mode}
+                        />
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>方向</span>
+                        <select
+                            value={$a4Orientation}
+                            on:change={updateA4Orientation}
+                        >
+                            <option value="portrait">竖向</option>
+                            <option value="landscape">横向</option>
+                        </select>
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>DPI</span>
+                        <select value={$a4Dpi} on:change={updateA4Dpi}>
+                            <option value="96">96</option>
+                            <option value="150">150</option>
+                            <option value="300">300</option>
+                        </select>
+                    </label>
+                </div>
+            {/if}
+
+            <button class="view-options-menu__item" on:click={exportCurrentView}>
                 <div class="view-options-menu__icon">
                     <Printer class="view-options-menu__icon-svg" size={18} />
                 </div>
@@ -345,89 +381,68 @@
                 </div>
             </button>
 
-            {#if showExportOptions}
+            <button
+                class="view-options-menu__item"
+                on:click={() =>
+                    (showViewStyleOptions = !showViewStyleOptions)}
+            >
+                <div class="view-options-menu__icon">
+                    <Palette class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">视图样式</div>
+                    <div class="view-options-menu__desc">
+                        边框与背景显示
+                    </div>
+                </div>
+            </button>
+
+            {#if showViewStyleOptions}
                 <div class="view-options-menu__submenu">
-                    <button
-                        class="view-options-menu__subitem"
-                        on:click={exportCurrentView}
-                    >
-                        导出当前视图
-                    </button>
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            A4 导出
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>方向</span>
-                            <select bind:value={a4Orientation}>
-                                <option value="portrait">竖向</option>
-                                <option value="landscape">横向</option>
-                            </select>
-                        </label>
-                        <label class="view-options-menu__row">
-                            <span>DPI</span>
-                            <select bind:value={a4Dpi}>
-                                <option value="96">96</option>
-                                <option value="150">150</option>
-                                <option value="300">300</option>
-                            </select>
-                        </label>
-                        <button
-                            class="view-options-menu__subitem"
-                            on:click={exportA4View}
-                        >
-                            导出 A4
-                        </button>
-                    </div>
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            导出设置
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>边框透明度</span>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={$borderOpacity}
-                                on:input={updateBorderOpacity}
-                            />
-                        </label>
-                        <label class="view-options-menu__row">
-                            <span>显示背景色</span>
-                            <input
-                                type="checkbox"
-                                checked={$showSectionColors}
-                                on:change={() =>
-                                    view.plugin.settings.dispatch({
-                                        type: 'settings/view/mandala/toggle-section-colors',
-                                    })
-                                }
-                            />
-                        </label>
-                        <label class="view-options-menu__row">
-                            <span>背景透明度</span>
-                            <input
-                                type="range"
-                                min="0"
-                                max="100"
-                                value={$sectionColorOpacity}
-                                on:input={updateSectionColorOpacity}
-                            />
-                        </label>
-                        <label class="view-options-menu__row">
-                            <span>灰白相间背景</span>
-                            <input
-                                type="checkbox"
-                                checked={$grayBackground}
-                                on:change={() =>
-                                    view.plugin.settings.dispatch({
-                                        type: 'settings/view/mandala/toggle-gray-background',
-                                    })
-                                }
-                            />
-                        </label>
-                    </div>
+                    <label class="view-options-menu__row">
+                        <span>边框透明度</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={$borderOpacity}
+                            on:input={updateBorderOpacity}
+                        />
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>显示背景色</span>
+                        <input
+                            type="checkbox"
+                            checked={$showSectionColors}
+                            on:change={() =>
+                                view.plugin.settings.dispatch({
+                                    type: 'settings/view/mandala/toggle-section-colors',
+                                })
+                            }
+                        />
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>背景透明度</span>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={$sectionColorOpacity}
+                            on:input={updateSectionColorOpacity}
+                        />
+                    </label>
+                    <label class="view-options-menu__row">
+                        <span>灰白相间背景</span>
+                        <input
+                            type="checkbox"
+                            checked={$grayBackground}
+                            on:change={() =>
+                                view.plugin.settings.dispatch({
+                                    type: 'settings/view/mandala/toggle-gray-background',
+                                })
+                            }
+                        />
+                    </label>
                 </div>
             {/if}
 

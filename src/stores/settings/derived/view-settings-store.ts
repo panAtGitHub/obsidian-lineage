@@ -59,6 +59,18 @@ export const OutlineModeStore = (view: MandalaView) =>
 export const MandalaModeStore = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.mandalaMode);
 
+export const MandalaA4ModeStore = (view: MandalaView) =>
+    derived(view.plugin.settings, (state) => state.view.mandalaA4Mode);
+
+export const MandalaA4OrientationStore = (view: MandalaView) =>
+    derived(
+        view.plugin.settings,
+        (state) => state.view.mandalaA4Orientation,
+    );
+
+export const MandalaA4DpiStore = (view: MandalaView) =>
+    derived(view.plugin.settings, (state) => state.view.mandalaA4Dpi);
+
 export const MaintainEditMode = (view: MandalaView) =>
     derived(view.plugin.settings, (state) => state.view.maintainEditMode);
 
