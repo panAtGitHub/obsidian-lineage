@@ -29,6 +29,17 @@ export const SECTION_COLOR_PALETTE: Record<SectionColorKey, string> = {
 
 export type SectionColorMap = Record<SectionColorKey, string[]>;
 
+export const applyOpacityToHex = (color: string, opacity: number) => {
+    if (!color.startsWith('#')) return color;
+    const hex = color.slice(1);
+    if (hex.length !== 6) return color;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const alpha = Math.min(1, Math.max(0, opacity));
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 export const compareSectionIds = (a: string, b: string) => {
     const aParts = a.split('.').map((part) => Number(part));
     const bParts = b.split('.').map((part) => Number(part));

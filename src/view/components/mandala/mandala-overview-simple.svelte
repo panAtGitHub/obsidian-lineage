@@ -6,16 +6,35 @@
         themeBlocks,
         themeGrid,
     } from 'src/view/helpers/mandala/mandala-grid';
-    import { ShowMandalaDetailSidebarStore, Show9x9TitleOnlyStore } from 'src/stores/settings/derived/view-settings-store';
+    import {
+        MandalaBorderOpacityStore,
+        MandalaGrayBackgroundStore,
+        MandalaSectionColorOpacityStore,
+        MandalaShowSectionColorsStore,
+        ShowMandalaDetailSidebarStore,
+        Show9x9TitleOnlyStore,
+    } from 'src/stores/settings/derived/view-settings-store';
 
     import { Platform } from 'obsidian';
     import { mobileInteractionMode } from 'src/stores/view/mobile-interaction-store';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
+    import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
 
     const view = getView();
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
     const showTitleOnly = Show9x9TitleOnlyStore(view);
     const sectionColors = SectionColorBySectionStore(view);
+    const borderOpacity = MandalaBorderOpacityStore(view);
+    const showSectionColors = MandalaShowSectionColorsStore(view);
+    const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
+    const grayBackground = MandalaGrayBackgroundStore(view);
+    const grayBlockThemes = new Set(['3', '5', '6', '8']);
+    const getSectionColor = (section: string | null) => {
+        if (!section || !$showSectionColors) return null;
+        const color = $sectionColors[section];
+        if (!color) return null;
+        return applyOpacityToHex(color, $sectionColorOpacity / 100);
+    };
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
@@ -32,16 +51,20 @@
                 const blockCol = Math.floor(col / 3);
                 const localRow = row % 3;
                 const localCol = col % 3;
+                const isCenter = blockRow === 1 && blockCol === 1;
+                const isThemeCenter = !isCenter && localRow === 1 && localCol === 1;
+                let isGrayBlock = false;
 
                 // Center Block (1,1) -> Core Grid (1-9)
-                if (blockRow === 1 && blockCol === 1) {
+                if (isCenter) {
                     section = coreGrid[localRow][localCol];
                 } else {
                     // Outer Blocks -> Theme Expansion
                     const theme = themeBlocks[blockRow * 3 + blockCol];
                     if (theme) {
+                        isGrayBlock = grayBlockThemes.has(theme);
                         // Center of outer block -> Theme Title
-                        if (localRow === 1 && localCol === 1) {
+                        if (isThemeCenter) {
                             section = theme;
                         } else {
                             // Surrounding -> Theme Children
@@ -57,8 +80,6 @@
                 let title = '';
                 let body = '';
                 let nodeId = '';
-                let isCenter = blockRow === 1 && blockCol === 1;
-                let isThemeCenter = !isCenter && localRow === 1 && localCol === 1;
 
                 if (section) {
                     const id = state.sections.section_id[section];
@@ -91,7 +112,8 @@
                     body,
                     nodeId,
                     isCenter,
-                    isThemeCenter
+                    isThemeCenter,
+                    isGrayBlock,
                 });
             }
         }
@@ -156,7 +178,10 @@
     };
 </script>
 
-<div class="simple-9x9-grid">
+<div
+    class="simple-9x9-grid"
+    style={`--mandala-border-opacity: ${$borderOpacity}%`}
+>
     {#each $cells as cell}
         <div 
             class="simple-cell" 
@@ -168,9 +193,11 @@
             class:is-block-col-start={cell.col % 3 === 0}
             class:is-last-row={cell.row === 8}
             class:is-last-col={cell.col === 8}
-            style={cell.section && $sectionColors[cell.section]
-                ? `background-color: ${$sectionColors[cell.section]};`
-                : undefined}
+            style={getSectionColor(cell.section)
+                ? `background-color: ${getSectionColor(cell.section)};`
+                : $grayBackground && cell.isGrayBlock
+                    ? 'background-color: var(--background-secondary-alt);'
+                    : undefined}
             data-node-id={cell.nodeId || undefined}
             id={cell.nodeId || undefined}
             on:click={() => onCellClick(cell.nodeId)}
@@ -203,12 +230,23 @@
         box-sizing: border-box;
         background-color: var(--background-secondary);
         font-size: var(--mandala-font-9x9, 11px);
+        --mandala-border-opacity: 100%;
+        --mandala-border-color: color-mix(
+            in srgb,
+            var(--text-normal) var(--mandala-border-opacity),
+            transparent
+        );
+        --mandala-selection-color: color-mix(
+            in srgb,
+            var(--mandala-color-selection) var(--mandala-border-opacity),
+            transparent
+        );
     }
 
     .simple-cell {
         background-color: var(--background-primary);
-        border-left: 1px dashed var(--text-normal);
-        border-top: 1px dashed var(--text-normal);
+        border-left: 1px dashed var(--mandala-border-color);
+        border-top: 1px dashed var(--mandala-border-color);
         border-radius: 0;
         overflow: hidden;
         display: flex;
@@ -220,19 +258,19 @@
     }
 
     .simple-cell.is-block-row-start {
-        border-top: 3px solid var(--text-normal);
+        border-top: 3px solid var(--mandala-border-color);
     }
 
     .simple-cell.is-block-col-start {
-        border-left: 3px solid var(--text-normal);
+        border-left: 3px solid var(--mandala-border-color);
     }
 
     .simple-cell.is-last-row {
-        border-bottom: 3px solid var(--text-normal);
+        border-bottom: 3px solid var(--mandala-border-color);
     }
 
     .simple-cell.is-last-col {
-        border-right: 3px solid var(--text-normal);
+        border-right: 3px solid var(--mandala-border-color);
     }
 
     .cell-content {
@@ -291,7 +329,7 @@
         content: '';
         position: absolute;
         inset: 2px;
-        border: 2px solid var(--mandala-color-selection);
+        border: 2px solid var(--mandala-selection-color);
         pointer-events: none;
         box-sizing: border-box;
         border-radius: 0;

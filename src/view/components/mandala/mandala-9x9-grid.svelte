@@ -4,6 +4,11 @@
     import { sectionAtCell9x9 } from 'src/view/helpers/mandala/mandala-grid';
     import MandalaCard from 'src/view/components/mandala/mandala-card.svelte';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
+    import {
+        MandalaSectionColorOpacityStore,
+        MandalaShowSectionColorsStore,
+    } from 'src/stores/settings/derived/view-settings-store';
+    import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
 
     const view = getView();
 
@@ -37,6 +42,15 @@
         (state) => state.styleRules.nodeStyles,
     );
     const sectionColors = SectionColorBySectionStore(view);
+    const showSectionColors = MandalaShowSectionColorsStore(view);
+    const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
+
+    const getSectionColor = (section: string) => {
+        if (!$showSectionColors) return null;
+        const color = $sectionColors[section];
+        if (!color) return null;
+        return applyOpacityToHex(color, $sectionColorOpacity / 100);
+    };
 </script>
 
 <div class="mandala-9x9-grid">
@@ -50,6 +64,7 @@
                 {@const editing =
                     $editingState.activeNodeId === nodeId &&
                     !$editingState.isInSidebar}
+                {@const sectionColor = getSectionColor(section)}
                 <MandalaCard
                     {nodeId}
                     {section}
@@ -58,7 +73,7 @@
                     selected={$selectedNodes.has(nodeId)}
                     pinned={$pinnedNodes.has(nodeId)}
                     style={$nodeStyles.get(nodeId)}
-                    sectionColor={$sectionColors[section] || null}
+                    sectionColor={sectionColor}
                     draggable={section !== '1'}
                     gridCell={{ mode: '9x9', row, col }}
                 />

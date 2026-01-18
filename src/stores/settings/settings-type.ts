@@ -76,6 +76,10 @@ export type Settings = {
         applyGapBetweenCards: boolean;
         outlineMode: boolean;
         mandalaMode: MandalaMode;
+        mandalaGridBorderOpacity: number;
+        mandalaShowSectionColors: boolean;
+        mandalaSectionColorOpacity: number;
+        mandalaGrayBackground: boolean;
         nodeIndentationWidth: number;
         maintainEditMode: boolean;
         alwaysShowCardButtons: boolean;

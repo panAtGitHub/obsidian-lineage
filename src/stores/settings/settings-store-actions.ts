@@ -232,6 +232,20 @@ export type SettingsActions =
     }
     | {
         type: 'settings/view/toggle-white-theme';
+    }
+    | {
+        type: 'settings/view/mandala/set-border-opacity';
+        payload: { opacity: number };
+    }
+    | {
+        type: 'settings/view/mandala/toggle-section-colors';
+    }
+    | {
+        type: 'settings/view/mandala/set-section-color-opacity';
+        payload: { opacity: number };
+    }
+    | {
+        type: 'settings/view/mandala/toggle-gray-background';
     };
 export type PersistCollapsedSectionsAction = {
     type: 'settings/document/persist-collapsed-sections';

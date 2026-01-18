@@ -252,6 +252,17 @@ const updateState = (store: Settings, action: SettingsActions) => {
         store.view.squareLayout = !store.view.squareLayout;
     } else if (action.type === 'settings/view/toggle-white-theme') {
         store.view.whiteThemeMode = !store.view.whiteThemeMode;
+    } else if (action.type === 'settings/view/mandala/set-border-opacity') {
+        store.view.mandalaGridBorderOpacity = action.payload.opacity;
+    } else if (action.type === 'settings/view/mandala/toggle-section-colors') {
+        store.view.mandalaShowSectionColors =
+            !store.view.mandalaShowSectionColors;
+    } else if (
+        action.type === 'settings/view/mandala/set-section-color-opacity'
+    ) {
+        store.view.mandalaSectionColorOpacity = action.payload.opacity;
+    } else if (action.type === 'settings/view/mandala/toggle-gray-background') {
+        store.view.mandalaGrayBackground = !store.view.mandalaGrayBackground;
     } else if (action.type.startsWith('settings/style-rules')) {
         updateStyleRules(store, action as any);
     }

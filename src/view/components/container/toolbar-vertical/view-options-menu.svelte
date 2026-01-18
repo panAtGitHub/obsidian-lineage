@@ -5,11 +5,25 @@
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
     import { createClearEmptyMandalaSubgridsPlan } from 'src/lib/mandala/clear-empty-subgrids';
+    import {
+        MandalaBorderOpacityStore,
+        MandalaGrayBackgroundStore,
+        MandalaSectionColorOpacityStore,
+        MandalaShowSectionColorsStore,
+    } from 'src/stores/settings/derived/view-settings-store';
 
     const dispatch = createEventDispatcher();
     const view = getView();
 
     export let show = false;
+    let showExportOptions = false;
+    let a4Orientation: 'portrait' | 'landscape' = 'portrait';
+    let a4Dpi = '150';
+
+    const borderOpacity = MandalaBorderOpacityStore(view);
+    const showSectionColors = MandalaShowSectionColorsStore(view);
+    const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
+    const grayBackground = MandalaGrayBackgroundStore(view);
 
     const toggleSquareLayout = () => {
         view.plugin.settings.dispatch({
@@ -25,11 +39,60 @@
         closeMenu();
     };
 
-    const exportToPNG = async () => {
+    const updateBorderOpacity = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-border-opacity',
+            payload: { opacity: Number(target.value) },
+        });
+    };
+
+    const updateSectionColorOpacity = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-section-color-opacity',
+            payload: { opacity: Number(target.value) },
+        });
+    };
+
+    type ElectronDialog = {
+        dialog?: {
+            showSaveDialog: (options: {
+                title: string;
+                defaultPath: string;
+                filters: { name: string; extensions: string[] }[];
+            }) => Promise<{ canceled: boolean; filePath?: string }>;
+        };
+        remote?: {
+            dialog?: {
+                showSaveDialog: (options: {
+                    title: string;
+                    defaultPath: string;
+                    filters: { name: string; extensions: string[] }[];
+                }) => Promise<{ canceled: boolean; filePath?: string }>;
+            };
+        };
+    };
+
+    type ElectronFs = {
+        writeFile: (
+            path: string,
+            data: Uint8Array,
+            cb: (err?: Error) => void,
+        ) => void;
+    };
+
+    const exportToPNG = async (
+        target: HTMLElement,
+        options?: {
+            width?: number;
+            height?: number;
+            pixelRatio?: number;
+        },
+    ) => {
         const loadingNotice = new Notice('正在导出 PNG...', 0);
-        const target = view.contentEl.querySelector(
-            '.mandala-content-wrapper',
-        ) as HTMLElement | null;
         if (!target) {
             loadingNotice.hide();
             new Notice('未找到可导出的视图区域。');
@@ -46,10 +109,12 @@
         let dataUrl = '';
         try {
             dataUrl = await toPng(target, {
-                pixelRatio: 2,
+                pixelRatio: options?.pixelRatio ?? 2,
                 backgroundColor: safeBackground,
+                width: options?.width,
+                height: options?.height,
             });
-        } catch {
+        } catch (error) {
             loadingNotice.hide();
             new Notice('导出失败，请稍后再试。');
             closeMenu();
@@ -65,30 +130,7 @@
             window as unknown as { require?: (module: string) => unknown }
         ).require;
         const electron = electronRequire?.('electron') as
-            | {
-                  dialog?: {
-                      showSaveDialog: (options: {
-                          title: string;
-                          defaultPath: string;
-                          filters: { name: string; extensions: string[] }[];
-                      }) => Promise<{ canceled: boolean; filePath?: string }>;
-                  };
-                  remote?: {
-                      dialog?: {
-                          showSaveDialog: (options: {
-                              title: string;
-                              defaultPath: string;
-                              filters: {
-                                  name: string;
-                                  extensions: string[];
-                              }[];
-                          }) => Promise<{
-                              canceled: boolean;
-                              filePath?: string;
-                          }>;
-                      };
-                  };
-              }
+            | ElectronDialog
             | undefined;
         const dialog = electron?.dialog ?? electron?.remote?.dialog;
         if (dialog) {
@@ -98,15 +140,7 @@
                 filters: [{ name: 'PNG', extensions: ['png'] }],
             });
             if (!result.canceled && result.filePath) {
-                const fs = electronRequire?.('fs') as
-                    | {
-                          writeFile: (
-                              path: string,
-                              data: Uint8Array,
-                              cb: (err?: Error) => void,
-                          ) => void;
-                      }
-                    | undefined;
+                const fs = electronRequire?.('fs') as ElectronFs | undefined;
                 if (!fs) {
                     loadingNotice.hide();
                     new Notice('导出失败，请稍后再试。');
@@ -141,6 +175,61 @@
         link.download = defaultName;
         link.click();
         closeMenu();
+    };
+
+    const exportCurrentView = async () => {
+        const target = view.contentEl.querySelector(
+            '.mandala-content-wrapper',
+        ) as HTMLElement | null;
+        if (!target) {
+            new Notice('未找到可导出的视图区域。');
+            return;
+        }
+        await exportToPNG(target);
+    };
+
+    const getA4Size = (dpi: number, orientation: 'portrait' | 'landscape') => {
+        const widthIn = 8.27;
+        const heightIn = 11.69;
+        const width = Math.round(widthIn * dpi);
+        const height = Math.round(heightIn * dpi);
+        return orientation === 'portrait'
+            ? { width, height }
+            : { width: height, height: width };
+    };
+
+    const exportA4View = async () => {
+        const source = view.contentEl.querySelector(
+            '.mandala-content-wrapper',
+        ) as HTMLElement | null;
+        if (!source) {
+            new Notice('未找到可导出的视图区域。');
+            return;
+        }
+        const size = getA4Size(Number(a4Dpi), a4Orientation);
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'fixed';
+        wrapper.style.left = '-10000px';
+        wrapper.style.top = '0';
+        wrapper.style.width = `${size.width}px`;
+        wrapper.style.height = `${size.height}px`;
+        wrapper.style.background = getComputedStyle(
+            document.documentElement,
+        ).getPropertyValue('--background-primary');
+        const clone = source.cloneNode(true) as HTMLElement;
+        clone.style.width = '100%';
+        clone.style.height = '100%';
+        wrapper.appendChild(clone);
+        document.body.appendChild(wrapper);
+        try {
+            await exportToPNG(wrapper, {
+                width: size.width,
+                height: size.height,
+                pixelRatio: 1,
+            });
+        } finally {
+            wrapper.remove();
+        }
     };
 
     const clearEmptySubgrids = () => {
@@ -189,6 +278,7 @@
 
     const closeMenu = () => {
         dispatch('close');
+        showExportOptions = false;
     };
 
     // 点击外部关闭菜单 - 使用全局点击事件
@@ -242,7 +332,10 @@
                 </div>
             </button>
 
-            <button class="view-options-menu__item" on:click={exportToPNG}>
+            <button
+                class="view-options-menu__item"
+                on:click={() => (showExportOptions = !showExportOptions)}
+            >
                 <div class="view-options-menu__icon">
                     <Printer class="view-options-menu__icon-svg" size={18} />
                 </div>
@@ -251,6 +344,92 @@
                     <div class="view-options-menu__desc">保存当前视图为 PNG</div>
                 </div>
             </button>
+
+            {#if showExportOptions}
+                <div class="view-options-menu__submenu">
+                    <button
+                        class="view-options-menu__subitem"
+                        on:click={exportCurrentView}
+                    >
+                        导出当前视图
+                    </button>
+                    <div class="view-options-menu__subsection">
+                        <div class="view-options-menu__subsection-title">
+                            A4 导出
+                        </div>
+                        <label class="view-options-menu__row">
+                            <span>方向</span>
+                            <select bind:value={a4Orientation}>
+                                <option value="portrait">竖向</option>
+                                <option value="landscape">横向</option>
+                            </select>
+                        </label>
+                        <label class="view-options-menu__row">
+                            <span>DPI</span>
+                            <select bind:value={a4Dpi}>
+                                <option value="96">96</option>
+                                <option value="150">150</option>
+                                <option value="300">300</option>
+                            </select>
+                        </label>
+                        <button
+                            class="view-options-menu__subitem"
+                            on:click={exportA4View}
+                        >
+                            导出 A4
+                        </button>
+                    </div>
+                    <div class="view-options-menu__subsection">
+                        <div class="view-options-menu__subsection-title">
+                            导出设置
+                        </div>
+                        <label class="view-options-menu__row">
+                            <span>边框透明度</span>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={$borderOpacity}
+                                on:input={updateBorderOpacity}
+                            />
+                        </label>
+                        <label class="view-options-menu__row">
+                            <span>显示背景色</span>
+                            <input
+                                type="checkbox"
+                                checked={$showSectionColors}
+                                on:change={() =>
+                                    view.plugin.settings.dispatch({
+                                        type: 'settings/view/mandala/toggle-section-colors',
+                                    })
+                                }
+                            />
+                        </label>
+                        <label class="view-options-menu__row">
+                            <span>背景透明度</span>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={$sectionColorOpacity}
+                                on:input={updateSectionColorOpacity}
+                            />
+                        </label>
+                        <label class="view-options-menu__row">
+                            <span>灰白相间背景</span>
+                            <input
+                                type="checkbox"
+                                checked={$grayBackground}
+                                on:change={() =>
+                                    view.plugin.settings.dispatch({
+                                        type: 'settings/view/mandala/toggle-gray-background',
+                                    })
+                                }
+                            />
+                        </label>
+                    </div>
+                </div>
+            {/if}
 
             <button class="view-options-menu__item" on:click={clearEmptySubgrids}>
                 <div class="view-options-menu__icon">
@@ -316,6 +495,52 @@
 
     .view-options-menu__items {
         padding: 6px;
+    }
+
+    .view-options-menu__submenu {
+        margin: 6px;
+        padding: 8px;
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 6px;
+        background: var(--background-secondary);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .view-options-menu__subitem {
+        background: var(--background-primary);
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 6px;
+        padding: 6px 8px;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .view-options-menu__subsection {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .view-options-menu__subsection-title {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+    }
+
+    .view-options-menu__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-normal);
+    }
+
+    .view-options-menu__row select,
+    .view-options-menu__row input[type='range'] {
+        flex: 1 1 auto;
     }
 
     .view-options-menu__item {

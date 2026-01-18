@@ -18,4 +18,23 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
         // @ts-ignore
         delete settings.backup;
     }
+
+    const viewSettings = settings.view as {
+        mandalaGridBorderOpacity?: number;
+        mandalaShowSectionColors?: boolean;
+        mandalaSectionColorOpacity?: number;
+        mandalaGrayBackground?: boolean;
+    };
+    if (viewSettings.mandalaGridBorderOpacity === undefined) {
+        viewSettings.mandalaGridBorderOpacity = 100;
+    }
+    if (viewSettings.mandalaShowSectionColors === undefined) {
+        viewSettings.mandalaShowSectionColors = true;
+    }
+    if (viewSettings.mandalaSectionColorOpacity === undefined) {
+        viewSettings.mandalaSectionColorOpacity = 100;
+    }
+    if (viewSettings.mandalaGrayBackground === undefined) {
+        viewSettings.mandalaGrayBackground = false;
+    }
 };

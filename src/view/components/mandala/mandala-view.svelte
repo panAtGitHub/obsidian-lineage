@@ -5,6 +5,9 @@
     import {
         MandalaDetailSidebarWidthStore,
         MandalaModeStore,
+        MandalaGrayBackgroundStore,
+        MandalaSectionColorOpacityStore,
+        MandalaShowSectionColorsStore,
         ShowMandalaDetailSidebarStore,
         SquareLayoutStore,
         WhiteThemeModeStore,
@@ -28,6 +31,7 @@
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import { mobilePopupFontSizeStore } from 'src/stores/mobile-popup-font-store';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
+    import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
 
     const view = getView();
     const layout = createLayoutStore();
@@ -49,6 +53,21 @@
     const squareLayout = SquareLayoutStore(view);
     const whiteThemeMode = WhiteThemeModeStore(view);
     const sectionColors = SectionColorBySectionStore(view);
+    const showSectionColors = MandalaShowSectionColorsStore(view);
+    const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
+    const grayBackground = MandalaGrayBackgroundStore(view);
+
+    const graySections = new Set(['3', '5', '6', '8']);
+    const getSectionBackground = (section: string) => {
+        const opacity = $sectionColorOpacity / 100;
+        if ($showSectionColors && $sectionColors[section]) {
+            return applyOpacityToHex($sectionColors[section], opacity);
+        }
+        if ($grayBackground && graySections.has(section)) {
+            return 'var(--background-secondary-alt)';
+        }
+        return null;
+    };
 
     const MIN_DESKTOP_DETAIL_SIDEBAR_SIZE = 200;
 
@@ -258,6 +277,8 @@
                         {#each sections as section (section)}
                             {@const nodeId = requireNodeId(section)}
                             {#if nodeId}
+                                {@const sectionBackground =
+                                    getSectionBackground(section)}
                                 <MandalaCard
                                     {nodeId}
                                     {section}
@@ -268,7 +289,7 @@
                                     selected={$selectedNodes.has(nodeId)}
                                     pinned={$pinnedNodes.has(nodeId)}
                                     style={$nodeStyles.get(nodeId)}
-                                    sectionColor={$sectionColors[section] || null}
+                                    sectionColor={sectionBackground}
                                     draggable={section !== '1' && !$subgridTheme}
                                 />
                             {:else}

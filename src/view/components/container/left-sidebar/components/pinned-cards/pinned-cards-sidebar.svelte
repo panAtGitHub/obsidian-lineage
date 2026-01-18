@@ -16,13 +16,20 @@
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
     import {
         createSectionColorIndex,
+        applyOpacityToHex,
         parseSectionColorsFromFrontmatter,
         SECTION_COLOR_KEYS,
     } from 'src/view/helpers/mandala/section-colors';
+    import {
+        MandalaSectionColorOpacityStore,
+        MandalaShowSectionColorsStore,
+    } from 'src/stores/settings/derived/view-settings-store';
     import { Palette, Pin } from 'lucide-svelte';
 
     const view = getView();
     const pinnedNodesArray = PinnedNodesStore(view);
+    const showSectionColors = MandalaShowSectionColorsStore(view);
+    const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const sectionColors = SectionColorBySectionStore(view);
 
     const activePinnedCard = ActivePinnedCardStore(view);
@@ -197,9 +204,15 @@
                 <div
                     class="pinned-list-item"
                     class:selected={$activePinnedCard === item.nodeId}
-                    class:has-color={Boolean($sectionColors[item.section])}
-                    style={item.section && $sectionColors[item.section]
-                        ? `--pinned-item-bg: ${$sectionColors[item.section]};`
+                    class:has-color={
+                        $showSectionColors &&
+                        Boolean($sectionColors[item.section])
+                    }
+                    style={item.section && $showSectionColors && $sectionColors[item.section]
+                        ? `--pinned-item-bg: ${applyOpacityToHex(
+                              $sectionColors[item.section],
+                              $sectionColorOpacity / 100,
+                          )};`
                         : undefined}
                     id={item.nodeId}
                     on:click={() => handleClick(item)}
