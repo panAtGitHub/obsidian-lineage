@@ -149,6 +149,7 @@
         position: fixed;
         top: 0;
         left: 0;
+        display: block !important;
     }
 
     body.mandala-print-export .mandala-detail-sidebar {
@@ -159,4 +160,14 @@
         margin: 0 !important;
         overflow: visible !important;
     }
+
+    body.mandala-print-export .mandala-pdf-export-layer {
+        position: fixed;
+        inset: 0;
+        display: block;
+    }
+}
+
+.mandala-pdf-export-layer {
+    display: none;
 }

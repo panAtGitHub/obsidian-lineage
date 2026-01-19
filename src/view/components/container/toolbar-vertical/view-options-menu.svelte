@@ -385,8 +385,49 @@
             .replace(/[:.]/g, '-');
         const defaultName = `mandala-${timestamp}.pdf`;
 
+        const createPrintLayer = (source: HTMLElement) => {
+            const computed = getComputedStyle(source);
+            const rect = source.getBoundingClientRect();
+            const width = Math.ceil(rect.width);
+            const height = Math.ceil(rect.height);
+
+            const layer = document.createElement('div');
+            layer.className = 'mandala-pdf-export-layer';
+            layer.style.width = `${width}px`;
+            layer.style.height = `${height}px`;
+            layer.style.padding = computed.padding;
+            layer.style.boxSizing = 'border-box';
+            layer.style.background = getComputedStyle(
+                document.documentElement,
+            ).getPropertyValue('--background-primary');
+
+            const clone = source.cloneNode(true) as HTMLElement;
+            clone.style.margin = '0';
+            clone.style.transform = 'none';
+            clone.style.left = '0';
+            clone.style.top = '0';
+            clone.style.position = 'static';
+            clone.style.width = '100%';
+            clone.style.height = '100%';
+            clone.style.padding = '0';
+            clone.style.boxSizing = 'border-box';
+
+            layer.appendChild(clone);
+            document.body.appendChild(layer);
+            document.body.classList.add('mandala-print-export');
+
+            return {
+                layer,
+                cleanup: () => {
+                    document.body.classList.remove('mandala-print-export');
+                    layer.remove();
+                },
+            };
+        };
+
         try {
-            await withPrintTarget(target, async () => {
+            const printLayer = createPrintLayer(target);
+            await withPrintTarget(printLayer.layer, async () => {
                 const pdfData = await webContents.printToPDF({
                     pageSize: 'A4',
                     landscape: $a4Orientation === 'landscape',
@@ -422,6 +463,7 @@
                     });
                 }
             });
+            printLayer.cleanup();
         } catch (_error) {
             new Notice('导出失败，请稍后再试。');
         } finally {
