@@ -416,36 +416,26 @@
 
             {#if showViewOptions}
                 <div class="view-options-menu__submenu">
-                    <label class="view-options-menu__row">
-                        <span>A4 大小</span>
-                        <input
-                            type="radio"
-                            name="mandala-view-size"
-                            checked={$a4Mode}
-                            on:change={() => updateA4Mode(true)}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>屏幕大小</span>
-                        <input
-                            type="radio"
-                            name="mandala-view-size"
-                            checked={!$a4Mode}
-                            on:change={() => updateA4Mode(false)}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>正方形布局</span>
-                        <input
-                            type="checkbox"
-                            checked={$squareLayout}
-                            on:change={() =>
-                                view.plugin.settings.dispatch({
-                                    type: 'settings/view/toggle-square-layout',
-                                })
-                            }
-                        />
-                    </label>
+                    <div class="view-options-menu__row view-options-menu__row--inline">
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-view-size"
+                                checked={$a4Mode}
+                                on:change={() => updateA4Mode(true)}
+                            />
+                            <span>A4 大小</span>
+                        </label>
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-view-size"
+                                checked={!$a4Mode}
+                                on:change={() => updateA4Mode(false)}
+                            />
+                            <span>屏幕大小</span>
+                        </label>
+                    </div>
                     {#if $a4Mode}
                         <label class="view-options-menu__row">
                             <span>方向</span>
@@ -456,6 +446,19 @@
                                 <option value="portrait">竖向</option>
                                 <option value="landscape">横向</option>
                             </select>
+                        </label>
+                    {:else}
+                        <label class="view-options-menu__row">
+                            <span>正方形布局</span>
+                            <input
+                                type="checkbox"
+                                checked={$squareLayout}
+                                on:change={() =>
+                                    view.plugin.settings.dispatch({
+                                        type: 'settings/view/toggle-square-layout',
+                                    })
+                                }
+                            />
                         </label>
                     {/if}
                 </div>
@@ -478,24 +481,26 @@
 
             {#if showBackgroundOptions}
                 <div class="view-options-menu__submenu">
-                    <label class="view-options-menu__row">
-                        <span>默认背景</span>
-                        <input
-                            type="radio"
-                            name="mandala-background"
-                            checked={!$whiteThemeMode}
-                            on:change={() => updateWhiteThemeMode(false)}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>纯白背景</span>
-                        <input
-                            type="radio"
-                            name="mandala-background"
-                            checked={$whiteThemeMode}
-                            on:change={() => updateWhiteThemeMode(true)}
-                        />
-                    </label>
+                    <div class="view-options-menu__row view-options-menu__row--inline">
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-background"
+                                checked={!$whiteThemeMode}
+                                on:change={() => updateWhiteThemeMode(false)}
+                            />
+                            <span>默认背景</span>
+                        </label>
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-background"
+                                checked={$whiteThemeMode}
+                                on:change={() => updateWhiteThemeMode(true)}
+                            />
+                            <span>纯白背景</span>
+                        </label>
+                    </div>
                 </div>
             {/if}
 
@@ -517,33 +522,35 @@
 
             {#if showBackgroundColorOptions}
                 <div class="view-options-menu__submenu">
-                    <label class="view-options-menu__row">
-                        <span>无背景色</span>
-                        <input
-                            type="radio"
-                            name="mandala-background-color"
-                            checked={$backgroundMode === 'none'}
-                            on:change={() => updateBackgroundMode('none')}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>色块卡片</span>
-                        <input
-                            type="radio"
-                            name="mandala-background-color"
-                            checked={$backgroundMode === 'custom'}
-                            on:change={() => updateBackgroundMode('custom')}
-                        />
-                    </label>
-                    <label class="view-options-menu__row">
-                        <span>间隔灰色色块</span>
-                        <input
-                            type="radio"
-                            name="mandala-background-color"
-                            checked={$backgroundMode === 'gray'}
-                            on:change={() => updateBackgroundMode('gray')}
-                        />
-                    </label>
+                    <div class="view-options-menu__row view-options-menu__row--inline">
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-background-color"
+                                checked={$backgroundMode === 'none'}
+                                on:change={() => updateBackgroundMode('none')}
+                            />
+                            <span>无背景色</span>
+                        </label>
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-background-color"
+                                checked={$backgroundMode === 'custom'}
+                                on:change={() => updateBackgroundMode('custom')}
+                            />
+                            <span>色块卡片</span>
+                        </label>
+                        <label class="view-options-menu__inline-option">
+                            <input
+                                type="radio"
+                                name="mandala-background-color"
+                                checked={$backgroundMode === 'gray'}
+                                on:change={() => updateBackgroundMode('gray')}
+                            />
+                            <span>间隔灰色色块</span>
+                        </label>
+                    </div>
                     <label class="view-options-menu__row">
                         <span>背景色透明度</span>
                         <div class="view-options-menu__range">
@@ -722,6 +729,18 @@
         gap: 8px;
         font-size: 12px;
         color: var(--text-normal);
+    }
+
+    .view-options-menu__row--inline {
+        justify-content: flex-start;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .view-options-menu__inline-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .view-options-menu__row select,
