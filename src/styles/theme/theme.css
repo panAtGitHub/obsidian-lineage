@@ -118,10 +118,10 @@
         padding: 0 !important;
     }
 
-    /* A4 横向打印设置 */
+    /* A4 打印设置 */
     @page {
-        size: A4 landscape;
-        margin: 10mm;
+        size: A4;
+        margin: 0;
     }
 
     /* 防止格子内容分页断裂 */
@@ -133,5 +133,31 @@
     /* 移除不必要的阴影和边框效果 */
     .mandala-card {
         box-shadow: none !important;
+    }
+
+    /* PDF 导出：仅显示当前 Mandala 视图 */
+    body.mandala-print-export * {
+        visibility: hidden !important;
+    }
+
+    body.mandala-print-export .mandala-print-target,
+    body.mandala-print-export .mandala-print-target * {
+        visibility: visible !important;
+    }
+
+    body.mandala-print-export .mandala-print-target {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    body.mandala-print-export .mandala-detail-sidebar {
+        display: none !important;
+    }
+
+    body.mandala-print-export .mandala-scroll {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
     }
 }

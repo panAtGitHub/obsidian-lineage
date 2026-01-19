@@ -4,6 +4,7 @@
         Frame,
         Image,
         Palette,
+        FileText,
         Printer,
         Square,
         Trash2,
@@ -134,6 +135,16 @@
                     filters: { name: string; extensions: string[] }[];
                 }) => Promise<{ canceled: boolean; filePath?: string }>;
             };
+            getCurrentWindow?: () => {
+                webContents?: {
+                    printToPDF?: (options: {
+                        pageSize: string;
+                        landscape?: boolean;
+                        printBackground?: boolean;
+                        marginsType?: number;
+                    }) => Promise<Uint8Array>;
+                };
+            };
         };
     };
 
@@ -143,6 +154,18 @@
             data: Uint8Array,
             cb: (err?: Error) => void,
         ) => void;
+    };
+
+    const withPrintTarget = (
+        target: HTMLElement,
+        callback: () => Promise<void>,
+    ) => {
+        document.body.classList.add('mandala-print-export');
+        target.classList.add('mandala-print-target');
+        return callback().finally(() => {
+            document.body.classList.remove('mandala-print-export');
+            target.classList.remove('mandala-print-target');
+        });
     };
 
     const exportToPNG = async (
@@ -183,9 +206,7 @@
             return;
         }
 
-        if (options?.dpi && dataUrl) {
-            dataUrl = addPngDpiChunk(dataUrl, options.dpi);
-        }
+        // DPI metadata injection is disabled until PNG chunk placement is fixed.
 
         const timestamp = new Date()
             .toISOString()
@@ -254,9 +275,96 @@
             new Notice('未找到可导出的视图区域。');
             return;
         }
-        await exportToPNG(target, {
-            dpi: $a4Mode ? 300 : undefined,
-        });
+
+        if ($a4Mode) {
+            await exportToPNG(target, { pixelRatio: 2 });
+            return;
+        }
+
+        await exportToPNG(target, { pixelRatio: 2 });
+    };
+
+    const exportCurrentViewPdf = async () => {
+        if (!$a4Mode) {
+            new Notice('请先切换到 A4 大小再导出 PDF。');
+            return;
+        }
+
+        const loadingNotice = new Notice('正在导出 PDF...', 0);
+        const target = view.contentEl.querySelector(
+            '.mandala-scroll',
+        ) as HTMLElement | null;
+        if (!target) {
+            loadingNotice.hide();
+            new Notice('未找到可导出的视图区域。');
+            closeMenu();
+            return;
+        }
+        const electronRequire = (
+            window as unknown as { require?: (module: string) => unknown }
+        ).require;
+        const electron = electronRequire?.('electron') as
+            | ElectronDialog
+            | undefined;
+        const dialog = electron?.dialog ?? electron?.remote?.dialog;
+        const getCurrentWindow = electron?.remote?.getCurrentWindow;
+        const webContents = getCurrentWindow?.().webContents;
+
+        if (!dialog || !webContents?.printToPDF) {
+            loadingNotice.hide();
+            new Notice('当前环境不支持 PDF 导出。');
+            closeMenu();
+            return;
+        }
+
+        const timestamp = new Date()
+            .toISOString()
+            .replace(/[:.]/g, '-');
+        const defaultName = `mandala-${timestamp}.pdf`;
+
+        try {
+            await withPrintTarget(target, async () => {
+                const pdfData = await webContents.printToPDF({
+                    pageSize: 'A4',
+                    landscape: $a4Orientation === 'landscape',
+                    printBackground: true,
+                    marginsType: 1,
+                });
+                const result = await dialog.showSaveDialog({
+                    title: '导出 PDF',
+                    defaultPath: defaultName,
+                    filters: [{ name: 'PDF', extensions: ['pdf'] }],
+                });
+                if (!result.canceled && result.filePath) {
+                    const fs = electronRequire?.('fs') as
+                        | ElectronFs
+                        | undefined;
+                    if (!fs) {
+                        new Notice('导出失败，请稍后再试。');
+                        return;
+                    }
+                    const bytes =
+                        pdfData instanceof Uint8Array
+                            ? pdfData
+                            : new Uint8Array(pdfData);
+                    await new Promise<void>((resolve) => {
+                        fs.writeFile(result.filePath!, bytes, (err) => {
+                            if (err) {
+                                new Notice('导出失败，请稍后再试。');
+                            } else {
+                                new Notice('PDF 导出完成。');
+                            }
+                            resolve();
+                        });
+                    });
+                }
+            });
+        } catch (_error) {
+            new Notice('导出失败，请稍后再试。');
+        } finally {
+            loadingNotice.hide();
+            closeMenu();
+        }
     };
 
     const addPngDpiChunk = (dataUrl: string, dpi: number) => {
@@ -307,9 +415,20 @@
         offset += crcBytes.length;
         pngBytes.set(rest, offset);
 
-        const binaryOutput = String.fromCharCode(...pngBytes);
+        const binaryOutput = bytesToBinary(pngBytes);
         const outputBase64 = btoa(binaryOutput);
         return `data:image/png;base64,${outputBase64}`;
+    };
+
+    const bytesToBinary = (bytes: Uint8Array) => {
+        const chunkSize = 0x8000;
+        let result = '';
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            result += String.fromCharCode(
+                ...bytes.subarray(i, i + chunkSize),
+            );
+        }
+        return result;
     };
 
     const crc32 = (input: Uint8Array) => {
@@ -663,6 +782,19 @@
                 <div class="view-options-menu__content">
                     <div class="view-options-menu__label">导出 PNG</div>
                     <div class="view-options-menu__desc">保存当前视图为 PNG</div>
+                </div>
+            </button>
+
+            <button
+                class="view-options-menu__item"
+                on:click={exportCurrentViewPdf}
+            >
+                <div class="view-options-menu__icon">
+                    <FileText class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">导出 PDF</div>
+                    <div class="view-options-menu__desc">保存 A4 视图为 PDF</div>
                 </div>
             </button>
 
