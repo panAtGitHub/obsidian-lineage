@@ -156,6 +156,49 @@
         ) => void;
     };
 
+    const createA4ExportTarget = (target: HTMLElement) => {
+        const computed = getComputedStyle(target);
+        const rect = target.getBoundingClientRect();
+        const width = Math.ceil(rect.width);
+        const height = Math.ceil(rect.height);
+
+        const wrapper = document.createElement('div');
+        wrapper.style.position = 'fixed';
+        wrapper.style.left = '0';
+        wrapper.style.top = '0';
+        wrapper.style.width = `${width}px`;
+        wrapper.style.height = `${height}px`;
+        wrapper.style.zIndex = '-1';
+        wrapper.style.pointerEvents = 'none';
+        wrapper.style.overflow = 'hidden';
+        wrapper.style.background = getComputedStyle(
+            document.documentElement,
+        ).getPropertyValue('--background-primary');
+        wrapper.style.padding = computed.padding;
+        wrapper.style.boxSizing = 'border-box';
+
+        const clone = target.cloneNode(true) as HTMLElement;
+        clone.style.margin = '0';
+        clone.style.transform = 'none';
+        clone.style.left = '0';
+        clone.style.top = '0';
+        clone.style.position = 'static';
+        clone.style.width = '100%';
+        clone.style.height = '100%';
+        clone.style.padding = '0';
+        clone.style.boxSizing = 'border-box';
+
+        wrapper.appendChild(clone);
+        document.body.appendChild(wrapper);
+
+        return {
+            element: wrapper,
+            width,
+            height,
+            cleanup: () => wrapper.remove(),
+        };
+    };
+
     const withPrintTarget = (
         target: HTMLElement,
         callback: () => Promise<void>,
@@ -165,6 +208,29 @@
         return callback().finally(() => {
             document.body.classList.remove('mandala-print-export');
             target.classList.remove('mandala-print-target');
+        });
+    };
+
+    const renderToPNGDataUrl = async (
+        target: HTMLElement,
+        options?: {
+            width?: number;
+            height?: number;
+            pixelRatio?: number;
+        },
+    ) => {
+        const backgroundColor = getComputedStyle(
+            document.documentElement,
+        ).getPropertyValue('--background-primary');
+        const safeBackground =
+            backgroundColor && backgroundColor.trim().length > 0
+                ? backgroundColor.trim()
+                : '#ffffff';
+        return toPng(target, {
+            pixelRatio: options?.pixelRatio ?? 2,
+            backgroundColor: safeBackground,
+            width: options?.width,
+            height: options?.height,
         });
     };
 
@@ -184,21 +250,9 @@
             return;
         }
 
-        const backgroundColor = getComputedStyle(
-            document.documentElement,
-        ).getPropertyValue('--background-primary');
-        const safeBackground =
-            backgroundColor && backgroundColor.trim().length > 0
-                ? backgroundColor.trim()
-                : '#ffffff';
         let dataUrl = '';
         try {
-            dataUrl = await toPng(target, {
-                pixelRatio: options?.pixelRatio ?? 2,
-                backgroundColor: safeBackground,
-                width: options?.width,
-                height: options?.height,
-            });
+            dataUrl = await renderToPNGDataUrl(target, options);
         } catch (error) {
             loadingNotice.hide();
             new Notice('导出失败，请稍后再试。');
@@ -277,45 +331,15 @@
         }
 
         if ($a4Mode) {
-            const wrapper = document.createElement('div');
-            wrapper.style.position = 'fixed';
-            wrapper.style.left = '0';
-            wrapper.style.top = '0';
-            wrapper.style.zIndex = '-1';
-            wrapper.style.pointerEvents = 'none';
-            wrapper.style.overflow = 'hidden';
-            wrapper.style.background = getComputedStyle(
-                document.documentElement,
-            ).getPropertyValue('--background-primary');
-
-            const computed = getComputedStyle(target);
-            wrapper.style.padding = computed.padding;
-            wrapper.style.boxSizing = 'border-box';
-
-            const rect = target.getBoundingClientRect();
-            const width = Math.ceil(rect.width);
-            const height = Math.ceil(rect.height);
-            wrapper.style.width = `${width}px`;
-            wrapper.style.height = `${height}px`;
-
-            const clone = target.cloneNode(true) as HTMLElement;
-            clone.style.margin = '0';
-            clone.style.transform = 'none';
-            clone.style.left = '0';
-            clone.style.top = '0';
-            clone.style.position = 'static';
-            clone.style.width = '100%';
-            clone.style.height = '100%';
-            clone.style.padding = '0';
-            clone.style.boxSizing = 'border-box';
-
-            wrapper.appendChild(clone);
-            document.body.appendChild(wrapper);
-
+            const exportTarget = createA4ExportTarget(target);
             try {
-                await exportToPNG(wrapper, { pixelRatio: 2, width, height });
+                await exportToPNG(exportTarget.element, {
+                    pixelRatio: 2,
+                    width: exportTarget.width,
+                    height: exportTarget.height,
+                });
             } finally {
-                wrapper.remove();
+                exportTarget.cleanup();
             }
             return;
         }

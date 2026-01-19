@@ -157,7 +157,6 @@
 
     body.mandala-print-export .mandala-scroll {
         margin: 0 !important;
-        padding: 0 !important;
         overflow: visible !important;
     }
 }
