@@ -126,7 +126,7 @@
             const background = sectionColor
                 ? applyOpacityToHex(sectionColor, opacity)
                 : $backgroundMode === 'gray' && cell.isGrayBlock
-                    ? `color-mix(in srgb, var(--background-secondary-alt) ${
+                    ? `color-mix(in srgb, var(--mandala-gray-block-base) ${
                           $sectionColorOpacity
                       }%, transparent)`
                     : null;
@@ -243,6 +243,11 @@
         background-color: var(--background-secondary);
         font-size: var(--mandala-font-9x9, 11px);
         --mandala-border-opacity: 100%;
+        --mandala-gray-block-base: color-mix(
+            in srgb,
+            var(--background-modifier-border) 70%,
+            var(--background-primary)
+        );
         --mandala-border-color: color-mix(
             in srgb,
             var(--text-normal) var(--mandala-border-opacity),

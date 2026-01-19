@@ -68,7 +68,7 @@
             return applyOpacityToHex($sectionColors[section], opacity);
         }
         if ($backgroundMode === 'gray' && grayPositions.has(index)) {
-            return `color-mix(in srgb, var(--background-secondary-alt) ${
+            return `color-mix(in srgb, var(--mandala-gray-block-base) ${
                 $sectionColorOpacity
             }%, transparent)`;
         }
@@ -345,6 +345,11 @@
         --mandala-gap: var(--node-gap-setting, calc(var(--mandala-core-gap) / 4));
         --mandala-block-gap: var(--mandala-gap);
         --mandala-card-width: 100%;
+        --mandala-gray-block-base: color-mix(
+            in srgb,
+            var(--background-modifier-border) 70%,
+            var(--background-primary)
+        );
     }
 
     .mandala-topbar {
