@@ -143,6 +143,7 @@
             width?: number;
             height?: number;
             pixelRatio?: number;
+            dpi?: number;
         },
     ) => {
         const loadingNotice = new Notice('正在导出 PNG...', 0);
@@ -172,6 +173,10 @@
             new Notice('导出失败，请稍后再试。');
             closeMenu();
             return;
+        }
+
+        if (options?.dpi && dataUrl) {
+            dataUrl = addPngDpiChunk(dataUrl, options.dpi);
         }
 
         const timestamp = new Date()
@@ -241,7 +246,74 @@
             new Notice('未找到可导出的视图区域。');
             return;
         }
-        await exportToPNG(target);
+        await exportToPNG(target, {
+            dpi: $a4Mode ? 300 : undefined,
+        });
+    };
+
+    const addPngDpiChunk = (dataUrl: string, dpi: number) => {
+        const base64 = dataUrl.split(',')[1] ?? '';
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+            bytes[i] = binary.charCodeAt(i);
+        }
+
+        const signature = bytes.slice(0, 8);
+        const rest = bytes.slice(8);
+        const dpiToPpm = Math.round(dpi * 39.3701);
+        const chunkType = new TextEncoder().encode('pHYs');
+        const chunkData = new Uint8Array(9);
+        const view = new DataView(chunkData.buffer);
+        view.setUint32(0, dpiToPpm);
+        view.setUint32(4, dpiToPpm);
+        chunkData[8] = 1;
+
+        const chunkLength = new Uint8Array(4);
+        new DataView(chunkLength.buffer).setUint32(0, chunkData.length);
+        const crcData = new Uint8Array(chunkType.length + chunkData.length);
+        crcData.set(chunkType, 0);
+        crcData.set(chunkData, chunkType.length);
+        const crc = crc32(crcData);
+        const crcBytes = new Uint8Array(4);
+        new DataView(crcBytes.buffer).setUint32(0, crc);
+
+        const pngBytes = new Uint8Array(
+            signature.length +
+                chunkLength.length +
+                chunkType.length +
+                chunkData.length +
+                crcBytes.length +
+                rest.length,
+        );
+        let offset = 0;
+        pngBytes.set(signature, offset);
+        offset += signature.length;
+        pngBytes.set(chunkLength, offset);
+        offset += chunkLength.length;
+        pngBytes.set(chunkType, offset);
+        offset += chunkType.length;
+        pngBytes.set(chunkData, offset);
+        offset += chunkData.length;
+        pngBytes.set(crcBytes, offset);
+        offset += crcBytes.length;
+        pngBytes.set(rest, offset);
+
+        const binaryOutput = String.fromCharCode(...pngBytes);
+        const outputBase64 = btoa(binaryOutput);
+        return `data:image/png;base64,${outputBase64}`;
+    };
+
+    const crc32 = (input: Uint8Array) => {
+        let crc = 0xffffffff;
+        for (let i = 0; i < input.length; i += 1) {
+            crc ^= input[i];
+            for (let j = 0; j < 8; j += 1) {
+                const mask = -(crc & 1);
+                crc = (crc >>> 1) ^ (0xedb88320 & mask);
+            }
+        }
+        return (crc ^ 0xffffffff) >>> 0;
     };
 
     const clearEmptySubgrids = () => {

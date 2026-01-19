@@ -364,7 +364,8 @@
         border-radius: 8px;
         background: var(--interactive-normal);
         color: var(--text-normal);
-        border: 1px solid var(--background-modifier-border);
+        outline: 1px solid var(--background-modifier-border);
+        outline-offset: -1px;
         cursor: pointer;
     }
 
@@ -375,7 +376,7 @@
     }
     
     /* 桌面端调整格子右侧间距为 6px，为 6+6=12px 做准备 */
-    :global(body:not(.is-mobile)) .mandala-scroll {
+    :global(body:not(.is-mobile)) .mandala-root:not(.mandala-a4-mode) .mandala-scroll {
         padding: 12px 6px 12px 12px;
     }
 
@@ -438,18 +439,37 @@
         width: var(--mandala-a4-width);
         height: var(--mandala-a4-height);
         overflow: hidden;
-        scrollbar-gutter: stable;
         align-self: flex-start;
         margin: 0 auto;
         padding: var(--mandala-a4-margin);
         box-sizing: border-box;
         border: 1px solid var(--background-modifier-border);
         background: var(--background-primary);
+        position: relative;
     }
 
     .mandala-a4-mode.mandala-a4-landscape .mandala-scroll {
         width: var(--mandala-a4-height);
         height: var(--mandala-a4-width);
+    }
+
+    /* A4 视觉校对：外框与内容区边界 */
+    .mandala-a4-mode .mandala-scroll::before,
+    .mandala-a4-mode .mandala-scroll::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        box-sizing: border-box;
+    }
+
+    .mandala-a4-mode .mandala-scroll::before {
+        inset: 0;
+        outline: 1px solid rgba(255, 0, 0, 0.6);
+    }
+
+    .mandala-a4-mode .mandala-scroll::after {
+        inset: var(--mandala-a4-margin);
+        outline: 1px dashed rgba(0, 128, 255, 0.8);
     }
 
 
