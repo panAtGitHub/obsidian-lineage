@@ -143,7 +143,7 @@ const updateDocumentState = (
                 8,
             );
             newActiveNodeId = nodeId;
-            affectedNodeId = nodeId;
+            affectedNodeId = null;
             affectedNodes = createdNodes;
         }
     } else if (action.type === 'document/mandala/clear-empty-subgrids') {

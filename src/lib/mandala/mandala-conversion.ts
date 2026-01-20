@@ -108,23 +108,54 @@ const ensureSectionChildren = (
     count: number,
 ) => {
     const lines = body.split('\n');
-    const hasChild = lines.some((line) => {
-        const parsed = parseHtmlCommentMarker(line);
-        return parsed?.[2] === `${section}.1`;
-    });
-    if (hasChild) return body;
     const startIndex = findSectionIndex(lines, section);
     if (startIndex === -1) return body;
-    const insertIndex = (() => {
-        const nextIndex = findNextSectionIndex(lines, startIndex + 1);
-        return nextIndex === -1 ? lines.length : nextIndex;
+    const endIndex = (() => {
+        for (let i = startIndex + 1; i < lines.length; i++) {
+            const parsed = parseHtmlCommentMarker(lines[i]);
+            if (!parsed) continue;
+            const full = parsed[2];
+            if (!full.startsWith(`${section}.`)) {
+                return i;
+            }
+        }
+        return lines.length;
     })();
-    const block: string[] = [];
-    for (let i = 1; i <= count; i++) {
-        block.push(`<!--section: ${section}.${i}-->`);
-        block.push('');
+
+    const existing = new Map<number, number>();
+    for (let i = startIndex + 1; i < endIndex; i++) {
+        const parsed = parseHtmlCommentMarker(lines[i]);
+        if (!parsed) continue;
+        const full = parsed[2];
+        if (!full.startsWith(`${section}.`)) continue;
+        const suffix = full.slice(section.length + 1);
+        if (suffix.includes('.')) continue;
+        const index = Number(suffix);
+        if (!Number.isNaN(index)) existing.set(index, i);
     }
-    lines.splice(insertIndex, 0, ...block);
+
+    const insertions = new Map<number, string[]>();
+    for (let i = 1; i <= count; i++) {
+        if (existing.has(i)) continue;
+        let insertAt = endIndex;
+        for (let next = i + 1; next <= count; next++) {
+            const nextIndex = existing.get(next);
+            if (nextIndex !== undefined) {
+                insertAt = nextIndex;
+                break;
+            }
+        }
+        if (!insertions.has(insertAt)) insertions.set(insertAt, []);
+        insertions.get(insertAt)!.push(`<!--section: ${section}.${i}-->`, '');
+    }
+
+    const insertionPoints = Array.from(insertions.keys()).sort((a, b) => b - a);
+    for (const index of insertionPoints) {
+        const block = insertions.get(index);
+        if (!block || block.length === 0) continue;
+        lines.splice(index, 0, ...block);
+    }
+
     return lines.join('\n');
 };
 
