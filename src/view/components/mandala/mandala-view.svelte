@@ -126,6 +126,7 @@
         view.viewStore,
         (state) => state.ui.mandala.subgridTheme,
     );
+    const swapState = derived(view.viewStore, (state) => state.ui.mandala.swap);
     const nodeStyles = derived(
         view.viewStore,
         (state) => state.styleRules.nodeStyles,
@@ -305,7 +306,7 @@
                             )}
                             <div
                                 class="mandala-cell"
-                                animate:flip={{ duration: 220 }}
+                                animate:flip={{ duration: $swapState.animate ? 220 : 0 }}
                             >
                                 {#if cell.nodeId}
                                     <MandalaCard

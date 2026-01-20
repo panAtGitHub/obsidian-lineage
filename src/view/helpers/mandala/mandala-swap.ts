@@ -83,8 +83,9 @@ export const executeMandalaSwap = (
             targetNodeId,
         },
     });
-    view.viewStore.dispatch({ type: 'view/mandala/swap/cancel' });
+    view.viewStore.dispatch({ type: 'view/mandala/swap/animate' });
     window.setTimeout(() => {
+        view.viewStore.dispatch({ type: 'view/mandala/swap/cancel' });
         new Notice(lang.notice_swap_complete, 1200);
-    }, 150);
+    }, 260);
 };

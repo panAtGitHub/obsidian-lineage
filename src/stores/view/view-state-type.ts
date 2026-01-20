@@ -56,6 +56,7 @@ export type ViewState = {
                 active: boolean;
                 sourceNodeId: string | null;
                 targetNodeIds: Set<string>;
+                animate: boolean;
             };
         };
     };

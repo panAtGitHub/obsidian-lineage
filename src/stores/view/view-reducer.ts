@@ -213,6 +213,13 @@ const updateDocumentState = (
             active: true,
             sourceNodeId: action.payload.sourceNodeId,
             targetNodeIds: new Set(action.payload.targetNodeIds),
+            animate: false,
+        };
+        state.ui.mandala = { ...state.ui.mandala };
+    } else if (action.type === 'view/mandala/swap/animate') {
+        state.ui.mandala.swap = {
+            ...state.ui.mandala.swap,
+            animate: true,
         };
         state.ui.mandala = { ...state.ui.mandala };
     } else if (action.type === 'view/mandala/swap/cancel') {
@@ -220,6 +227,7 @@ const updateDocumentState = (
             active: false,
             sourceNodeId: null,
             targetNodeIds: new Set(),
+            animate: false,
         };
         state.ui.mandala = { ...state.ui.mandala };
     } else if (

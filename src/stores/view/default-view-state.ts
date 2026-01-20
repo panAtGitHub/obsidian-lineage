@@ -22,6 +22,7 @@ export const defaultViewState = (): ViewState => ({
                 active: false,
                 sourceNodeId: null,
                 targetNodeIds: new Set<string>(),
+                animate: false,
             },
         },
     },

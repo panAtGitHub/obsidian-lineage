@@ -30,6 +30,9 @@ export type MandalaActions =
         payload: { sourceNodeId: string; targetNodeIds: string[] };
     }
     | {
+        type: 'view/mandala/swap/animate';
+    }
+    | {
         type: 'view/mandala/swap/cancel';
     };
 
