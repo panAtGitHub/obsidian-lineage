@@ -24,6 +24,7 @@
     } from 'src/view/helpers/mandala/mandala-grid';
     import Mandala9x9Grid from 'src/view/components/mandala/mandala-9x9-grid.svelte';
     import MandalaOverviewSimple from 'src/view/components/mandala/mandala-overview-simple.svelte';
+    import { flip } from 'svelte/animate';
     import VerticalToolbar from 'src/view/components/container/toolbar-vertical/vertical-toolbar.svelte';
     import Toolbar from 'src/view/components/container/toolbar/toolbar.svelte';
     import MandalaDetailSidebar from './mandala-detail-sidebar.svelte';
@@ -287,35 +288,54 @@
                               slot ? `${theme}.${slot}` : theme,
                           )
                         : layout.coreSlots}
+                    {@const cells = sections.map((section, index) => {
+                        const nodeId = requireNodeId(section);
+                        return {
+                            section,
+                            index,
+                            nodeId,
+                            key: nodeId ?? `empty-${section}`,
+                        };
+                    })}
                     <div class="mandala-grid mandala-grid--3 mandala-grid--core">
-                        {#each sections as section, index (section)}
-                            {@const sectionBackground =
-                                getSectionBackground(section, index)}
-                            {@const nodeId = requireNodeId(section)}
-                            {#if nodeId}
-                                <MandalaCard
-                                    {nodeId}
-                                    {section}
-                                    active={nodeId === $activeNodeId}
-                                    editing={$editingState.activeNodeId === nodeId &&
-                                        !$editingState.isInSidebar &&
-                                        !$showDetailSidebar}
-                                    selected={$selectedNodes.has(nodeId)}
-                                    pinned={$pinnedNodes.has(nodeId)}
-                                    style={$nodeStyles.get(nodeId)}
-                                    sectionColor={sectionBackground}
-                                    draggable={section !== '1' && !$subgridTheme}
-                                />
-                            {:else}
-                                <div
-                                    class="mandala-empty"
-                                    style={sectionBackground
-                                        ? `background-color: ${sectionBackground};`
-                                        : undefined}
-                                >
-                                    {section}
-                                </div>
-                            {/if}
+                        {#each cells as cell (cell.key)}
+                            {@const sectionBackground = getSectionBackground(
+                                cell.section,
+                                cell.index,
+                            )}
+                            <div
+                                class="mandala-cell"
+                                animate:flip={{ duration: 220 }}
+                            >
+                                {#if cell.nodeId}
+                                    <MandalaCard
+                                        nodeId={cell.nodeId}
+                                        section={cell.section}
+                                        active={cell.nodeId === $activeNodeId}
+                                        editing={$editingState.activeNodeId ===
+                                            cell.nodeId &&
+                                            !$editingState.isInSidebar &&
+                                            !$showDetailSidebar}
+                                        selected={$selectedNodes.has(
+                                            cell.nodeId,
+                                        )}
+                                        pinned={$pinnedNodes.has(cell.nodeId)}
+                                        style={$nodeStyles.get(cell.nodeId)}
+                                        sectionColor={sectionBackground}
+                                        draggable={cell.section !== '1' &&
+                                            !$subgridTheme}
+                                    />
+                                {:else}
+                                    <div
+                                        class="mandala-empty"
+                                        style={sectionBackground
+                                            ? `background-color: ${sectionBackground};`
+                                            : undefined}
+                                    >
+                                        {cell.section}
+                                    </div>
+                                {/if}
+                            </div>
                         {/each}
                     </div>
                 {:else}
@@ -493,6 +513,11 @@
         grid-template-columns: repeat(3, var(--node-width));
         gap: var(--mandala-gap);
         align-items: start;
+    }
+
+    .mandala-cell {
+        width: 100%;
+        height: 100%;
     }
 
     /* 3×3 主视图：铺满可视区域（避免横向滚动） */

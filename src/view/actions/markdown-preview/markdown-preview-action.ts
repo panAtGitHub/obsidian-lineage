@@ -8,6 +8,9 @@ export const markdownPreviewAction = (element: HTMLElement, nodeId: string) => {
     const plugin = getPlugin();
     const view = getView();
 
+    let currentNodeId = nodeId;
+    let unsubscribe: () => void;
+
     const render = (content: string) => {
         if (view && element) {
             element.empty();
@@ -27,13 +30,24 @@ export const markdownPreviewAction = (element: HTMLElement, nodeId: string) => {
         }
     };
 
-    const $content = contentStore(view, nodeId);
-    const unsub = $content.subscribe((content) => {
-        render(content);
-    });
+    const subscribeToContent = (id: string) => {
+        const $content = contentStore(view, id);
+        return $content.subscribe((content) => {
+            render(content);
+        });
+    };
+
+    unsubscribe = subscribeToContent(currentNodeId);
+
     return {
+        update: (nextNodeId: string) => {
+            if (nextNodeId === currentNodeId) return;
+            unsubscribe();
+            currentNodeId = nextNodeId;
+            unsubscribe = subscribeToContent(currentNodeId);
+        },
         destroy: () => {
-            unsub();
+            unsubscribe();
         },
     };
 };
