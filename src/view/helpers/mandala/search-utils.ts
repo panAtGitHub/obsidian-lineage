@@ -29,10 +29,8 @@ export function parseSection(section: string): ParsedSection {
     const parts = section.split('.');
 
     if (parts.length === 1) {
-        // 根节点或一级节点
-        return section === '1'
-            ? { parent: null, self: section }
-            : { parent: '1', self: section };
+        // 核心主题
+        return { parent: null, self: section };
     }
 
     // 多级节点，去掉最后一段作为父级
@@ -51,10 +49,11 @@ export function previewSearchResult(section: string, view: MandalaView): void {
 
     if (!nodeId) return;
 
+    const theme = parent ?? self ?? '1';
     // 1. 设置 subgrid theme
     view.viewStore.dispatch({
         type: 'view/mandala/subgrid/enter',
-        payload: { theme: parent ?? '1' },
+        payload: { theme },
     });
 
     // 2. 激活目标节点（使用 mouse-silent 不记录历史）
@@ -78,10 +77,11 @@ export function navigateToSearchResult(section: string, view: MandalaView): void
         return;
     }
 
+    const theme = parent ?? self ?? '1';
     // 1. 设置 subgrid theme
     view.viewStore.dispatch({
         type: 'view/mandala/subgrid/enter',
-        payload: { theme: parent ?? '1' },
+        payload: { theme },
     });
 
     // 2. 激活目标节点（使用 search 类型表明是搜索触发）

@@ -85,7 +85,7 @@
                     pinned={$pinnedNodes.has(nodeId)}
                     style={$nodeStyles.get(nodeId)}
                     sectionColor={sectionColor}
-                    draggable={section !== '1'}
+                    draggable={section !== $subgridTheme}
                     gridCell={{ mode: '9x9', row, col }}
                 />
             {:else if section}

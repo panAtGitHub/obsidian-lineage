@@ -38,6 +38,7 @@ import { sortDirectChildNodes } from 'src/stores/document/reducers/sort/sort-dir
 import { deleteChildNodes } from 'src/lib/tree-utils/delete/delete-child-nodes';
 import {
     ensureMandalaChildren,
+    ensureMandalaCoreTheme,
     swapMandalaNodes,
 } from 'src/stores/document/reducers/mandala/swap-mandala-nodes';
 
@@ -117,6 +118,34 @@ const updateDocumentState = (
         newActiveNodeId = action.payload.parentNodeId;
         affectedNodeId = action.payload.parentNodeId;
         affectedNodes = createdNodes;
+    } else if (action.type === 'document/mandala/ensure-core-theme') {
+        const theme = action.payload.theme;
+        const existingNodeId = state.sections.section_id[theme];
+        if (existingNodeId) {
+            const createdNodes = ensureMandalaChildren(
+                state.document,
+                existingNodeId,
+                8,
+            );
+            if (createdNodes.length === 0) {
+                newActiveNodeId = existingNodeId;
+                affectedNodeId = existingNodeId;
+            } else {
+                newActiveNodeId = existingNodeId;
+                affectedNodeId = existingNodeId;
+                affectedNodes = createdNodes;
+            }
+        } else {
+            const { nodeId } = ensureMandalaCoreTheme(state.document, theme);
+            const createdNodes = ensureMandalaChildren(
+                state.document,
+                nodeId,
+                8,
+            );
+            newActiveNodeId = nodeId;
+            affectedNodeId = nodeId;
+            affectedNodes = createdNodes;
+        }
     } else if (action.type === 'document/mandala/clear-empty-subgrids') {
         const parentIds = action.payload.parentIds.filter(Boolean);
         if (parentIds.length === 0) return NO_UPDATE;
