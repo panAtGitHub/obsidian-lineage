@@ -13,6 +13,11 @@ export const enterSubgridForNode = (view: MandalaView, nodeId: string) => {
     const currentTheme = view.viewStore.getValue().ui.mandala.subgridTheme ?? '1';
 
     if (section === currentTheme && !currentTheme.includes('.')) {
+        const content = docState.document.content[nodeId]?.content ?? '';
+        if (!content.trim()) {
+            new Notice('请先填写内容，再进入下一核心九宫');
+            return;
+        }
         const nextTheme = String(Number(currentTheme) + 1);
         view.documentStore.dispatch({
             type: 'document/mandala/ensure-core-theme',
