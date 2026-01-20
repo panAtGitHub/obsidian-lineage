@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
+    import { onMount } from 'svelte';
     import { derived } from 'src/lib/store/derived';
     import {
         coreGrid,
@@ -31,6 +32,8 @@
         view.viewStore,
         (state) => state.document.activeNode,
     );
+    let gridEl: HTMLDivElement | null = null;
+    let bodyLineClamp = 3;
 
     // Reactive store for cells
     const cells = derived(view.documentStore, (state) => {
@@ -86,7 +89,7 @@
                             
                             // Body: Join remaining lines, remove standard markdown syntax for cleaner preview
                             if (lines.length > 1) {
-                                body = lines.slice(1).join(' ')
+                                body = lines.slice(1).join('\n')
                                     .replace(/\[\[.*?\]\]/g, (m) => m.slice(2, -2)) // Simplify links
                                     .replace(/[*_`]/g, '') // Remove formatting chars
                                     .trim()
@@ -133,6 +136,37 @@
             return { ...cell, background };
         });
     }
+
+    const updateBodyClamp = () => {
+        if (!gridEl) return;
+        const cell = gridEl.querySelector('.simple-cell') as HTMLElement | null;
+        const body = gridEl.querySelector('.cell-body') as HTMLElement | null;
+        const title = gridEl.querySelector('.cell-title') as HTMLElement | null;
+        if (!cell || !body) return;
+
+        const cellBox = cell.getBoundingClientRect();
+        const cellStyles = getComputedStyle(cell);
+        const padding =
+            parseFloat(cellStyles.paddingTop) +
+            parseFloat(cellStyles.paddingBottom);
+        const bodyLineHeight = parseFloat(getComputedStyle(body).lineHeight);
+        const titleLineHeight = title
+            ? parseFloat(getComputedStyle(title).lineHeight)
+            : bodyLineHeight;
+        const reservedTitleHeight = titleLineHeight * 2;
+        const reservedGap = 2;
+        const available = cellBox.height - padding - reservedTitleHeight - reservedGap;
+        const lines = Math.max(1, Math.floor(available / bodyLineHeight));
+        bodyLineClamp = Math.min(lines, 12);
+    };
+
+    onMount(() => {
+        updateBodyClamp();
+        if (!gridEl) return;
+        const observer = new ResizeObserver(() => updateBodyClamp());
+        observer.observe(gridEl);
+        return () => observer.disconnect();
+    });
 
     const onCellClick = (nodeId: string) => {
         if (!nodeId) return;
@@ -194,7 +228,8 @@
 
 <div
     class="simple-9x9-grid"
-    style={`--mandala-border-opacity: ${$borderOpacity}%`}
+    style={`--mandala-border-opacity: ${$borderOpacity}%; --mandala-body-lines: ${bodyLineClamp};`}
+    bind:this={gridEl}
 >
     {#each styledCells as cell}
         <div 
@@ -318,8 +353,9 @@
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Show up to 3 lines of body */
+        -webkit-line-clamp: var(--mandala-body-lines, 3);
         -webkit-box-orient: vertical;
+        white-space: pre-wrap;
         word-break: break-all;
     }
 
