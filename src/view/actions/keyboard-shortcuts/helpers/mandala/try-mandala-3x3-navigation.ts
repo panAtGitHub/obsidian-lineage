@@ -4,7 +4,6 @@ import {
     posOfSection3x3,
     getMandalaLayout,
 } from 'src/view/helpers/mandala/mandala-grid';
-import { Notice } from 'obsidian';
 
 const deltas: Record<AllDirections, { dr: number; dc: number }> = {
     up: { dr: -1, dc: 0 },
@@ -19,7 +18,6 @@ export const tryMandala3x3Navigation = (
     options?: { extendSelection?: boolean },
 ) => {
     const docState = view.documentStore.getValue();
-    if (!docState.meta.isMandala) return false;
     if (view.mandalaMode !== '3x3') return false;
 
     const activeNodeId = view.viewStore.getValue().document.activeNode;
@@ -53,44 +51,6 @@ export const tryMandala3x3Navigation = (
         const slot = themeGrid[nextRow]?.[nextCol] ?? null;
         return slot ? `${theme}.${slot}` : null;
     })();
-
-    if (
-        direction === 'down' &&
-        pos.row === 1 &&
-        pos.col === 1 &&
-        activeSectionRaw === theme &&
-        !theme.includes('.')
-    ) {
-        const content =
-            view.inlineEditor.nodeId === activeNodeId
-                ? view.inlineEditor.getContent()
-                : docState.document.content[activeNodeId]?.content ?? '';
-        if (!content.trim()) {
-            new Notice('请先填写内容，再进入下一核心九宫');
-            return true;
-        }
-
-        const themeNumber = Number(theme);
-        if (Number.isNaN(themeNumber)) return true;
-        const nextTheme = String(themeNumber + 1);
-        view.documentStore.dispatch({
-            type: 'document/mandala/ensure-core-theme',
-            payload: { theme: nextTheme },
-        });
-        const nextNodeId =
-            view.documentStore.getValue().sections.section_id[nextTheme];
-        if (nextNodeId) {
-            view.viewStore.dispatch({
-                type: 'view/set-active-node/mouse-silent',
-                payload: { id: nextNodeId },
-            });
-            view.viewStore.dispatch({
-                type: 'view/mandala/subgrid/enter',
-                payload: { theme: nextTheme },
-            });
-        }
-        return true;
-    }
 
     if (!nextSection) return true;
 
