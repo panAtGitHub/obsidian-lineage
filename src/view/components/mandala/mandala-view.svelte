@@ -34,6 +34,7 @@
     import { mobilePopupFontSizeStore } from 'src/stores/mobile-popup-font-store';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
     import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
+    import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
 
     const view = getView();
     const layout = createLayoutStore();
@@ -126,6 +127,7 @@
         view.viewStore,
         (state) => state.ui.mandala.subgridTheme,
     );
+    const documentState = derived(view.documentStore, (state) => state);
     const swapState = derived(view.viewStore, (state) => state.ui.mandala.swap);
     const nodeStyles = derived(
         view.viewStore,
@@ -204,6 +206,30 @@
                         $gridOrientation,
                         theme,
                     );
+                }
+            }
+        }
+    }
+
+    $: {
+        if (
+            $mode === '3x3' &&
+            $subgridTheme &&
+            !$subgridTheme.includes('.') &&
+            $documentState.meta.isMandala
+        ) {
+            const themeNodeId = $sectionToNodeId[$subgridTheme];
+            if (themeNodeId) {
+                const childGroup = findChildGroup(
+                    $documentState.document.columns,
+                    themeNodeId,
+                );
+                const childCount = childGroup?.nodes.length ?? 0;
+                if (childCount < 8) {
+                    view.documentStore.dispatch({
+                        type: 'document/mandala/ensure-children',
+                        payload: { parentNodeId: themeNodeId, count: 8 },
+                    });
                 }
             }
         }
