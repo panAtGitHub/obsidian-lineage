@@ -9,7 +9,7 @@
     // import DocumentHistoryButtons from './components/document-history-buttons.svelte';
     import SearchActions from './components/search-actions.svelte';
     import { writable, derived } from 'svelte/store';
-    import { Menu } from 'lucide-svelte';
+    import { Eye, Menu } from 'lucide-svelte';
     import Button from '../shared/button.svelte';
     import { lang } from 'src/lang/lang';
     
@@ -30,12 +30,22 @@
         toggleMobileInteractionMode 
     } from 'src/stores/view/mobile-interaction-store';
     import { Lock, Unlock, Grid3x3, Grid2x2 } from 'lucide-svelte';
-    import { MandalaModeStore } from 'src/stores/settings/derived/view-settings-store';
+    import {
+        MandalaModeStore,
+        ShowHiddenCardInfoStore,
+    } from 'src/stores/settings/derived/view-settings-store';
 
     const mode = MandalaModeStore(view);
+    const showHiddenCardInfo = ShowHiddenCardInfoStore(view);
     const toggleMandalaMode = () => {
         view.plugin.settings.dispatch({
             type: 'settings/view/mandala/toggle-mode',
+        });
+    };
+
+    const toggleHiddenCardInfo = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/toggle-hidden-card-info',
         });
     };
     
@@ -72,6 +82,14 @@
 
         <div class="buttons-group-wrapper" data-visible={$showControls}>
             <LeftSidebarToggle />
+            <Button
+                active={$showHiddenCardInfo}
+                label={lang.controls_toggle_hidden_card_info}
+                on:click={toggleHiddenCardInfo}
+                tooltipPosition="bottom"
+            >
+                <Eye class="svg-icon" />
+            </Button>
             <NavigationHistory />
             <!-- <DocumentHistoryButtons /> -->
             <SearchToggle />
