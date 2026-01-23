@@ -1,5 +1,4 @@
-import { parseYaml } from 'obsidian';
-import { extractFrontmatter } from 'src/view/helpers/extract-frontmatter';
+import { parseYaml, stringifyYaml } from 'obsidian';
 import { updateFrontmatter } from 'src/stores/view/subscriptions/actions/document/update-frontmatter';
 import { MandalaView } from 'src/view/view';
 
@@ -73,6 +72,34 @@ const stripFrontmatter = (frontmatter: string) =>
         .replace(/^---\n/, '')
         .replace(/\n---\n?$/, '')
         .trim();
+
+const buildFrontmatterWithSectionColors = (
+    frontmatter: string,
+    map: SectionColorMap,
+) => {
+    const serialized = serializeSectionColorMap(map);
+    let record: Record<string, unknown> = {};
+    if (frontmatter.trim()) {
+        const content = stripFrontmatter(frontmatter);
+        if (content) {
+            try {
+                const parsed = parseYaml(content);
+                if (parsed && typeof parsed === 'object') {
+                    record = parsed as Record<string, unknown>;
+                }
+            } catch {
+                record = {};
+            }
+        }
+    }
+    if (Object.keys(serialized).length === 0) {
+        delete record[SECTION_COLORS_FRONTMATTER_KEY];
+    } else {
+        record[SECTION_COLORS_FRONTMATTER_KEY] = serialized;
+    }
+    const yaml = stringifyYaml(record).trim();
+    return yaml ? `---\n${yaml}\n---\n` : '';
+};
 
 const normalizeSectionColorMap = (value: unknown): SectionColorMap => {
     const map = createEmptySectionColorMap();
@@ -157,6 +184,11 @@ export const writeSectionColorsToFrontmatter = async (
     map: SectionColorMap,
 ) => {
     if (!view.file) return;
+    const nextFrontmatter = buildFrontmatterWithSectionColors(
+        view.documentStore.getValue().file.frontmatter,
+        map,
+    );
+    updateFrontmatter(view, nextFrontmatter);
     const serialized = serializeSectionColorMap(map);
     await view.plugin.app.fileManager.processFrontMatter(
         view.file,
@@ -168,11 +200,4 @@ export const writeSectionColorsToFrontmatter = async (
             }
         },
     );
-    try {
-        const content = await view.plugin.app.vault.read(view.file);
-        const { frontmatter } = extractFrontmatter(content);
-        updateFrontmatter(view, frontmatter);
-    } catch {
-        // ignore read failures; metadata cache will eventually catch up
-    }
 };

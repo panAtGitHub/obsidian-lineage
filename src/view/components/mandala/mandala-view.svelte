@@ -63,14 +63,20 @@
     const backgroundMode = MandalaBackgroundModeStore(view);
 
     const grayPositions = new Set([1, 3, 5, 7]);
-    const getSectionBackground = (section: string, index: number) => {
-        const opacity = $sectionColorOpacity / 100;
-        if ($backgroundMode === 'custom' && $sectionColors[section]) {
-            return applyOpacityToHex($sectionColors[section], opacity);
+    const getSectionBackground = (
+        section: string,
+        index: number,
+        backgroundMode: string,
+        sectionColors: Record<string, string>,
+        sectionColorOpacity: number,
+    ) => {
+        const opacity = sectionColorOpacity / 100;
+        if (backgroundMode === 'custom' && sectionColors[section]) {
+            return applyOpacityToHex(sectionColors[section], opacity);
         }
-        if ($backgroundMode === 'gray' && grayPositions.has(index)) {
+        if (backgroundMode === 'gray' && grayPositions.has(index)) {
             return `color-mix(in srgb, var(--mandala-gray-block-base) ${
-                $sectionColorOpacity
+                sectionColorOpacity
             }%, transparent)`;
         }
         return null;
@@ -337,6 +343,9 @@
                             {@const sectionBackground = getSectionBackground(
                                 cell.section,
                                 cell.index,
+                                $backgroundMode,
+                                $sectionColors,
+                                $sectionColorOpacity,
                             )}
                             <div
                                 class="mandala-cell"
