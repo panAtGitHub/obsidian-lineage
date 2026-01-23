@@ -124,7 +124,7 @@
     };
 
     const updateGridOrientation = (
-        orientation: 'south-start' | 'left-to-right',
+        orientation: 'south-start' | 'left-to-right' | 'bottom-to-top',
     ) => {
         if (orientation === $gridOrientation) return;
         view.plugin.settings.dispatch({
@@ -769,7 +769,19 @@
                                             'left-to-right',
                                         )}
                                 />
-                                <span>从左到右</span>
+                                <span>从左到右（Z形）</span>
+                            </label>
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-grid-orientation"
+                                    checked={$gridOrientation === 'bottom-to-top'}
+                                    on:change={() =>
+                                        updateGridOrientation(
+                                            'bottom-to-top',
+                                        )}
+                                />
+                                <span>从下到上（S形）</span>
                             </label>
                         </div>
                     </div>

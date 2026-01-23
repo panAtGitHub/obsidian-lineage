@@ -44,7 +44,9 @@
         baseTheme: string,
     ) => {
         const layout = getMandalaLayout(
-            orientation === 'south-start' ? 'south-start' : 'left-to-right',
+            orientation === 'south-start' || orientation === 'bottom-to-top'
+                ? orientation
+                : 'left-to-right',
         );
         const list = [];
         for (let row = 0; row < 9; row++) {

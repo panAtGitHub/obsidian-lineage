@@ -12,6 +12,12 @@ const coreGridSouthStart = [
     ['6', '2', '9'],
 ] as const;
 
+const coreGridBottomToTop = [
+    ['7', '8', '9'],
+    ['5', '1', '6'],
+    ['2', '3', '4'],
+] as const;
+
 const buildCoreSlots = (
     grid: readonly (readonly string[])[],
 ): string[] => grid.flat();
@@ -84,6 +90,7 @@ const createLayout = (
 const layoutMaps: Record<MandalaGridOrientation, MandalaLayout> = {
     'left-to-right': createLayout(coreGrid),
     'south-start': createLayout(coreGridSouthStart),
+    'bottom-to-top': createLayout(coreGridBottomToTop),
 };
 
 export const getMandalaLayout = (orientation: MandalaGridOrientation) =>

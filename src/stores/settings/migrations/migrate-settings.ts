@@ -24,7 +24,10 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
         mandalaA4Orientation?: 'portrait' | 'landscape';
         mandalaBackgroundMode?: 'none' | 'custom' | 'gray';
         mandalaGridBorderOpacity?: number;
-        mandalaGridOrientation?: 'south-start' | 'left-to-right';
+        mandalaGridOrientation?:
+            | 'south-start'
+            | 'left-to-right'
+            | 'bottom-to-top';
         mandalaShowSectionColors?: boolean;
         mandalaSectionColorOpacity?: number;
         mandalaGrayBackground?: boolean;

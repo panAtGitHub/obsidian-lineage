@@ -15,19 +15,23 @@ import { startMandalaSwap } from 'src/view/helpers/mandala/mandala-swap';
 
 type Props = {
     activeNode: string;
-    hasChildren: boolean;
     isPinned: boolean;
 };
 export const createSingleNodeContextMenuItems = (
     view: MandalaView,
-    { hasChildren, isPinned, activeNode }: Props,
+    { isPinned, activeNode }: Props,
 ) => {
     const isMandala = view.documentStore.getValue().meta.isMandala;
     const section = view.documentStore.getValue().sections.id_section[activeNode];
-    const frontmatter = view.documentStore.getValue().file.frontmatter;
-    const sectionColorMap = parseSectionColorsFromFrontmatter(frontmatter);
-    const sectionColorIndex = createSectionColorIndex(sectionColorMap);
-    const activeColorKey = section ? sectionColorIndex[section] : undefined;
+    let cachedSectionColorMap: ReturnType<
+        typeof parseSectionColorsFromFrontmatter
+    > | null = null;
+    const getSectionColorMap = () => {
+        if (cachedSectionColorMap) return cachedSectionColorMap;
+        const frontmatter = view.documentStore.getValue().file.frontmatter;
+        cachedSectionColorMap = parseSectionColorsFromFrontmatter(frontmatter);
+        return cachedSectionColorMap;
+    };
 
     const menuItems: MenuItemObject[] = [
         ...(isMandala
@@ -60,50 +64,57 @@ export const createSingleNodeContextMenuItems = (
                   {
                       type: 'custom',
                       render: (menu, container) => {
-                          const palette = document.createElement('div');
-                          palette.className = 'mandala-color-palette';
-                          for (const key of SECTION_COLOR_KEYS) {
-                              const button =
-                                  document.createElement('button');
-                              button.type = 'button';
-                              button.className = 'mandala-color-swatch';
-                              if (activeColorKey === key) {
-                                  button.classList.add('is-active');
+                          requestAnimationFrame(() => {
+                              const sectionColorMap = getSectionColorMap();
+                              const sectionColorIndex =
+                                  createSectionColorIndex(sectionColorMap);
+                              const activeColorKey =
+                                  sectionColorIndex[section];
+                              const palette = document.createElement('div');
+                              palette.className = 'mandala-color-palette';
+                              for (const key of SECTION_COLOR_KEYS) {
+                                  const button =
+                                      document.createElement('button');
+                                  button.type = 'button';
+                                  button.className = 'mandala-color-swatch';
+                                  if (activeColorKey === key) {
+                                      button.classList.add('is-active');
+                                  }
+                                  button.style.setProperty(
+                                      '--swatch-color',
+                                      SECTION_COLOR_PALETTE[key],
+                                  );
+                                  button.style.backgroundColor =
+                                      SECTION_COLOR_PALETTE[key];
+                                  button.setAttribute(
+                                      'aria-label',
+                                      `${lang.cm_section_color} ${key}`,
+                                  );
+                                  button.addEventListener('click', (event) => {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                      const next = setSectionColor(
+                                          sectionColorMap,
+                                          section,
+                                          key,
+                                      );
+                                      void writeSectionColorsToFrontmatter(
+                                          view,
+                                          next,
+                                      );
+                                      menu.hide();
+                                  });
+                                  palette.appendChild(button);
                               }
-                              button.style.setProperty(
-                                  '--swatch-color',
-                                  SECTION_COLOR_PALETTE[key],
-                              );
-                              button.style.backgroundColor =
-                                  SECTION_COLOR_PALETTE[key];
-                              button.setAttribute(
-                                  'aria-label',
-                                  `${lang.cm_section_color} ${key}`,
-                              );
-                              button.addEventListener('click', (event) => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                  const next = setSectionColor(
-                                      sectionColorMap,
-                                      section,
-                                      key,
-                                  );
-                                  void writeSectionColorsToFrontmatter(
-                                      view,
-                                      next,
-                                  );
-                                  menu.hide();
-                              });
-                              palette.appendChild(button);
-                          }
-                          container.appendChild(palette);
+                              container.appendChild(palette);
+                          });
                       },
                   },
                   {
                       title: lang.cm_clear_section_color,
                       icon: 'reset',
-                      disabled: !activeColorKey,
                       action: () => {
+                          const sectionColorMap = getSectionColorMap();
                           const next = setSectionColor(
                               sectionColorMap,
                               section,
