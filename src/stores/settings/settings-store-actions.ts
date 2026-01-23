@@ -220,6 +220,12 @@ export type SettingsActions =
         };
     }
     | {
+        type: 'settings/general/set-mandala-templates-file-path';
+        payload: {
+            path: string | null;
+        };
+    }
+    | {
         type: 'settings/view/set-mobile-edit-font-size-offset';
         payload: {
             offset: number;

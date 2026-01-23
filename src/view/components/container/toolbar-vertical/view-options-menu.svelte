@@ -2,14 +2,16 @@
     import { getView } from 'src/view/components/container/context';
     import {
         Frame,
+        Grid3x3,
         Printer,
         Trash2,
         X,
     } from 'lucide-svelte';
-    import { Notice, Platform } from 'obsidian';
+    import { Notice, Platform, TFile } from 'obsidian';
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
     import { createClearEmptyMandalaSubgridsPlan } from 'src/lib/mandala/clear-empty-subgrids';
+    import { derived } from 'src/lib/store/derived';
     import {
         MandalaA4ModeStore,
         MandalaA4OrientationStore,
@@ -20,6 +22,17 @@
         SquareLayoutStore,
         WhiteThemeModeStore,
     } from 'src/stores/settings/derived/view-settings-store';
+    import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
+    import {
+        appendMandalaTemplate,
+        MandalaTemplate,
+        parseMandalaTemplates,
+    } from 'src/lib/mandala/mandala-templates';
+    import {
+        openMandalaTemplateNameModal,
+        openMandalaTemplateSelectModal,
+        openMandalaTemplatesFileModal,
+    } from 'src/obsidian/modals/mandala-templates-modal';
 
     const dispatch = createEventDispatcher();
     const view = getView();
@@ -27,6 +40,7 @@
     export let show = false;
     let showEditOptions = false;
     let showPrintOptions = false;
+    let showTemplateOptions = false;
 
     const a4Mode = MandalaA4ModeStore(view);
     const a4Orientation = MandalaA4OrientationStore(view);
@@ -36,6 +50,10 @@
     const whiteThemeMode = WhiteThemeModeStore(view);
     const squareLayout = SquareLayoutStore(view);
     const gridOrientation = MandalaGridOrientationStore(view);
+    const templatesFilePathStore = derived(
+        view.plugin.settings,
+        (state) => state.general.mandalaTemplatesFilePath,
+    );
 
     const toggleWhiteTheme = () => {
         view.plugin.settings.dispatch({
@@ -632,10 +650,174 @@
         closeMenu();
     };
 
+    const getTemplatesFileFromPath = () => {
+        if (!$templatesFilePathStore) return null;
+        const file = view.plugin.app.vault.getAbstractFileByPath(
+            $templatesFilePathStore,
+        );
+        return file instanceof TFile ? file : null;
+    };
+
+    const openTemplatesFileFromPath = async () => {
+        const file = getTemplatesFileFromPath();
+        if (!file) {
+            new Notice('模板文件不存在，请重新指定。');
+            return;
+        }
+        await openFile(view.plugin, file, 'tab');
+        closeMenu();
+    };
+
+    const pickTemplatesFile = async () => {
+        const file = await openMandalaTemplatesFileModal(view.plugin);
+        if (!file) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/general/set-mandala-templates-file-path',
+            payload: { path: file.path },
+        });
+    };
+
+    const ensureTemplatesFile = async () => {
+        const existing = getTemplatesFileFromPath();
+        if (existing) return existing;
+        if ($templatesFilePathStore) {
+            new Notice('模板文件不存在，请重新指定。');
+            view.plugin.settings.dispatch({
+                type: 'settings/general/set-mandala-templates-file-path',
+                payload: { path: null },
+            });
+        }
+        const file = await openMandalaTemplatesFileModal(view.plugin);
+        if (!file) return null;
+        view.plugin.settings.dispatch({
+            type: 'settings/general/set-mandala-templates-file-path',
+            payload: { path: file.path },
+        });
+        return file;
+    };
+
+    const ensureMandala3x3 = () => {
+        if (view.mandalaMode !== '3x3') {
+            new Notice('仅支持 3x3 视图。');
+            return false;
+        }
+        const state = view.documentStore.getValue();
+        if (!state.meta.isMandala) {
+            new Notice('当前文档不是九宫格格式。');
+            return false;
+        }
+        return true;
+    };
+
+    const getCurrentThemeSlots = (theme: string) => {
+        const state = view.documentStore.getValue();
+        const slots: string[] = [];
+        for (let i = 1; i <= 8; i += 1) {
+            const section = `${theme}.${i}`;
+            const nodeId = state.sections.section_id[section];
+            const content = nodeId
+                ? state.document.content[nodeId]?.content ?? ''
+                : '';
+            slots.push(content);
+        }
+        return slots;
+    };
+
+    const saveCurrentThemeAsTemplate = async () => {
+        if (!ensureMandala3x3()) return;
+        const file = await ensureTemplatesFile();
+        if (!file) return;
+        const templateName = await openMandalaTemplateNameModal(view.plugin);
+        if (!templateName) return;
+
+        let raw = '';
+        try {
+            raw = await view.plugin.app.vault.read(file);
+        } catch {
+            new Notice('读取模板文件失败。');
+            return;
+        }
+        const templates = parseMandalaTemplates(raw);
+        if (templates.some((template) => template.name === templateName)) {
+            new Notice('模板名称已存在，请更换名称。');
+            return;
+        }
+
+        const theme = view.viewStore.getValue().ui.mandala.subgridTheme ?? '1';
+        const slots = getCurrentThemeSlots(theme);
+        const template: MandalaTemplate = { name: templateName, slots };
+        const nextContent = appendMandalaTemplate(raw, template);
+        try {
+            await view.plugin.app.vault.modify(file, nextContent);
+        } catch {
+            new Notice('写入模板文件失败。');
+            return;
+        }
+        new Notice('模板已保存。');
+        closeMenu();
+    };
+
+    const applyTemplateToCurrentTheme = async () => {
+        if (!ensureMandala3x3()) return;
+        const file = await ensureTemplatesFile();
+        if (!file) return;
+
+        let raw = '';
+        try {
+            raw = await view.plugin.app.vault.read(file);
+        } catch {
+            new Notice('读取模板文件失败。');
+            return;
+        }
+        const templates = parseMandalaTemplates(raw);
+        if (templates.length === 0) {
+            new Notice('模板文件中没有模板。');
+            return;
+        }
+
+        const selected = await openMandalaTemplateSelectModal(
+            view.plugin,
+            templates,
+        );
+        if (!selected) return;
+
+        const state = view.documentStore.getValue();
+        const theme = view.viewStore.getValue().ui.mandala.subgridTheme ?? '1';
+        const centerNodeId = state.sections.section_id[theme];
+        if (!centerNodeId) {
+            new Notice('未找到当前主题中心格子。');
+            return;
+        }
+
+        view.documentStore.dispatch({
+            type: 'document/mandala/ensure-children',
+            payload: { parentNodeId: centerNodeId, count: 8 },
+        });
+
+        const refreshed = view.documentStore.getValue();
+        for (let i = 1; i <= 8; i += 1) {
+            const section = `${theme}.${i}`;
+            const nodeId = refreshed.sections.section_id[section];
+            if (!nodeId) continue;
+            view.documentStore.dispatch({
+                type: 'document/update-node-content',
+                payload: {
+                    nodeId,
+                    content: selected.slots[i - 1] ?? '',
+                },
+                context: { isInSidebar: false },
+            });
+        }
+
+        new Notice('模板已应用。');
+        closeMenu();
+    };
+
     const closeMenu = () => {
         dispatch('close');
         showEditOptions = false;
         showPrintOptions = false;
+        showTemplateOptions = false;
     };
 
     // 点击外部关闭菜单 - 使用全局点击事件
@@ -674,7 +856,7 @@
                 on:click={() => (showEditOptions = !showEditOptions)}
             >
                 <div class="view-options-menu__icon">
-                    <Frame class="view-options-menu__icon-svg" size={18} />
+                    <Grid3x3 class="view-options-menu__icon-svg" size={18} />
                 </div>
                 <div class="view-options-menu__content">
                     <div class="view-options-menu__label">编辑模式</div>
@@ -997,6 +1179,57 @@
                 </div>
             {/if}
 
+            <button
+                class="view-options-menu__item"
+                on:click={() => (showTemplateOptions = !showTemplateOptions)}
+            >
+                <div class="view-options-menu__icon">
+                    <Frame class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">九宫格模板</div>
+                    <div class="view-options-menu__desc">
+                        保存与应用周边八格
+                    </div>
+                </div>
+            </button>
+
+            {#if showTemplateOptions}
+                <div class="view-options-menu__submenu">
+                    <div class="view-options-menu__subsection">
+                        <button
+                            class="view-options-menu__subitem"
+                            on:click={pickTemplatesFile}
+                        >
+                            指定模板文件
+                        </button>
+                        <button
+                            class="view-options-menu__path"
+                            on:click={openTemplatesFileFromPath}
+                            disabled={!$templatesFilePathStore}
+                            title={$templatesFilePathStore ?? '未指定'}
+                        >
+                            模板文件：
+                            {$templatesFilePathStore ?? '未指定'}
+                        </button>
+                    </div>
+                    <div class="view-options-menu__row view-options-menu__row--inline">
+                        <button
+                            class="view-options-menu__subitem"
+                            on:click={saveCurrentThemeAsTemplate}
+                        >
+                            保存当前九宫格为模板
+                        </button>
+                        <button
+                            class="view-options-menu__subitem"
+                            on:click={applyTemplateToCurrentTheme}
+                        >
+                            将模板应用到当前九宫格
+                        </button>
+                    </div>
+                </div>
+            {/if}
+
             <button class="view-options-menu__item" on:click={clearEmptySubgrids}>
                 <div class="view-options-menu__icon">
                     <Trash2 class="view-options-menu__icon-svg" size={18} />
@@ -1081,6 +1314,27 @@
         padding: 6px 8px;
         cursor: pointer;
         text-align: left;
+    }
+
+    .view-options-menu__path {
+        padding: 0;
+        border: none;
+        background: transparent;
+        font-size: 11px;
+        color: var(--text-muted);
+        text-align: left;
+        cursor: pointer;
+        line-height: 1.4;
+    }
+
+    .view-options-menu__path:disabled {
+        cursor: default;
+        opacity: 0.6;
+    }
+
+    .view-options-menu__path:not(:disabled):hover {
+        color: var(--text-normal);
+        text-decoration: underline;
     }
 
     .view-options-menu__subsection {

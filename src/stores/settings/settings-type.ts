@@ -99,6 +99,7 @@ export type Settings = {
     general: {
         defaultDocumentFormat: MandalaGridDocumentFormat;
         linkPaneType: LinkPaneType;
+        mandalaTemplatesFilePath: string | null;
     };
     styleRules: {
         documents: { [path: string]: { rules: StyleRule[] } };

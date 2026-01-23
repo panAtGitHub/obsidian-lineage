@@ -244,6 +244,10 @@ const updateState = (store: Settings, action: SettingsActions) => {
         store.styleRules.settings.activeTab = action.payload.tab;
     } else if (action.type === 'settings/general/set-link-pane-type') {
         store.general.linkPaneType = action.payload.position;
+    } else if (
+        action.type === 'settings/general/set-mandala-templates-file-path'
+    ) {
+        store.general.mandalaTemplatesFilePath = action.payload.path;
     } else if (action.type === 'settings/view/set-mobile-edit-font-size-offset') {
         store.view.mobileEditFontSizeOffset = action.payload.offset;
     } else if (action.type === 'settings/view/toggle-9x9-title-only') {

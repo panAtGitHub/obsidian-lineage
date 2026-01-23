@@ -58,6 +58,7 @@ export const DEFAULT_SETTINGS = (): Settings => ({
     general: {
         defaultDocumentFormat: 'sections',
         linkPaneType: 'tab',
+        mandalaTemplatesFilePath: null,
     },
     styleRules: {
         documents: {},
