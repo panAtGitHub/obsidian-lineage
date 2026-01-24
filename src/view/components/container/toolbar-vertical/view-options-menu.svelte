@@ -512,6 +512,7 @@
         const rect = target.getBoundingClientRect();
         const width = Math.ceil(rect.width);
         const height = Math.ceil(rect.height);
+        const borderColor = computed.getPropertyValue('--mandala-border-color');
 
         const wrapper = document.createElement('div');
         wrapper.classList.add('mandala-a4-mode');
@@ -519,6 +520,9 @@
             wrapper.classList.add('mandala-a4-landscape');
         }
         wrapper.style.setProperty('--mandala-border-opacity', `${$borderOpacity}%`);
+        if (borderColor.trim().length > 0) {
+            wrapper.style.setProperty('--mandala-border-color', borderColor);
+        }
         wrapper.style.position = 'fixed';
         wrapper.style.left = '0';
         wrapper.style.top = '0';
@@ -534,6 +538,9 @@
         wrapper.style.boxSizing = 'border-box';
 
         const clone = target.cloneNode(true) as HTMLElement;
+        if ($whiteThemeMode) {
+            clone.classList.add('mandala-white-theme');
+        }
         clone.style.margin = '0';
         clone.style.transform = 'none';
         clone.style.left = '0';
@@ -678,11 +685,18 @@
         const squarePadding = 12;
         const createSquarePngExportTarget = (source: HTMLElement) => {
             const rect = source.getBoundingClientRect();
+            const computed = getComputedStyle(source);
+            const borderColor = computed.getPropertyValue(
+                '--mandala-border-color',
+            );
             const width = Math.ceil(rect.width);
             const height = Math.ceil(rect.height);
             const size = Math.min(width, height);
 
             const wrapper = document.createElement('div');
+            if (borderColor.trim().length > 0) {
+                wrapper.style.setProperty('--mandala-border-color', borderColor);
+            }
             wrapper.style.position = 'fixed';
             wrapper.style.left = '0';
             wrapper.style.top = '0';
@@ -697,6 +711,9 @@
             wrapper.style.boxSizing = 'border-box';
 
             const clone = source.cloneNode(true) as HTMLElement;
+            if ($whiteThemeMode) {
+                clone.classList.add('mandala-white-theme');
+            }
             clone.style.margin = '0';
             clone.style.transform = 'none';
             clone.style.left = '0';
@@ -838,6 +855,10 @@
             source: HTMLElement,
             orientation: 'portrait' | 'landscape',
         ) => {
+            const computed = getComputedStyle(source);
+            const borderColor = computed.getPropertyValue(
+                '--mandala-border-color',
+            );
             const layer = document.createElement('div');
             layer.className = 'mandala-pdf-export-layer';
             layer.classList.add('mandala-a4-mode');
@@ -845,6 +866,9 @@
                 layer.classList.add('mandala-a4-landscape');
             }
             layer.style.setProperty('--mandala-border-opacity', `${$borderOpacity}%`);
+            if (borderColor.trim().length > 0) {
+                layer.style.setProperty('--mandala-border-color', borderColor);
+            }
             layer.style.width =
                 orientation === 'landscape' ? '297mm' : '210mm';
             layer.style.height =
@@ -856,6 +880,9 @@
             ).getPropertyValue('--background-primary');
 
             const clone = source.cloneNode(true) as HTMLElement;
+            if ($whiteThemeMode) {
+                clone.classList.add('mandala-white-theme');
+            }
             clone.style.margin = '0';
             clone.style.transform = 'none';
             clone.style.left = '0';
@@ -1898,121 +1925,72 @@
                     <Printer class="view-options-menu__icon-svg" size={18} />
                 </div>
                 <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">打印模式</div>
-                    <div class="view-options-menu__desc">仅 81 格适配</div>
+                    <div class="view-options-menu__label">导出模式</div>
+                    <div class="view-options-menu__desc">
+                        可按自定义页面大小进行导出
+                    </div>
                 </div>
             </button>
 
             {#if showPrintOptions}
                 <div class="view-options-menu__submenu">
-                    <div class="view-options-menu__row view-options-menu__row--inline">
-                        <button
-                            class="view-options-menu__subitem"
-                            type="button"
-                            on:click={switchLastPrintConfig}
-                        >
-                            切换上一次打印配置
-                        </button>
-                        <button
-                            class="view-options-menu__subitem"
-                            type="button"
-                            on:click={restoreEditMode}
-                        >
-                            一键恢复「编辑模式」
-                        </button>
-                    </div>
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
-                            画布大小
+                            导出分享用 PNG
                         </div>
                         <div class="view-options-menu__row view-options-menu__row--inline">
                             <label class="view-options-menu__inline-option">
                                 <input
                                     type="radio"
-                                    name="mandala-view-size"
-                                    checked={$a4Mode}
-                                    on:change={() => updateExportViewSize('a4')}
-                                />
-                                <span>A4 大小</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-view-size"
-                                    checked={!$a4Mode && !exportSquareSize}
-                                    on:change={() =>
-                                        updateExportViewSize('screen')}
-                                />
-                                <span>屏幕大小</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-view-size"
+                                    name="mandala-export-mode-png"
                                     checked={!$a4Mode && exportSquareSize}
-                                    disabled={$a4Mode || exportFormat !== 'png'}
-                                    on:change={enableSquareExport}
+                                    on:change={() => {
+                                        exportFormat = 'png';
+                                        enableSquareExport();
+                                    }}
                                 />
-                                <span>正方形大小</span>
+                                <span>仅导出正方形九宫格</span>
+                            </label>
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-export-mode-png"
+                                    checked={!$a4Mode && !exportSquareSize}
+                                    on:change={() => {
+                                        exportFormat = 'png';
+                                        updateExportViewSize('screen');
+                                    }}
+                                />
+                                <span>导出屏幕视图内容，可包含侧边栏</span>
                             </label>
                         </div>
-                        <div class="view-options-menu__note">
-                            「正方形大小」仅适配于「正方形布局」
-                        </div>
                     </div>
-
-                    {#if $a4Mode && $mode === '3x3'}
-                        <label class="view-options-menu__row">
-                            <span>方向</span>
-                            <select
-                                value={$a4Orientation}
-                                on:change={updateA4Orientation}
-                            >
-                                <option value="portrait">竖向</option>
-                                <option value="landscape">横向</option>
-                            </select>
-                        </label>
-                        <div class="view-options-menu__note">
-                            <div>注意：3x3 布局的沉浸模式在 A4 尺寸下会失效</div>
-                            <div>
-                                建议：3x3 布局在输出 A4 时，建议采用「全景模式」（选项在「编辑模式」、「背景色选择」）
-                            </div>
-                        </div>
-                    {/if}
 
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
-                            导出选项
+                            导出打印用 PDF
                         </div>
                         <div class="view-options-menu__row view-options-menu__row--inline">
                             <label class="view-options-menu__inline-option">
                                 <input
                                     type="radio"
-                                    name="mandala-export-format"
-                                    checked={exportFormat === 'png'}
-                                    on:change={() => (exportFormat = 'png')}
+                                    name="mandala-export-mode-pdf"
+                                    checked={$a4Mode}
+                                    on:change={() => {
+                                        exportFormat = 'pdf';
+                                        updateExportViewSize('a4');
+                                    }}
                                 />
-                                <span>导出 PNG</span>
+                                <span>导出 A4 打印页面（推荐表格风格）</span>
                             </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-export-format"
-                                    checked={exportFormat === 'pdf'}
-                                    on:change={() => (exportFormat = 'pdf')}
-                                />
-                                <span>导出 PDF</span>
-                            </label>
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <button
-                                class="view-options-menu__subitem"
-                                on:click={exportCurrentFile}
-                            >
-                                导出文件
-                            </button>
                         </div>
                     </div>
+                    <button
+                        class="view-options-menu__subitem"
+                        on:click={exportCurrentFile}
+                    >
+                        导出文件
+                    </button>
                 </div>
             {/if}
 
