@@ -1287,7 +1287,9 @@
                 </div>
                 <div class="view-options-menu__content">
                     <div class="view-options-menu__label">字体设置</div>
-                    <div class="view-options-menu__desc">3x3/9x9 与侧边栏</div>
+                    <div class="view-options-menu__desc">
+                        对 3x3 视图、9x9 视图、侧边栏的字体进行调整
+                    </div>
                 </div>
             </button>
 
@@ -1295,11 +1297,11 @@
                 <div class="view-options-menu__submenu">
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
-                            格子字体大小（桌面）
+                            格子字体大小（PC端）
                         </div>
 
                         <label class="view-options-menu__row">
-                            <span>3x3</span>
+                            <span>3x3视图：</span>
                             <div class="view-options-menu__range">
                                 <button
                                     class="view-options-menu__range-step"
@@ -1345,7 +1347,7 @@
                         </label>
 
                         <label class="view-options-menu__row">
-                            <span>9x9</span>
+                            <span>9x9视图：</span>
                             <div class="view-options-menu__range">
                                 <button
                                     class="view-options-menu__range-step"
@@ -1391,7 +1393,7 @@
                         </label>
 
                         <label class="view-options-menu__row">
-                            <span>侧边栏</span>
+                            <span>侧边栏：</span>
                             <div class="view-options-menu__range">
                                 <button
                                     class="view-options-menu__range-step"
@@ -1445,7 +1447,7 @@
 
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
-                            标题字体大小（em）
+                            标题字体大小（em）（可理解为正文字体的放大倍数）
                         </div>
                         <label class="view-options-menu__row">
                             <span>H1</span>
@@ -2191,6 +2193,8 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        outline: none;
+        box-shadow: none;
     }
 
     .view-options-menu__inline-toggle:disabled {
@@ -2249,9 +2253,9 @@
         width: 22px;
         height: 22px;
         padding: 0;
-        border-radius: 4px;
-        border: 1px solid var(--background-modifier-border);
-        background: var(--background-primary);
+        border-radius: 50%;
+        border: none;
+        background: transparent;
         color: var(--text-muted);
         cursor: pointer;
         display: inline-flex;
@@ -2261,7 +2265,6 @@
     }
 
     .view-options-menu__reset:hover {
-        background: var(--background-modifier-hover);
         color: var(--text-normal);
     }
 
