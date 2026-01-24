@@ -1,10 +1,13 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
     import {
+        ChevronDown,
+        ChevronRight,
         Frame,
         Grid3x3,
         Printer,
         RotateCcw,
+        Settings,
         Trash2,
         Type,
         X,
@@ -124,9 +127,27 @@
         exportSquareSize = mode === 'square';
     };
 
+    let showImmersiveOptions = false;
+    let showPanoramaOptions = false;
+
+    const toggleImmersiveOptions = () => {
+        if ($whiteThemeMode) return;
+        showImmersiveOptions = !showImmersiveOptions;
+    };
+
+    const togglePanoramaOptions = () => {
+        if (!$whiteThemeMode) return;
+        showPanoramaOptions = !showPanoramaOptions;
+    };
+
     const updateWhiteThemeMode = (enabled: boolean) => {
         if (enabled !== $whiteThemeMode) {
             toggleWhiteTheme();
+        }
+        if (enabled) {
+            showImmersiveOptions = false;
+        } else {
+            showPanoramaOptions = false;
         }
     };
 
@@ -368,6 +389,11 @@
                 type: 'settings/view/toggle-square-layout',
             });
         }
+    };
+
+    const enableSquareExport = () => {
+        updateSquareLayout(true);
+        updateExportViewSize('square');
     };
 
     type PrintConfig = {
@@ -1466,19 +1492,30 @@
                 <div class="view-options-menu__submenu">
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
-                            背景色选择
+                            格子风格
                         </div>
                         <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background"
-                                    checked={!$whiteThemeMode}
-                                    on:change={() =>
-                                        updateWhiteThemeMode(false)}
-                                />
-                                <span>沉浸模式</span>
-                            </label>
+                            <div class="view-options-menu__inline-group">
+                                <label class="view-options-menu__inline-option">
+                                    <input
+                                        type="radio"
+                                        name="mandala-background"
+                                        checked={!$whiteThemeMode}
+                                        on:change={() =>
+                                            updateWhiteThemeMode(false)}
+                                    />
+                                    <span>卡片风格，沉浸模式</span>
+                                </label>
+                                <button
+                                    class="view-options-menu__inline-toggle"
+                                    type="button"
+                                    on:click|stopPropagation={toggleImmersiveOptions}
+                                    disabled={$whiteThemeMode}
+                                    aria-label="展开沉浸模式设置"
+                                >
+                                    <Settings size={14} />
+                                </button>
+                            </div>
                             <label class="view-options-menu__inline-option">
                                 <input
                                     type="radio"
@@ -1486,11 +1523,20 @@
                                     checked={$whiteThemeMode}
                                     on:change={() => updateWhiteThemeMode(true)}
                                 />
-                                <span>全景模式</span>
+                                <span>表格风格，全景模式</span>
                             </label>
+                            <button
+                                class="view-options-menu__inline-toggle"
+                                type="button"
+                                on:click|stopPropagation={togglePanoramaOptions}
+                                disabled={!$whiteThemeMode}
+                                aria-label="展开全景模式设置"
+                            >
+                                <Settings size={14} />
+                            </button>
                         </div>
 
-                        {#if !$whiteThemeMode}
+                        {#if !$whiteThemeMode && showImmersiveOptions}
                             <div class="view-options-menu__submenu view-options-menu__submenu--nested">
                                 <div class="view-options-menu__subsection">
                                     <label class="view-options-menu__row">
@@ -1599,11 +1645,134 @@
                                 </div>
                             </div>
                         {/if}
-                        {#if $a4Mode && $mode === '3x3'}
-                            <div class="view-options-menu__note">
-                                注意：3x3 布局的沉浸模式在 A4 尺寸下会失效
+
+                        {#if $whiteThemeMode && showPanoramaOptions}
+                            <div class="view-options-menu__submenu view-options-menu__submenu--nested">
+                                <div class="view-options-menu__subsection">
+                                    <div class="view-options-menu__subsection-title">
+                                        线框选项
+                                    </div>
+                                    <label class="view-options-menu__row">
+                                        <span>线框透明度</span>
+                                        <div class="view-options-menu__range">
+                                            <button
+                                                class="view-options-menu__range-step"
+                                                type="button"
+                                                on:click={() =>
+                                                    stepBorderOpacity(
+                                                        $borderOpacity,
+                                                        -5,
+                                                    )}
+                                            >
+                                                -
+                                            </button>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                value={$borderOpacity}
+                                                on:input={updateBorderOpacity}
+                                            />
+                                            <button
+                                                class="view-options-menu__range-step"
+                                                type="button"
+                                                on:click={() =>
+                                                    stepBorderOpacity(
+                                                        $borderOpacity,
+                                                        5,
+                                                    )}
+                                            >
+                                                +
+                                            </button>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                value={$borderOpacity}
+                                                on:input={updateBorderOpacity}
+                                            />
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         {/if}
+                    </div>
+
+                    <div class="view-options-menu__subsection">
+                        <div class="view-options-menu__subsection-title">
+                            背景色选项
+                        </div>
+                        <div class="view-options-menu__row view-options-menu__row--inline">
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-background-color"
+                                    checked={$backgroundMode === 'none'}
+                                    on:change={() =>
+                                        updateBackgroundMode('none')}
+                                />
+                                <span>无背景色</span>
+                            </label>
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-background-color"
+                                    checked={$backgroundMode === 'custom'}
+                                    on:change={() =>
+                                        updateBackgroundMode('custom')}
+                                />
+                                <span>色块卡片</span>
+                            </label>
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-background-color"
+                                    checked={$backgroundMode === 'gray'}
+                                    on:change={() =>
+                                        updateBackgroundMode('gray')}
+                                />
+                                <span>间隔灰色色块</span>
+                            </label>
+                        </div>
+                        <label class="view-options-menu__row">
+                            <span>背景色透明度</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    disabled={$backgroundMode === 'none'}
+                                    on:click={() =>
+                                        stepOpacity($sectionColorOpacity, -5)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value={$sectionColorOpacity}
+                                    on:input={updateSectionColorOpacity}
+                                    disabled={$backgroundMode === 'none'}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    disabled={$backgroundMode === 'none'}
+                                    on:click={() =>
+                                        stepOpacity($sectionColorOpacity, 5)}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={$sectionColorOpacity}
+                                    on:input={updateSectionColorOpacity}
+                                    disabled={$backgroundMode === 'none'}
+                                />
+                            </div>
+                        </label>
                     </div>
 
                     <div class="view-options-menu__subsection">
@@ -1776,25 +1945,20 @@
                                 />
                                 <span>屏幕大小</span>
                             </label>
-                            {#if $squareLayout}
-                                <label class="view-options-menu__inline-option">
-                                    <input
-                                        type="radio"
-                                        name="mandala-view-size"
-                                        checked={!$a4Mode && exportSquareSize}
-                                        disabled={$a4Mode || exportFormat !== 'png'}
-                                        on:change={() =>
-                                            updateExportViewSize('square')}
-                                    />
-                                    <span>正方形大小</span>
-                                </label>
-                            {/if}
+                            <label class="view-options-menu__inline-option">
+                                <input
+                                    type="radio"
+                                    name="mandala-view-size"
+                                    checked={!$a4Mode && exportSquareSize}
+                                    disabled={$a4Mode || exportFormat !== 'png'}
+                                    on:change={enableSquareExport}
+                                />
+                                <span>正方形大小</span>
+                            </label>
                         </div>
-                        {#if $squareLayout}
-                            <div class="view-options-menu__note">
-                                「正方形大小」仅适配于「正方形布局」
-                            </div>
-                        {/if}
+                        <div class="view-options-menu__note">
+                            「正方形大小」仅适配于「正方形布局」
+                        </div>
                     </div>
 
                     {#if $a4Mode && $mode === '3x3'}
@@ -1815,124 +1979,6 @@
                             </div>
                         </div>
                     {/if}
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            背景色选项
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'none'}
-                                    on:change={() =>
-                                        updateBackgroundMode('none')}
-                                />
-                                <span>无背景色</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'custom'}
-                                    on:change={() =>
-                                        updateBackgroundMode('custom')}
-                                />
-                                <span>色块卡片</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'gray'}
-                                    on:change={() =>
-                                        updateBackgroundMode('gray')}
-                                />
-                                <span>间隔灰色色块</span>
-                            </label>
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>背景色透明度</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    disabled={$backgroundMode === 'none'}
-                                    on:click={() =>
-                                        stepOpacity($sectionColorOpacity, -5)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={$sectionColorOpacity}
-                                    on:input={updateSectionColorOpacity}
-                                    disabled={$backgroundMode === 'none'}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    disabled={$backgroundMode === 'none'}
-                                    on:click={() =>
-                                        stepOpacity($sectionColorOpacity, 5)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={$sectionColorOpacity}
-                                    on:input={updateSectionColorOpacity}
-                                    disabled={$backgroundMode === 'none'}
-                                />
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            线框选项
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>线框透明度</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepBorderOpacity($borderOpacity, -5)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={$borderOpacity}
-                                    on:input={updateBorderOpacity}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepBorderOpacity($borderOpacity, 5)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={$borderOpacity}
-                                    on:input={updateBorderOpacity}
-                                />
-                            </div>
-                        </label>
-                    </div>
 
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
@@ -2143,6 +2189,28 @@
         font-size: 12px;
         color: var(--text-muted);
         margin-bottom: 2px;
+    }
+
+    .view-options-menu__inline-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .view-options-menu__inline-toggle {
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .view-options-menu__inline-toggle:disabled {
+        opacity: 0.5;
+        cursor: default;
     }
 
     .view-options-menu__row {
