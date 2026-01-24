@@ -26,7 +26,11 @@
     const borderOpacity = MandalaBorderOpacityStore(view);
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const backgroundMode = MandalaBackgroundModeStore(view);
-    const grayBlockSlots = new Set(['3', '5', '6', '8']);
+    const isCrossBlock = (blockRow: number, blockCol: number) =>
+        (blockRow === 0 && blockCol === 1) ||
+        (blockRow === 1 && blockCol === 0) ||
+        (blockRow === 1 && blockCol === 2) ||
+        (blockRow === 2 && blockCol === 1);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
@@ -103,8 +107,8 @@
                 const theme = blockSlot
                     ? `${baseTheme}.${blockSlot}`
                     : baseTheme;
-                if (blockSlot) {
-                    isGrayBlock = grayBlockSlots.has(blockSlot);
+                if (!isCenter && isCrossBlock(blockRow, blockCol)) {
+                    isGrayBlock = true;
                 }
 
                 if (isThemeCenter) {

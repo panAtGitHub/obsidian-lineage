@@ -62,7 +62,17 @@
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const backgroundMode = MandalaBackgroundModeStore(view);
 
-    const grayPositions = new Set([1, 3, 5, 7]);
+    const isCrossPosition = (row: number, col: number) =>
+        (row === 0 && col === 1) ||
+        (row === 1 && col === 0) ||
+        (row === 1 && col === 2) ||
+        (row === 2 && col === 1);
+
+    const isCrossIndex = (index: number) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        return isCrossPosition(row, col);
+    };
     const getSectionBackground = (
         section: string,
         index: number,
@@ -74,7 +84,7 @@
         if (backgroundMode === 'custom' && sectionColors[section]) {
             return applyOpacityToHex(sectionColors[section], opacity);
         }
-        if (backgroundMode === 'gray' && grayPositions.has(index)) {
+        if (backgroundMode === 'gray' && isCrossIndex(index)) {
             return `color-mix(in srgb, var(--mandala-gray-block-base) ${
                 sectionColorOpacity
             }%, transparent)`;
