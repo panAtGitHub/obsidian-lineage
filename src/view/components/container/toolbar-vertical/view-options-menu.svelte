@@ -208,6 +208,11 @@
         const height = Math.ceil(rect.height);
 
         const wrapper = document.createElement('div');
+        wrapper.classList.add('mandala-a4-mode');
+        if ($a4Orientation === 'landscape') {
+            wrapper.classList.add('mandala-a4-landscape');
+        }
+        wrapper.style.setProperty('--mandala-border-opacity', `${$borderOpacity}%`);
         wrapper.style.position = 'fixed';
         wrapper.style.left = '0';
         wrapper.style.top = '0';
@@ -533,6 +538,7 @@
             if (orientation === 'landscape') {
                 layer.classList.add('mandala-a4-landscape');
             }
+            layer.style.setProperty('--mandala-border-opacity', `${$borderOpacity}%`);
             layer.style.width =
                 orientation === 'landscape' ? '297mm' : '210mm';
             layer.style.height =

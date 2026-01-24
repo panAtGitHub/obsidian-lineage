@@ -5,6 +5,7 @@
     import {
         MandalaA4ModeStore,
         MandalaA4OrientationStore,
+        MandalaBorderOpacityStore,
         MandalaDetailSidebarWidthStore,
         MandalaModeStore,
         MandalaBackgroundModeStore,
@@ -47,6 +48,7 @@
     const gridOrientation = MandalaGridOrientationStore(view);
     const a4Mode = MandalaA4ModeStore(view);
     const a4Orientation = MandalaA4OrientationStore(view);
+    const borderOpacity = MandalaBorderOpacityStore(view);
     const toggleMode = () => {
         view.plugin.settings.dispatch({
             type: 'settings/view/mandala/toggle-mode',
@@ -288,7 +290,7 @@
     class:mandala-white-theme={!Platform.isMobile && $whiteThemeMode}
     class:mandala-a4-mode={$a4Mode}
     class:mandala-a4-landscape={$a4Mode && $a4Orientation === 'landscape'}
-    style="--mandala-square-size: {squareSize}px; --desktop-square-size: {desktopSquareSize}px;"
+    style="--mandala-square-size: {squareSize}px; --desktop-square-size: {desktopSquareSize}px; --mandala-border-opacity: {$borderOpacity}%;"
 >
     {#if isMobilePopupEditing}
         <div class="mobile-edit-header">
@@ -417,6 +419,12 @@
             in srgb,
             var(--background-modifier-border) 70%,
             var(--background-primary)
+        );
+        --mandala-border-opacity: 100%;
+        --mandala-border-color: color-mix(
+            in srgb,
+            var(--background-modifier-border) var(--mandala-border-opacity),
+            transparent
         );
         --mandala-a4-width: 210mm;
         --mandala-a4-height: 297mm;
@@ -588,35 +596,35 @@
         justify-items: stretch;
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-grid--core {
+    .mandala-a4-mode .mandala-grid--core {
         gap: 0;
         box-sizing: border-box;
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-cell {
-        border-left: 1px dashed var(--background-modifier-border);
-        border-top: 1px dashed var(--background-modifier-border);
+    .mandala-a4-mode .mandala-cell {
+        border-left: 1px dashed var(--mandala-border-color);
+        border-top: 1px dashed var(--mandala-border-color);
         box-sizing: border-box;
         overflow: hidden;
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-cell:nth-child(-n + 3) {
-        border-top: 3px solid var(--background-modifier-border);
+    .mandala-a4-mode .mandala-cell:nth-child(-n + 3) {
+        border-top: 3px solid var(--mandala-border-color);
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-cell:nth-child(3n + 1) {
-        border-left: 3px solid var(--background-modifier-border);
+    .mandala-a4-mode .mandala-cell:nth-child(3n + 1) {
+        border-left: 3px solid var(--mandala-border-color);
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-cell:nth-child(n + 7) {
-        border-bottom: 3px solid var(--background-modifier-border);
+    .mandala-a4-mode .mandala-cell:nth-child(n + 7) {
+        border-bottom: 3px solid var(--mandala-border-color);
     }
 
-    .mandala-a4-mode.mandala-root--3 .mandala-cell:nth-child(3n) {
-        border-right: 3px solid var(--background-modifier-border);
+    .mandala-a4-mode .mandala-cell:nth-child(3n) {
+        border-right: 3px solid var(--mandala-border-color);
     }
 
-    .mandala-a4-mode.mandala-root--3 :global(.mandala-card) {
+    .mandala-a4-mode :global(.mandala-card) {
         border: 0 !important;
         border-left-width: 0 !important;
         border-radius: 0 !important;
