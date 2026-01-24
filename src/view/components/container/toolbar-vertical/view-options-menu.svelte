@@ -73,6 +73,17 @@
         }
     };
 
+    const updateExportViewSize = (mode: 'a4' | 'screen' | 'square') => {
+        if (mode === 'a4') {
+            exportSquareSize = false;
+            updateA4Mode(true);
+            return;
+        }
+
+        updateA4Mode(false);
+        exportSquareSize = mode === 'square';
+    };
+
     const updateWhiteThemeMode = (enabled: boolean) => {
         if (enabled !== $whiteThemeMode) {
             toggleWhiteTheme();
@@ -451,6 +462,14 @@
 
     let exportFormat: 'png' | 'pdf' = 'png';
     let exportSquareSize = false;
+
+    $: if (!$squareLayout && exportSquareSize) {
+        exportSquareSize = false;
+    }
+
+    $: if (exportFormat !== 'png' && exportSquareSize) {
+        exportSquareSize = false;
+    }
 
     const exportCurrentFile = async () => {
         if (exportFormat === 'pdf') {
@@ -1064,7 +1083,7 @@
                                     type="radio"
                                     name="mandala-view-size"
                                     checked={$a4Mode}
-                                    on:change={() => updateA4Mode(true)}
+                                    on:change={() => updateExportViewSize('a4')}
                                 />
                                 <span>A4 大小</span>
                             </label>
@@ -1072,28 +1091,31 @@
                                 <input
                                     type="radio"
                                     name="mandala-view-size"
-                                    checked={!$a4Mode}
-                                    on:change={() => updateA4Mode(false)}
+                                    checked={!$a4Mode && !exportSquareSize}
+                                    on:change={() =>
+                                        updateExportViewSize('screen')}
                                 />
                                 <span>屏幕大小</span>
                             </label>
-                            <label class="view-options-menu__inline-option view-options-menu__inline-option--right">
-                                <input
-                                    type="checkbox"
-                                    checked={exportSquareSize}
-                                    disabled={!$squareLayout || $a4Mode || exportFormat !== 'png'}
-                                    on:change={(event) => {
-                                        const target = event.target;
-                                        if (!(target instanceof HTMLInputElement)) return;
-                                        exportSquareSize = target.checked;
-                                    }}
-                                />
-                                <span>正方形大小</span>
-                            </label>
+                            {#if $squareLayout}
+                                <label class="view-options-menu__inline-option">
+                                    <input
+                                        type="radio"
+                                        name="mandala-view-size"
+                                        checked={!$a4Mode && exportSquareSize}
+                                        disabled={$a4Mode || exportFormat !== 'png'}
+                                        on:change={() =>
+                                            updateExportViewSize('square')}
+                                    />
+                                    <span>正方形大小</span>
+                                </label>
+                            {/if}
                         </div>
-                        <div class="view-options-menu__note">
-                            「正方形大小」仅适配于「正方形布局」
-                        </div>
+                        {#if $squareLayout}
+                            <div class="view-options-menu__note">
+                                「正方形大小」仅适配于「正方形布局」
+                            </div>
+                        {/if}
                     </div>
 
                     {#if $a4Mode}
@@ -1453,10 +1475,6 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-    }
-
-    .view-options-menu__inline-option--right {
-        margin-left: auto;
     }
 
     .view-options-menu__note {
