@@ -370,6 +370,68 @@
         }
     };
 
+    type PrintConfig = {
+        a4Mode: boolean;
+        a4Orientation: 'portrait' | 'landscape';
+        backgroundMode: 'none' | 'custom' | 'gray';
+        sectionColorOpacity: number;
+        borderOpacity: number;
+        whiteThemeMode: boolean;
+        exportSquareSize: boolean;
+    };
+
+    let lastPrintConfig: PrintConfig | null = null;
+
+    const capturePrintConfig = () => {
+        lastPrintConfig = {
+            a4Mode: $a4Mode,
+            a4Orientation: $a4Orientation,
+            backgroundMode: $backgroundMode,
+            sectionColorOpacity: $sectionColorOpacity,
+            borderOpacity: $borderOpacity,
+            whiteThemeMode: $whiteThemeMode,
+            exportSquareSize,
+        };
+    };
+
+    const applyPrintConfig = (config: PrintConfig) => {
+        updateExportViewSize(
+            config.a4Mode ? 'a4' : config.exportSquareSize ? 'square' : 'screen',
+        );
+        updateWhiteThemeMode(config.whiteThemeMode);
+        updateBackgroundMode(config.backgroundMode);
+        updateSectionColorOpacityValue(config.sectionColorOpacity);
+        updateBorderOpacityValue(config.borderOpacity);
+        view.plugin.settings.dispatch({
+            type: 'settings/view/mandala/set-a4-orientation',
+            payload: { orientation: config.a4Orientation },
+        });
+    };
+
+    const switchLastPrintConfig = () => {
+        if (!lastPrintConfig) {
+            new Notice('暂无可切换的打印配置。');
+            return;
+        }
+        const current = {
+            a4Mode: $a4Mode,
+            a4Orientation: $a4Orientation,
+            backgroundMode: $backgroundMode,
+            sectionColorOpacity: $sectionColorOpacity,
+            borderOpacity: $borderOpacity,
+            whiteThemeMode: $whiteThemeMode,
+            exportSquareSize,
+        };
+        applyPrintConfig(lastPrintConfig);
+        lastPrintConfig = current;
+    };
+
+    const restoreEditMode = () => {
+        capturePrintConfig();
+        updateExportViewSize('screen');
+        updateWhiteThemeMode(false);
+    };
+
     const updateGridOrientation = (
         orientation: 'south-start' | 'left-to-right' | 'bottom-to-top',
     ) => {
@@ -1674,6 +1736,22 @@
 
             {#if showPrintOptions}
                 <div class="view-options-menu__submenu">
+                    <div class="view-options-menu__row view-options-menu__row--inline">
+                        <button
+                            class="view-options-menu__subitem"
+                            type="button"
+                            on:click={switchLastPrintConfig}
+                        >
+                            切换上一次打印配置
+                        </button>
+                        <button
+                            class="view-options-menu__subitem"
+                            type="button"
+                            on:click={restoreEditMode}
+                        >
+                            一键恢复「编辑模式」
+                        </button>
+                    </div>
                     <div class="view-options-menu__subsection">
                         <div class="view-options-menu__subsection-title">
                             画布大小
@@ -1880,12 +1958,14 @@
                                 <span>导出 PDF</span>
                             </label>
                         </div>
-                        <button
-                            class="view-options-menu__subitem"
-                            on:click={exportCurrentFile}
-                        >
-                            导出文件
-                        </button>
+                        <div class="view-options-menu__row view-options-menu__row--inline">
+                            <button
+                                class="view-options-menu__subitem"
+                                on:click={exportCurrentFile}
+                            >
+                                导出文件
+                            </button>
+                        </div>
                     </div>
                 </div>
             {/if}
