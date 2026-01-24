@@ -11,7 +11,6 @@ import {
     Keyboard,
     Palette,
     PanelRight,
-    Settings,
     Eye,
 } from 'lucide-svelte';
 import { CustomIcon, customIcons } from 'src/helpers/load-custom-icons';
@@ -66,12 +65,14 @@ export const VerticalToolbarButtonsList = (view: MandalaView) => {
                 {
                     id: 'settings',
                     buttons: [
-                        {
-                            label: lang.controls_settings,
-                            onClick: h.toggleSettings,
-                            icon: Settings,
-                            id: 'settings',
-                        },
+                        // Temporarily hidden: user requested removing the gear button from UI.
+                        // Keep the code commented for possible future restore.
+                        // {
+                        //     label: lang.controls_settings,
+                        //     onClick: h.toggleSettings,
+                        //     icon: Settings,
+                        //     id: 'settings',
+                        // },
                         {
                             label: lang.controls_hotkeys,
                             onClick: h.toggleHelp,

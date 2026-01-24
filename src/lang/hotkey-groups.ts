@@ -79,12 +79,12 @@ export const hotkeyGroups = {
         'toggle_collapse_all',
     ]),
     [lang.hkg_mandala]: new Set([
-        'toggle_mandala_mode',
         'toggle_lock_mode',
         'enter_subgrid',
         'exit_subgrid',
         'jump_core_next',
         'jump_core_prev',
+        'toggle_mandala_mode',
         'swap_cell_up',
         'swap_cell_down',
         'swap_cell_left',

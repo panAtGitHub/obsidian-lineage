@@ -62,26 +62,12 @@ const render = (view: MandalaView, element: HTMLElement, tabs: Tab[]) => {
     );
 
     // appearance
-    BackgroundColor(
-        appearanceTab,
-        settingsStore,
-        isMandala ? '网格容器背景颜色' : undefined,
-    );
-    ActiveBranchBackground(
-        appearanceTab,
-        settingsStore,
-        isMandala ? '活跃格子背景颜色' : undefined,
-    );
-    ActiveBranchColor(
-        appearanceTab,
-        settingsStore,
-        isMandala ? '活跃格子文字颜色' : undefined,
-    );
-    InactiveCardOpacity(
-        appearanceTab,
-        settingsStore,
-        isMandala ? '非活跃格子透明度' : undefined,
-    );
+    if (!isMandala) {
+        BackgroundColor(appearanceTab, settingsStore);
+        ActiveBranchBackground(appearanceTab, settingsStore);
+        ActiveBranchColor(appearanceTab, settingsStore);
+        InactiveCardOpacity(appearanceTab, settingsStore);
+    }
     const fontDetails = appearanceTab.createEl('details', {
         cls: 'mandala-font-settings',
     });
@@ -104,13 +90,9 @@ const render = (view: MandalaView, element: HTMLElement, tabs: Tab[]) => {
     if (!isMandala) {
         CardWidth(layoutTab, settingsStore);
     }
-    CardsGap(
-        layoutTab,
-        settingsStore,
-        isMandala ? '网格间距' : undefined,
-        isMandala ? 20 : undefined,
-        isMandala ? 2 : undefined,
-    );
+    if (!isMandala) {
+        CardsGap(layoutTab, settingsStore);
+    }
     if (!isMandala) {
         CardIndentationWidth(layoutTab, settingsStore);
     }

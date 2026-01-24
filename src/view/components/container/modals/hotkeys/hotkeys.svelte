@@ -37,14 +37,14 @@
 >
     {#if isMobile}
         <div class="mobile-modal-header">
-            <div class="mobile-modal-title">Hotkeys</div>
+            <div class="mobile-modal-title">快捷键</div>
             <button class="mobile-done-button" on:click={closeHotkeys}>
                 <Check size={18} />
-                <span>Done</span>
+                <span>完成</span>
             </button>
         </div>
     {:else}
-        <button class="modal-close-button" on:click={closeHotkeys} aria-label="Close hotkeys">
+        <button class="modal-close-button" on:click={closeHotkeys} aria-label="关闭快捷键">
             <X size={18} />
         </button>
     {/if}

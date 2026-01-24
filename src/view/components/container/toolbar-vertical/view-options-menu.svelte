@@ -4,7 +4,9 @@
         Frame,
         Grid3x3,
         Printer,
+        RotateCcw,
         Trash2,
+        Type,
         X,
     } from 'lucide-svelte';
     import { Notice, Platform, TFile } from 'obsidian';
@@ -17,12 +19,22 @@
         MandalaA4OrientationStore,
         MandalaBackgroundModeStore,
         MandalaBorderOpacityStore,
+        MandalaFontSize3x3DesktopStore,
+        MandalaFontSize9x9DesktopStore,
+        MandalaFontSizeSidebarDesktopStore,
+        MandalaModeStore,
         MandalaGridOrientationStore,
         MandalaSectionColorOpacityStore,
         SquareLayoutStore,
         WhiteThemeModeStore,
     } from 'src/stores/settings/derived/view-settings-store';
+    import { getDefaultTheme } from 'src/stores/view/subscriptions/effects/css-variables/helpers/get-default-theme';
     import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
+    import {
+        DEFAULT_CARDS_GAP,
+        DEFAULT_INACTIVE_NODE_OPACITY,
+        DEFAULT_H1_FONT_SIZE_EM,
+    } from 'src/stores/settings/default-settings';
     import {
         appendMandalaTemplate,
         MandalaTemplate,
@@ -39,6 +51,7 @@
 
     export let show = false;
     let showEditOptions = false;
+    let showFontOptions = false;
     let showPrintOptions = false;
     let showTemplateOptions = false;
 
@@ -47,9 +60,36 @@
     const borderOpacity = MandalaBorderOpacityStore(view);
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const backgroundMode = MandalaBackgroundModeStore(view);
+    const mode = MandalaModeStore(view);
     const whiteThemeMode = WhiteThemeModeStore(view);
     const squareLayout = SquareLayoutStore(view);
     const gridOrientation = MandalaGridOrientationStore(view);
+    const themeDefaults = getDefaultTheme();
+    const cardsGap = derived(view.plugin.settings, (state) => state.view.cardsGap);
+    const fontSize3x3 = MandalaFontSize3x3DesktopStore(view);
+    const fontSize9x9 = MandalaFontSize9x9DesktopStore(view);
+    const fontSizeSidebar = MandalaFontSizeSidebarDesktopStore(view);
+    const headingsFontSizeEm = derived(
+        view.plugin.settings,
+        (state) => state.view.h1FontSize_em,
+    );
+    const containerBg = derived(
+        view.plugin.settings,
+        (state) => state.view.theme.containerBg ?? themeDefaults.containerBg,
+    );
+    const activeBranchBg = derived(
+        view.plugin.settings,
+        (state) => state.view.theme.activeBranchBg ?? themeDefaults.activeBranchBg,
+    );
+    const activeBranchColor = derived(
+        view.plugin.settings,
+        (state) =>
+            state.view.theme.activeBranchColor ?? themeDefaults.activeBranchColor,
+    );
+    const inactiveNodeOpacity = derived(
+        view.plugin.settings,
+        (state) => state.view.theme.inactiveNodeOpacity,
+    );
     const templatesFilePathStore = derived(
         view.plugin.settings,
         (state) => state.general.mandalaTemplatesFilePath,
@@ -101,7 +141,45 @@
         });
     };
 
+    const clampGap = (value: number) => Math.min(20, Math.max(0, value));
     const clampOpacity = (value: number) => Math.min(100, Math.max(0, value));
+    const clampFontSize = (value: number) => Math.min(36, Math.max(6, value));
+    const clampH1FontSize = (value: number) => Math.min(4, Math.max(1, value));
+
+    const updateCardsGapValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/layout/set-cards-gap',
+            payload: { gap: clampGap(value) },
+        });
+    };
+
+    const updateFontSize3x3Value = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/font-size/set-3x3-desktop',
+            payload: { fontSize: clampFontSize(value) },
+        });
+    };
+
+    const updateFontSize9x9Value = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/font-size/set-9x9-desktop',
+            payload: { fontSize: clampFontSize(value) },
+        });
+    };
+
+    const updateFontSizeSidebarValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/font-size/set-sidebar-desktop',
+            payload: { fontSize: clampFontSize(value) },
+        });
+    };
+
+    const updateHeadingsFontSizeValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-h1-font-size',
+            payload: { fontSize_em: clampH1FontSize(value) },
+        });
+    };
 
     const updateBorderOpacityValue = (value: number) => {
         view.plugin.settings.dispatch({
@@ -113,6 +191,13 @@
     const updateSectionColorOpacityValue = (value: number) => {
         view.plugin.settings.dispatch({
             type: 'settings/view/mandala/set-section-color-opacity',
+            payload: { opacity: clampOpacity(value) },
+        });
+    };
+
+    const updateInactiveNodeOpacityValue = (value: number) => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-inactive-node-opacity',
             payload: { opacity: clampOpacity(value) },
         });
     };
@@ -129,12 +214,145 @@
         updateSectionColorOpacityValue(Number(target.value));
     };
 
+    const updateInactiveNodeOpacity = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateInactiveNodeOpacityValue(Number(target.value));
+    };
+
+    const updateCardsGap = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateCardsGapValue(Number(target.value));
+    };
+
+    const updateFontSize3x3 = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateFontSize3x3Value(Number(target.value));
+    };
+
+    const updateFontSize9x9 = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateFontSize9x9Value(Number(target.value));
+    };
+
+    const updateFontSizeSidebar = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateFontSizeSidebarValue(Number(target.value));
+    };
+
+    const updateHeadingsFontSize = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        updateHeadingsFontSizeValue(Number.parseFloat(target.value));
+    };
+
     const stepOpacity = (current: number, delta: number) => {
         updateSectionColorOpacityValue(current + delta);
     };
 
     const stepBorderOpacity = (current: number, delta: number) => {
         updateBorderOpacityValue(current + delta);
+    };
+
+    const stepInactiveOpacity = (current: number, delta: number) => {
+        updateInactiveNodeOpacityValue(current + delta);
+    };
+
+    const stepCardsGap = (current: number, delta: number) => {
+        updateCardsGapValue(current + delta);
+    };
+
+    const stepFontSize3x3 = (current: number, delta: number) => {
+        updateFontSize3x3Value(current + delta);
+    };
+
+    const stepFontSize9x9 = (current: number, delta: number) => {
+        updateFontSize9x9Value(current + delta);
+    };
+
+    const stepFontSizeSidebar = (current: number, delta: number) => {
+        updateFontSizeSidebarValue(current + delta);
+    };
+
+    const stepHeadingsFontSize = (current: number, delta: number) => {
+        const next = Math.round((current + delta) * 10) / 10;
+        updateHeadingsFontSizeValue(next);
+    };
+
+    const updateContainerBg = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-container-bg-color',
+            payload: { backgroundColor: target.value },
+        });
+    };
+
+    const resetContainerBg = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-container-bg-color',
+            payload: { backgroundColor: undefined },
+        });
+    };
+
+    const updateActiveBranchBg = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-active-branch-bg-color',
+            payload: { backgroundColor: target.value },
+        });
+    };
+
+    const resetActiveBranchBg = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-active-branch-bg-color',
+            payload: { backgroundColor: undefined },
+        });
+    };
+
+    const updateActiveBranchColor = (event: Event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLInputElement)) return;
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-active-branch-color',
+            payload: { color: target.value },
+        });
+    };
+
+    const resetActiveBranchColor = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/theme/set-active-branch-color',
+            payload: { color: undefined },
+        });
+    };
+
+    const resetInactiveNodeOpacity = () => {
+        updateInactiveNodeOpacityValue(DEFAULT_INACTIVE_NODE_OPACITY);
+    };
+
+    const resetCardsGap = () => {
+        updateCardsGapValue(DEFAULT_CARDS_GAP);
+    };
+
+    const resetFontSize3x3 = () => {
+        updateFontSize3x3Value(16);
+    };
+
+    const resetFontSize9x9 = () => {
+        updateFontSize9x9Value(11);
+    };
+
+    const resetFontSizeSidebar = () => {
+        updateFontSizeSidebarValue(16);
+    };
+
+    const resetHeadingsFontSize = () => {
+        updateHeadingsFontSizeValue(DEFAULT_H1_FONT_SIZE_EM);
     };
 
     const updateBackgroundMode = (mode: 'none' | 'custom' | 'gray') => {
@@ -947,6 +1165,230 @@
         <div class="view-options-menu__items">
             <button
                 class="view-options-menu__item"
+                on:click={() => (showFontOptions = !showFontOptions)}
+            >
+                <div class="view-options-menu__icon">
+                    <Type class="view-options-menu__icon-svg" size={18} />
+                </div>
+                <div class="view-options-menu__content">
+                    <div class="view-options-menu__label">字体设置</div>
+                    <div class="view-options-menu__desc">3x3/9x9 与侧边栏</div>
+                </div>
+            </button>
+
+            {#if showFontOptions}
+                <div class="view-options-menu__submenu">
+                    <div class="view-options-menu__subsection">
+                        <div class="view-options-menu__subsection-title">
+                            格子字体大小（桌面）
+                        </div>
+
+                        <label class="view-options-menu__row">
+                            <span>3x3</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSize3x3($fontSize3x3, -1)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSize3x3}
+                                    on:input={updateFontSize3x3}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSize3x3($fontSize3x3, 1)}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSize3x3}
+                                    on:input={updateFontSize3x3}
+                                />
+                                <button
+                                    class="view-options-menu__reset"
+                                    type="button"
+                                    on:click={resetFontSize3x3}
+                                    aria-label="重置为默认"
+                                >
+                                    <RotateCcw size={14} />
+                                </button>
+                            </div>
+                        </label>
+
+                        <label class="view-options-menu__row">
+                            <span>9x9</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSize9x9($fontSize9x9, -1)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSize9x9}
+                                    on:input={updateFontSize9x9}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSize9x9($fontSize9x9, 1)}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSize9x9}
+                                    on:input={updateFontSize9x9}
+                                />
+                                <button
+                                    class="view-options-menu__reset"
+                                    type="button"
+                                    on:click={resetFontSize9x9}
+                                    aria-label="重置为默认"
+                                >
+                                    <RotateCcw size={14} />
+                                </button>
+                            </div>
+                        </label>
+
+                        <label class="view-options-menu__row">
+                            <span>侧边栏</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSizeSidebar(
+                                            $fontSizeSidebar,
+                                            -1,
+                                        )}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSizeSidebar}
+                                    on:input={updateFontSizeSidebar}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepFontSizeSidebar(
+                                            $fontSizeSidebar,
+                                            1,
+                                        )}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="6"
+                                    max="36"
+                                    step="1"
+                                    value={$fontSizeSidebar}
+                                    on:input={updateFontSizeSidebar}
+                                />
+                                <button
+                                    class="view-options-menu__reset"
+                                    type="button"
+                                    on:click={resetFontSizeSidebar}
+                                    aria-label="重置为默认"
+                                >
+                                    <RotateCcw size={14} />
+                                </button>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="view-options-menu__subsection">
+                        <div class="view-options-menu__subsection-title">
+                            标题字体大小（em）
+                        </div>
+                        <label class="view-options-menu__row">
+                            <span>H1</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepHeadingsFontSize(
+                                            $headingsFontSizeEm,
+                                            -0.1,
+                                        )}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="4"
+                                    step="0.1"
+                                    value={$headingsFontSizeEm}
+                                    on:input={updateHeadingsFontSize}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() =>
+                                        stepHeadingsFontSize(
+                                            $headingsFontSizeEm,
+                                            0.1,
+                                        )}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="4"
+                                    step="0.1"
+                                    value={$headingsFontSizeEm}
+                                    on:input={updateHeadingsFontSize}
+                                />
+                                <button
+                                    class="view-options-menu__reset"
+                                    type="button"
+                                    on:click={resetHeadingsFontSize}
+                                    aria-label="重置为默认"
+                                >
+                                    <RotateCcw size={14} />
+                                </button>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            {/if}
+
+            <button
+                class="view-options-menu__item"
                 on:click={() => (showEditOptions = !showEditOptions)}
             >
                 <div class="view-options-menu__icon">
@@ -985,7 +1427,117 @@
                                 <span>全景模式</span>
                             </label>
                         </div>
-                        {#if $a4Mode}
+
+                        {#if !$whiteThemeMode}
+                            <div class="view-options-menu__submenu view-options-menu__submenu--nested">
+                                <div class="view-options-menu__subsection">
+                                    <label class="view-options-menu__row">
+                                        <span>网格容器背景颜色</span>
+                                        <div class="view-options-menu__row-controls">
+                                            <input
+                                                type="color"
+                                                value={$containerBg}
+                                                on:input={updateContainerBg}
+                                            />
+                                            <button
+                                                class="view-options-menu__reset"
+                                                type="button"
+                                                on:click={resetContainerBg}
+                                                aria-label="重置为默认"
+                                            >
+                                                <RotateCcw size={14} />
+                                            </button>
+                                        </div>
+                                    </label>
+                                    <label class="view-options-menu__row">
+                                        <span>活跃格子背景颜色</span>
+                                        <div class="view-options-menu__row-controls">
+                                            <input
+                                                type="color"
+                                                value={$activeBranchBg}
+                                                on:input={updateActiveBranchBg}
+                                            />
+                                            <button
+                                                class="view-options-menu__reset"
+                                                type="button"
+                                                on:click={resetActiveBranchBg}
+                                                aria-label="重置为默认"
+                                            >
+                                                <RotateCcw size={14} />
+                                            </button>
+                                        </div>
+                                    </label>
+                                    <label class="view-options-menu__row">
+                                        <span>活跃格子文字颜色</span>
+                                        <div class="view-options-menu__row-controls">
+                                            <input
+                                                type="color"
+                                                value={$activeBranchColor}
+                                                on:input={updateActiveBranchColor}
+                                            />
+                                            <button
+                                                class="view-options-menu__reset"
+                                                type="button"
+                                                on:click={resetActiveBranchColor}
+                                                aria-label="重置为默认"
+                                            >
+                                                <RotateCcw size={14} />
+                                            </button>
+                                        </div>
+                                    </label>
+                                    <label class="view-options-menu__row">
+                                        <span>非活跃格子透明度</span>
+                                        <div class="view-options-menu__range">
+                                            <button
+                                                class="view-options-menu__range-step"
+                                                type="button"
+                                                on:click={() =>
+                                                    stepInactiveOpacity(
+                                                        $inactiveNodeOpacity,
+                                                        -5,
+                                                    )}
+                                            >
+                                                -
+                                            </button>
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="100"
+                                                value={$inactiveNodeOpacity}
+                                                on:input={updateInactiveNodeOpacity}
+                                            />
+                                            <button
+                                                class="view-options-menu__range-step"
+                                                type="button"
+                                                on:click={() =>
+                                                    stepInactiveOpacity(
+                                                        $inactiveNodeOpacity,
+                                                        5,
+                                                    )}
+                                            >
+                                                +
+                                            </button>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                value={$inactiveNodeOpacity}
+                                                on:input={updateInactiveNodeOpacity}
+                                            />
+                                            <button
+                                                class="view-options-menu__reset"
+                                                type="button"
+                                                on:click={resetInactiveNodeOpacity}
+                                                aria-label="重置为默认"
+                                            >
+                                                <RotateCcw size={14} />
+                                            </button>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        {/if}
+                        {#if $a4Mode && $mode === '3x3'}
                             <div class="view-options-menu__note">
                                 注意：3x3 布局的沉浸模式在 A4 尺寸下会失效
                             </div>
@@ -1018,6 +1570,49 @@
                                 <span>正方形布局</span>
                             </label>
                         </div>
+                        <label class="view-options-menu__row">
+                            <span>网格间距</span>
+                            <div class="view-options-menu__range">
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() => stepCardsGap($cardsGap, -2)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="20"
+                                    step="2"
+                                    value={$cardsGap}
+                                    on:input={updateCardsGap}
+                                />
+                                <button
+                                    class="view-options-menu__range-step"
+                                    type="button"
+                                    on:click={() => stepCardsGap($cardsGap, 2)}
+                                >
+                                    +
+                                </button>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="20"
+                                    step="2"
+                                    value={$cardsGap}
+                                    on:input={updateCardsGap}
+                                />
+                                <button
+                                    class="view-options-menu__reset"
+                                    type="button"
+                                    on:click={resetCardsGap}
+                                    aria-label="重置为默认"
+                                >
+                                    <RotateCcw size={14} />
+                                </button>
+                            </div>
+                        </label>
                     </div>
 
                     <div class="view-options-menu__subsection">
@@ -1124,7 +1719,7 @@
                         {/if}
                     </div>
 
-                    {#if $a4Mode}
+                    {#if $a4Mode && $mode === '3x3'}
                         <label class="view-options-menu__row">
                             <span>方向</span>
                             <select
@@ -1136,7 +1731,10 @@
                             </select>
                         </label>
                         <div class="view-options-menu__note">
-                            注意：3x3 布局的沉浸模式在 A4 尺寸下会失效
+                            <div>注意：3x3 布局的沉浸模式在 A4 尺寸下会失效</div>
+                            <div>
+                                建议：3x3 布局在输出 A4 时，建议采用「全景模式」（选项在「编辑模式」、「背景色选择」）
+                            </div>
                         </div>
                     {/if}
 
@@ -1420,6 +2018,11 @@
         gap: 8px;
     }
 
+    .view-options-menu__submenu--nested {
+        margin: 0;
+        background: var(--background-primary);
+    }
+
     .view-options-menu__subitem {
         background: var(--background-primary);
         border: 1px solid var(--background-modifier-border);
@@ -1492,6 +2095,41 @@
     .view-options-menu__row select,
     .view-options-menu__row input[type='range'] {
         flex: 1 1 auto;
+    }
+
+    .view-options-menu__row-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .view-options-menu__row input[type='color'] {
+        width: 28px;
+        height: 20px;
+        padding: 0;
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 4px;
+        background: transparent;
+    }
+
+    .view-options-menu__reset {
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border-radius: 4px;
+        border: 1px solid var(--background-modifier-border);
+        background: var(--background-primary);
+        color: var(--text-muted);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+    }
+
+    .view-options-menu__reset:hover {
+        background: var(--background-modifier-hover);
+        color: var(--text-normal);
     }
 
     .view-options-menu__range {

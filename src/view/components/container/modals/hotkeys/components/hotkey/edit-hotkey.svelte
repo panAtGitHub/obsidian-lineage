@@ -115,7 +115,7 @@
             bind:value={key}
             class="search-input input hotkey-key"
             on:keydown={onKeyDown}
-            placeholder={'Key'}
+            placeholder={'按键'}
             spellcheck="false"
             type="text"
         />

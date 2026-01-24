@@ -175,17 +175,18 @@ const jumpCoreTheme = (view: MandalaView, direction: CoreJumpDirection) => {
     });
 };
 
-export const defaultViewHotkeys = (): DefaultViewCommand[] => [
-    ...navigateCommands(),
-    ...editCommands(),
-    // ...createCommands(),
-    // ...moveCommands(),
-    // ...mergeCommands(),
-    // ...clipboardCommands(),
-    ...historyCommands(),
-    // ...selectionCommands(),
-    // ...scrollCommands(),
-    /* {
+export const defaultViewHotkeys = (): DefaultViewCommand[] => {
+    const commands: DefaultViewCommand[] = [
+        ...navigateCommands(),
+        ...editCommands(),
+        // ...createCommands(),
+        // ...moveCommands(),
+        // ...mergeCommands(),
+        // ...clipboardCommands(),
+        ...historyCommands(),
+        // ...selectionCommands(),
+        // ...scrollCommands(),
+        /* {
         name: 'move_node_up',
         callback: (view) => {
             if (view.mandalaMode === '3x3') swapMandalaCell(view, 'up');
@@ -445,4 +446,14 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => [
         },
         hotkeys: [{ key: '=', modifiers: ['Alt', 'Mod'], editorState: 'both' }],
     }, */
-];
+    ];
+
+    return commands.map((command) => ({
+        ...command,
+        hotkeys: command.hotkeys.map((hotkey) => ({
+            ...hotkey,
+            key: '',
+            modifiers: [],
+        })),
+    }));
+};

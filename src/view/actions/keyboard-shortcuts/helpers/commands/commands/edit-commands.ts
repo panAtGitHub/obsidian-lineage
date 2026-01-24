@@ -23,6 +23,7 @@ export const editCommands = () => {
                 { key: 'Enter', modifiers: [], editorState: 'editor-off' },
             ],
         },
+        /*
         {
             name: 'enable_edit_mode_and_place_cursor_at_start',
             callback: (view, event) => {
@@ -69,6 +70,7 @@ export const editCommands = () => {
                 { key: 'Enter', modifiers: ['Alt'], editorState: 'editor-off' },
             ],
         },
+        */
         {
             name: 'save_changes_and_exit_card',
             callback: (view) => {
