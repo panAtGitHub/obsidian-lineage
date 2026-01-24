@@ -195,6 +195,8 @@ class MandalaTemplateSelectModal extends Modal {
 
 class MandalaTemplatesFileModal extends Modal {
     private resolved = false;
+    private folderSuggestEl: HTMLElement | null = null;
+    private removeFolderSuggestListeners: (() => void) | null = null;
 
     constructor(
         private plugin: MandalaGrid,
@@ -240,14 +242,36 @@ class MandalaTemplatesFileModal extends Modal {
             'input',
         ) as HTMLInputElement | null;
 
-        const suggestEl = contentEl.createDiv({
-            cls: 'mandala-folder-suggest',
-        });
+        const ensureSuggestEl = () => {
+            if (this.folderSuggestEl) return this.folderSuggestEl;
+            const el = document.createElement('div');
+            el.className = 'mandala-folder-suggest-float';
+            el.setAttribute('role', 'listbox');
+            document.body.appendChild(el);
+            this.folderSuggestEl = el;
+            return el;
+        };
+
+        const hideSuggestions = () => {
+            if (!this.folderSuggestEl) return;
+            this.folderSuggestEl.remove();
+            this.folderSuggestEl = null;
+        };
+
+        const positionSuggestEl = () => {
+            if (!inputEl || !this.folderSuggestEl) return;
+            const rect = inputEl.getBoundingClientRect();
+            this.folderSuggestEl.style.left = `${Math.floor(rect.left)}px`;
+            this.folderSuggestEl.style.top = `${Math.floor(rect.bottom + 6)}px`;
+            this.folderSuggestEl.style.width = `${Math.floor(rect.width)}px`;
+        };
 
         const renderSuggestions = (queryRaw: string) => {
             const query = queryRaw.trim().toLowerCase();
-            suggestEl.empty();
-            if (!query) return;
+            if (!query) {
+                hideSuggestions();
+                return;
+            }
 
             const startsWith: string[] = [];
             const includes: string[] = [];
@@ -260,7 +284,14 @@ class MandalaTemplatesFileModal extends Modal {
                 }
             }
             const matches = [...startsWith, ...includes].slice(0, 12);
-            if (matches.length === 0) return;
+            if (matches.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            const suggestEl = ensureSuggestEl();
+            suggestEl.textContent = '';
+            positionSuggestEl();
 
             for (const match of matches) {
                 const item = suggestEl.createEl('button', {
@@ -268,25 +299,52 @@ class MandalaTemplatesFileModal extends Modal {
                     text: match,
                 });
                 item.type = 'button';
+                item.setAttribute('role', 'option');
+                item.addEventListener('mousedown', (e) => {
+                    // Prevent input blur before click selection.
+                    e.preventDefault();
+                });
                 item.addEventListener('click', () => {
                     folderPath = match;
                     if (inputEl) inputEl.value = match;
-                    suggestEl.empty();
+                    hideSuggestions();
                 });
             }
         };
 
         if (inputEl) {
-            inputEl.addEventListener('input', () => {
-                renderSuggestions(inputEl.value);
-            });
-            inputEl.addEventListener('focus', () => {
-                renderSuggestions(inputEl.value);
-            });
-            inputEl.addEventListener('blur', () => {
-                // Delay to allow click on suggestion buttons.
-                window.setTimeout(() => suggestEl.empty(), 120);
-            });
+            const onInput = () => renderSuggestions(inputEl.value);
+            const onFocus = () => renderSuggestions(inputEl.value);
+            const onBlur = () => window.setTimeout(() => hideSuggestions(), 120);
+            const onWindowUpdate = () => positionSuggestEl();
+            const onDocPointerDown = (e: Event) => {
+                const t = e.target as HTMLElement | null;
+                if (!t) return;
+                if (t === inputEl) return;
+                if (this.folderSuggestEl && this.folderSuggestEl.contains(t))
+                    return;
+                hideSuggestions();
+            };
+
+            inputEl.addEventListener('input', onInput);
+            inputEl.addEventListener('focus', onFocus);
+            inputEl.addEventListener('blur', onBlur);
+            window.addEventListener('resize', onWindowUpdate);
+            window.addEventListener('scroll', onWindowUpdate, true);
+            document.addEventListener('pointerdown', onDocPointerDown, true);
+
+            this.removeFolderSuggestListeners = () => {
+                inputEl.removeEventListener('input', onInput);
+                inputEl.removeEventListener('focus', onFocus);
+                inputEl.removeEventListener('blur', onBlur);
+                window.removeEventListener('resize', onWindowUpdate);
+                window.removeEventListener('scroll', onWindowUpdate, true);
+                document.removeEventListener(
+                    'pointerdown',
+                    onDocPointerDown,
+                    true,
+                );
+            };
         }
 
         new Setting(contentEl)
@@ -332,6 +390,12 @@ class MandalaTemplatesFileModal extends Modal {
 
     onClose() {
         this.resolveOnce(null);
+        this.removeFolderSuggestListeners?.();
+        this.removeFolderSuggestListeners = null;
+        if (this.folderSuggestEl) {
+            this.folderSuggestEl.remove();
+            this.folderSuggestEl = null;
+        }
         this.contentEl.empty();
     }
 

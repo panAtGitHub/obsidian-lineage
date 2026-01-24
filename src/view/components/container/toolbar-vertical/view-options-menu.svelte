@@ -353,12 +353,66 @@
     };
 
     const exportCurrentView = async () => {
-        const targetSelector = $a4Mode
-            ? '.mandala-scroll'
-            : '.mandala-content-wrapper';
-        const target = view.contentEl.querySelector(
-            targetSelector,
-        ) as HTMLElement | null;
+        const squarePadding = 12;
+        const createSquarePngExportTarget = (source: HTMLElement) => {
+            const rect = source.getBoundingClientRect();
+            const width = Math.ceil(rect.width);
+            const height = Math.ceil(rect.height);
+            const size = Math.min(width, height);
+
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'fixed';
+            wrapper.style.left = '0';
+            wrapper.style.top = '0';
+            wrapper.style.width = `${size}px`;
+            wrapper.style.height = `${size}px`;
+            wrapper.style.zIndex = '-1';
+            wrapper.style.pointerEvents = 'none';
+            wrapper.style.overflow = 'hidden';
+            wrapper.style.background = getComputedStyle(
+                document.documentElement,
+            ).getPropertyValue('--background-primary');
+            wrapper.style.boxSizing = 'border-box';
+
+            const clone = source.cloneNode(true) as HTMLElement;
+            clone.style.margin = '0';
+            clone.style.transform = 'none';
+            clone.style.left = '0';
+            clone.style.top = '0';
+            clone.style.position = 'static';
+            clone.style.width = '100%';
+            clone.style.height = '100%';
+            clone.style.padding = `${squarePadding}px`;
+            clone.style.boxSizing = 'border-box';
+
+            wrapper.appendChild(clone);
+            document.body.appendChild(wrapper);
+
+            return {
+                element: wrapper,
+                width: size,
+                height: size,
+                cleanup: () => wrapper.remove(),
+            };
+        };
+
+        const getExportTarget = () => {
+            if ($a4Mode) {
+                return view.contentEl.querySelector(
+                    '.mandala-scroll',
+                ) as HTMLElement | null;
+            }
+            if (exportFormat === 'png' && exportSquareSize) {
+                return view.contentEl.querySelector(
+                    '.mandala-scroll',
+                ) as HTMLElement | null;
+            }
+            return view.contentEl.querySelector(
+                '.mandala-content-wrapper',
+            ) as HTMLElement | null;
+        };
+
+        const target = getExportTarget();
         if (!target) {
             new Notice('未找到可导出的视图区域。');
             return;
@@ -378,10 +432,25 @@
             return;
         }
 
+        if (exportFormat === 'png' && exportSquareSize) {
+            const exportTarget = createSquarePngExportTarget(target);
+            try {
+                await exportToPNG(exportTarget.element, {
+                    pixelRatio: 2,
+                    width: exportTarget.width,
+                    height: exportTarget.height,
+                });
+            } finally {
+                exportTarget.cleanup();
+            }
+            return;
+        }
+
         await exportToPNG(target, { pixelRatio: 2 });
     };
 
     let exportFormat: 'png' | 'pdf' = 'png';
+    let exportSquareSize = false;
 
     const exportCurrentFile = async () => {
         if (exportFormat === 'pdf') {
@@ -1008,6 +1077,22 @@
                                 />
                                 <span>屏幕大小</span>
                             </label>
+                            <label class="view-options-menu__inline-option view-options-menu__inline-option--right">
+                                <input
+                                    type="checkbox"
+                                    checked={exportSquareSize}
+                                    disabled={!$squareLayout || $a4Mode || exportFormat !== 'png'}
+                                    on:change={(event) => {
+                                        const target = event.target;
+                                        if (!(target instanceof HTMLInputElement)) return;
+                                        exportSquareSize = target.checked;
+                                    }}
+                                />
+                                <span>正方形大小</span>
+                            </label>
+                        </div>
+                        <div class="view-options-menu__note">
+                            「正方形大小」仅适配于「正方形布局」
                         </div>
                     </div>
 
@@ -1368,6 +1453,10 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
+    }
+
+    .view-options-menu__inline-option--right {
+        margin-left: auto;
     }
 
     .view-options-menu__note {
