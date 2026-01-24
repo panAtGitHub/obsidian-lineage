@@ -40,9 +40,11 @@
         view.viewStore,
         (state) => state.ui.mandala.activeCell9x9,
     );
-    const baseTheme = '1';
     let gridEl: HTMLDivElement | null = null;
     let bodyLineClamp = 3;
+
+    const getBaseTheme = (section: string | undefined) =>
+        section ? section.split('.')[0] : '1';
 
     const escapeHtml = (value: string) =>
         value
@@ -174,9 +176,12 @@
             let orientation =
                 view.plugin.settings.getValue().view.mandalaGridOrientation ??
                 'left-to-right';
-            let theme = baseTheme;
 
             const update = () => {
+                const activeNodeId =
+                    view.viewStore.getValue().document.activeNode;
+                const section = documentState.sections.id_section[activeNodeId];
+                const theme = getBaseTheme(section);
                 run(buildCells(documentState, orientation, theme));
             };
 

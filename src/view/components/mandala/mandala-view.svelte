@@ -95,6 +95,9 @@
         return null;
     };
 
+    const getBaseTheme = (section: string | undefined) =>
+        section ? section.split('.')[0] : '1';
+
     const MIN_DESKTOP_DETAIL_SIDEBAR_SIZE = 200;
 
 
@@ -209,7 +212,7 @@
             }
         } else {
             const section = $idToSection[$activeNodeId];
-            const theme = '1';
+            const baseTheme = getBaseTheme(section);
             if (!section) {
                 if (view.mandalaActiveCell9x9) {
                     setActiveCell9x9(view, null);
@@ -219,16 +222,16 @@
                 const pos = posOfSection9x9(
                     section,
                     $gridOrientation,
-                    theme,
+                    baseTheme,
                 );
                 if (cell) {
                     const mapped = sectionAtCell9x9(
                         cell.row,
                         cell.col,
                         $gridOrientation,
-                        theme,
+                        baseTheme,
                     );
-                    if (!mapped) {
+                    if (!mapped || mapped !== section) {
                         setActiveCell9x9(view, pos ?? null);
                     }
                 }

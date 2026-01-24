@@ -27,7 +27,15 @@
         view.viewStore,
         (state) => state.document.activeNode,
     );
-    const baseTheme = '1';
+    const idToSection = derived(
+        view.documentStore,
+        (state) => state.sections.id_section,
+    );
+    $: baseTheme = (() => {
+        const section = $idToSection[$activeNodeId];
+        const core = section?.split('.')[0];
+        return core ?? '1';
+    })();
 
     const editingState = derived(
         view.viewStore,
