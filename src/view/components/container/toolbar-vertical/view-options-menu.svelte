@@ -2161,11 +2161,18 @@
         display: flex;
         flex-direction: column;
         gap: 6px;
+        padding-top: 8px;
+        border-top: 1px solid var(--background-modifier-border);
+    }
+
+    .view-options-menu__subsection:first-child {
+        padding-top: 0;
+        border-top: none;
     }
 
     .view-options-menu__subsection-title {
         font-size: 12px;
-        color: var(--text-muted);
+        color: var(--text-accent);
         margin-bottom: 2px;
     }
 
