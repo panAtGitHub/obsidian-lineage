@@ -208,15 +208,105 @@ class MandalaTemplatesFileModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
 
+        // Folder path is a vault-relative path, like Obsidian core settings.
+        let folderPath = '';
+        const existingPath =
+            this.plugin.settings.getValue().general.mandalaTemplatesFilePath;
+        if (existingPath) {
+            const lastSlash = existingPath.lastIndexOf('/');
+            folderPath = lastSlash === -1 ? '' : existingPath.slice(0, lastSlash);
+        }
+
+        const folderSetting = new Setting(contentEl)
+            .setName('存放模板文件的文件夹')
+            .setDesc('请输入库内文件夹路径；留空表示根目录')
+            .addText((text) => {
+                text.setPlaceholder('例如：3Resources/Templates');
+                text.setValue(folderPath);
+                text.onChange((value) => {
+                    folderPath = value.trim();
+                });
+            });
+        folderSetting.settingEl.addClass('mandala-folder-suggest__setting');
+
+        const folders = this.app.vault
+            .getAllLoadedFiles()
+            .filter((file): file is TFolder => file instanceof TFolder)
+            .map((folder) => folder.path)
+            .filter((p) => p && p !== '/')
+            .sort((a, b) => a.localeCompare(b));
+
+        const inputEl = folderSetting.controlEl.querySelector(
+            'input',
+        ) as HTMLInputElement | null;
+
+        const suggestEl = contentEl.createDiv({
+            cls: 'mandala-folder-suggest',
+        });
+
+        const renderSuggestions = (queryRaw: string) => {
+            const query = queryRaw.trim().toLowerCase();
+            suggestEl.empty();
+            if (!query) return;
+
+            const startsWith: string[] = [];
+            const includes: string[] = [];
+            for (const p of folders) {
+                const lower = p.toLowerCase();
+                if (lower.startsWith(query)) {
+                    startsWith.push(p);
+                } else if (lower.includes(query)) {
+                    includes.push(p);
+                }
+            }
+            const matches = [...startsWith, ...includes].slice(0, 12);
+            if (matches.length === 0) return;
+
+            for (const match of matches) {
+                const item = suggestEl.createEl('button', {
+                    cls: 'mandala-folder-suggest__item',
+                    text: match,
+                });
+                item.type = 'button';
+                item.addEventListener('click', () => {
+                    folderPath = match;
+                    if (inputEl) inputEl.value = match;
+                    suggestEl.empty();
+                });
+            }
+        };
+
+        if (inputEl) {
+            inputEl.addEventListener('input', () => {
+                renderSuggestions(inputEl.value);
+            });
+            inputEl.addEventListener('focus', () => {
+                renderSuggestions(inputEl.value);
+            });
+            inputEl.addEventListener('blur', () => {
+                // Delay to allow click on suggestion buttons.
+                window.setTimeout(() => suggestEl.empty(), 120);
+            });
+        }
+
         new Setting(contentEl)
             .setName('新建模板文件')
-            .setDesc('选择保存位置，文件名为 mandala-templates.md')
+            .setDesc('文件名为 mandala-templates.md')
             .addButton((button) => {
                 button.setButtonText('新建').setCta().onClick(async () => {
-                    const folder = await openMandalaTemplatesFolderModal(
-                        this.app,
-                    );
-                    if (!folder) return;
+                    const folder = this.getFolderFromPath(folderPath);
+                    if (!folder) {
+                        new Notice('未找到该文件夹，请检查路径。');
+                        return;
+                    }
+
+                    const existing = this.getTemplatesFileInFolder(folder);
+                    if (existing) {
+                        this.resolveOnce(existing);
+                        this.close();
+                        return;
+                    }
+
                     const file = await this.createTemplateFile(folder);
                     if (!file) return;
                     this.resolveOnce(file);
@@ -265,6 +355,21 @@ class MandalaTemplatesFileModal extends Modal {
         this.resolved = true;
         this.resolve(value);
     }
+
+    private getFolderFromPath(path: string): TFolder | null {
+        if (!path) return this.app.vault.getRoot();
+        const file = this.app.vault.getAbstractFileByPath(path);
+        return file instanceof TFolder ? file : null;
+    }
+
+    private getTemplatesFileInFolder(folder: TFolder): TFile | null {
+        const folderPath = folder.path && folder.path !== '/' ? folder.path : '';
+        const filePath = folderPath
+            ? `${folderPath}/mandala-templates.md`
+            : 'mandala-templates.md';
+        const file = this.app.vault.getAbstractFileByPath(filePath);
+        return file instanceof TFile ? file : null;
+    }
 }
 
 class MandalaTemplatesFileSuggestModal extends FuzzySuggestModal<TFile> {
@@ -282,45 +387,5 @@ class MandalaTemplatesFileSuggestModal extends FuzzySuggestModal<TFile> {
 
     onChooseItem(item: TFile) {
         this.onChoose(item);
-    }
-}
-
-const openMandalaTemplatesFolderModal = (app: MandalaGrid['app']) =>
-    new Promise<TFolder | null>((resolve) => {
-        const modal = new MandalaTemplatesFolderSuggestModal(app, resolve);
-        modal.open();
-    });
-
-class MandalaTemplatesFolderSuggestModal extends FuzzySuggestModal<TFolder> {
-    private resolved = false;
-    constructor(
-        app: MandalaGrid['app'],
-        private onChoose: (folder: TFolder | null) => void,
-    ) {
-        super(app);
-    }
-
-    getItems(): TFolder[] {
-        return this.app.vault
-            .getAllLoadedFiles()
-            .filter((file): file is TFolder => file instanceof TFolder);
-    }
-
-    getItemText(item: TFolder): string {
-        return item.path || '/';
-    }
-
-    onChooseItem(item: TFolder) {
-        this.resolveOnce(item);
-    }
-
-    onClose() {
-        this.resolveOnce(null);
-    }
-
-    private resolveOnce(folder: TFolder | null) {
-        if (this.resolved) return;
-        this.resolved = true;
-        this.onChoose(folder);
     }
 }
