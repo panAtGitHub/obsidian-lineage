@@ -347,6 +347,15 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => {
         hotkeys: [],
     },
     {
+        name: 'exit_subgrid',
+        callback: (view, e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            exitCurrentSubgrid(view);
+        },
+        hotkeys: [],
+    },
+    {
         name: 'jump_core_next',
         callback: (view, e) => {
             e.preventDefault();
@@ -377,11 +386,13 @@ export const defaultViewHotkeys = (): DefaultViewCommand[] => {
         ],
     },
     {
-        name: 'exit_subgrid',
+        name: 'toggle_mandala_mode',
         callback: (view, e) => {
             e.preventDefault();
             e.stopPropagation();
-            exitCurrentSubgrid(view);
+            view.plugin.settings.dispatch({
+                type: 'settings/view/mandala/toggle-mode',
+            });
         },
         hotkeys: [],
     },
