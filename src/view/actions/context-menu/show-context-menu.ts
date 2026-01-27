@@ -9,12 +9,9 @@ import { showViewContextMenu } from 'src/view/actions/context-menu/view-context-
 export const showContextMenu = (element: HTMLElement, view: MandalaView) => {
     const listener = (e: MouseEvent | TouchEvent) => {
         if (shouldShowNodeContextMenu(e)) {
-            if (e.instanceOf(MouseEvent)) {
-                showNodeContextMenu(e, view);
-            } else showNodeContextMenu(new MouseEvent('contextmenu', e), view);
+            showNodeContextMenu(e, view);
         } else if (shouldShowViewContextMenu(e)) {
-            if (e.instanceOf(MouseEvent)) showViewContextMenu(e, view);
-            else showViewContextMenu(new MouseEvent('contextmenu', e), view);
+            showViewContextMenu(e, view);
         }
     };
     element.addEventListener('contextmenu', listener);

@@ -11,8 +11,12 @@ import { saveNodeContent } from 'src/view/actions/keyboard-shortcuts/helpers/com
 import { hasNHeadings } from 'src/lib/format-detection/has-n-headings';
 import { ejectDocument } from 'src/obsidian/commands/helpers/export-document/eject-document';
 import { createCoreJumpMenuItems } from 'src/view/actions/context-menu/helpers/create-core-jump-menu-items';
+import { touchEventToMouseEvent } from 'src/obsidian/context-menu/touch-event-to-mouse-event';
 
-export const showViewContextMenu = (event: MouseEvent, view: MandalaView) => {
+export const showViewContextMenu = (
+    event: MouseEvent | TouchEvent,
+    view: MandalaView,
+) => {
     const file = view.file;
     if (!file) return;
 
@@ -92,5 +96,9 @@ export const showViewContextMenu = (event: MouseEvent, view: MandalaView) => {
         },
     ];
 
-    renderContextMenu(event, menuItems);
+    const contextEvent = event.instanceOf(MouseEvent)
+        ? event
+        : touchEventToMouseEvent(event);
+    if (!contextEvent) return;
+    renderContextMenu(contextEvent, menuItems);
 };
