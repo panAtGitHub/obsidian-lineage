@@ -11,22 +11,53 @@ export const onLongPress = (
     const state: {
         timer: ReturnType<typeof setTimeout> | null;
         longPress: boolean;
-        previousUserSelect: string | null;
-        previousWebkitUserSelect: string | null;
+        previousBodyUserSelect: string | null;
+        previousBodyWebkitUserSelect: string | null;
+        previousBodyWebkitTouchCallout: string | null;
+        previousHtmlUserSelect: string | null;
+        previousHtmlWebkitUserSelect: string | null;
+        previousHtmlWebkitTouchCallout: string | null;
     } = {
         timer: null,
         longPress: false,
-        previousUserSelect: null,
-        previousWebkitUserSelect: null,
+        previousBodyUserSelect: null,
+        previousBodyWebkitUserSelect: null,
+        previousBodyWebkitTouchCallout: null,
+        previousHtmlUserSelect: null,
+        previousHtmlWebkitUserSelect: null,
+        previousHtmlWebkitTouchCallout: null,
     };
 
     const restoreUserSelect = () => {
         if (!options?.suppressTextSelectionPredicate) return;
-        if (state.previousUserSelect === null) return;
-        document.body.style.userSelect = state.previousUserSelect;
-        document.body.style.webkitUserSelect = state.previousWebkitUserSelect ?? '';
-        state.previousUserSelect = null;
-        state.previousWebkitUserSelect = null;
+        if (state.previousBodyUserSelect === null) return;
+        document.body.style.userSelect = state.previousBodyUserSelect;
+        document.body.style.webkitUserSelect =
+            state.previousBodyWebkitUserSelect ?? '';
+        document.body.style.setProperty(
+            '-webkit-touch-callout',
+            state.previousBodyWebkitTouchCallout ?? '',
+        );
+        const html = document.documentElement;
+        html.style.userSelect = state.previousHtmlUserSelect ?? '';
+        html.style.webkitUserSelect = state.previousHtmlWebkitUserSelect ?? '';
+        html.style.setProperty(
+            '-webkit-touch-callout',
+            state.previousHtmlWebkitTouchCallout ?? '',
+        );
+        state.previousBodyUserSelect = null;
+        state.previousBodyWebkitUserSelect = null;
+        state.previousBodyWebkitTouchCallout = null;
+        state.previousHtmlUserSelect = null;
+        state.previousHtmlWebkitUserSelect = null;
+        state.previousHtmlWebkitTouchCallout = null;
+    };
+
+    const clearSelection = () => {
+        const selection = window.getSelection();
+        if (selection && selection.rangeCount > 0) {
+            selection.removeAllRanges();
+        }
     };
 
     const onTouchEnd = (e: TouchEvent) => {
@@ -37,6 +68,7 @@ export const onLongPress = (
                 e.preventDefault();
             }
         }
+        clearSelection();
         restoreUserSelect();
         if (state.timer) clearTimeout(state.timer);
     };
@@ -44,13 +76,28 @@ export const onLongPress = (
     const onTouchStart = (e: TouchEvent) => {
         if (state.timer) clearTimeout(state.timer);
         if (options?.suppressTextSelectionPredicate?.(e)) {
-            state.previousUserSelect = document.body.style.userSelect || '';
-            state.previousWebkitUserSelect = document.body.style.webkitUserSelect || '';
+            state.previousBodyUserSelect = document.body.style.userSelect || '';
+            state.previousBodyWebkitUserSelect =
+                document.body.style.webkitUserSelect || '';
+            state.previousBodyWebkitTouchCallout =
+                document.body.style.getPropertyValue('-webkit-touch-callout') ||
+                '';
+            const html = document.documentElement;
+            state.previousHtmlUserSelect = html.style.userSelect || '';
+            state.previousHtmlWebkitUserSelect =
+                html.style.webkitUserSelect || '';
+            state.previousHtmlWebkitTouchCallout =
+                html.style.getPropertyValue('-webkit-touch-callout') || '';
             document.body.style.userSelect = 'none';
             document.body.style.webkitUserSelect = 'none';
+            document.body.style.setProperty('-webkit-touch-callout', 'none');
+            html.style.userSelect = 'none';
+            html.style.webkitUserSelect = 'none';
+            html.style.setProperty('-webkit-touch-callout', 'none');
         }
         state.timer = setTimeout(() => {
             state.longPress = true;
+            clearSelection();
             callback(e);
         }, 500);
     };
