@@ -12,9 +12,12 @@ import {
     Palette,
     PanelRight,
     Eye,
+    ArrowLeftCircle,
+    ArrowRightCircle,
 } from 'lucide-svelte';
 import { CustomIcon, customIcons } from 'src/helpers/load-custom-icons';
 import { VerticalToolbarActions } from 'src/view/components/container/toolbar-vertical/vertical-toolbar-actions';
+import { jumpCoreTheme } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/jump-core-theme';
 
 export type ToolbarButtonsGroup = {
     id: string;
@@ -48,21 +51,6 @@ export const VerticalToolbarButtonsList = (view: MandalaView) => {
                     ],
                 },
                 {
-                    id: 'mandala',
-                    buttons: [
-                        {
-                            label: '详情侧边栏',
-                            onClick: () => {
-                                view.plugin.settings.dispatch({
-                                    type: 'view/mandala-detail-sidebar/toggle',
-                                });
-                            },
-                            icon: PanelRight,
-                            id: 'mandala-detail-sidebar' as any,
-                        },
-                    ],
-                },
-                {
                     id: 'settings',
                     buttons: [
                         // Temporarily hidden: user requested removing the gear button from UI.
@@ -84,6 +72,33 @@ export const VerticalToolbarButtonsList = (view: MandalaView) => {
                             onClick: h.toggleStyleRules,
                             icon: Palette,
                             id: 'style-rules',
+                        },
+                    ],
+                },
+                {
+                    id: 'mandala',
+                    buttons: [
+                        {
+                            label: '详情侧边栏',
+                            onClick: () => {
+                                view.plugin.settings.dispatch({
+                                    type: 'view/mandala-detail-sidebar/toggle',
+                                });
+                            },
+                            icon: PanelRight,
+                            id: 'mandala-detail-sidebar' as any,
+                        },
+                        {
+                            label: lang.hk_jump_core_prev,
+                            onClick: () => jumpCoreTheme(view, 'up'),
+                            icon: ArrowLeftCircle,
+                            id: 'jump-core-prev' as any,
+                        },
+                        {
+                            label: lang.hk_jump_core_next,
+                            onClick: () => jumpCoreTheme(view, 'down'),
+                            icon: ArrowRightCircle,
+                            id: 'jump-core-next' as any,
                         },
                     ],
                 },
@@ -134,6 +149,7 @@ export const VerticalToolbarButtonsList = (view: MandalaView) => {
                         buttons: group.buttons.filter((b) => {
                             if (isMandala) {
                                 if (Platform.isMobile && b.id === 'mandala-mode') return false;
+                                if (!Platform.isMobile && (b.id as string).startsWith('jump-core-')) return false;
 
                                 if (
                                     b.id === 'minimap' ||
