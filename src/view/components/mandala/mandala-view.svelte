@@ -29,8 +29,12 @@
     import { flip } from 'svelte/animate';
     import VerticalToolbar from 'src/view/components/container/toolbar-vertical/vertical-toolbar.svelte';
     import Toolbar from 'src/view/components/container/toolbar/toolbar.svelte';
+    import ToolbarCenter from 'src/view/components/container/toolbar/toolbar-center.svelte';
     import MandalaDetailSidebar from './mandala-detail-sidebar.svelte';
     import { createLayoutStore } from 'src/stores/view/orientation-store';
+    import { derived as svelteDerived } from 'svelte/store';
+    import { searchStore } from 'src/stores/view/derived/search-store';
+    import MobileFullScreenSearch from 'src/view/components/mandala/mobile-fullscreen-search.svelte';
 
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import { mobilePopupFontSizeStore } from 'src/stores/mobile-popup-font-store';
@@ -40,6 +44,7 @@
 
     const view = getView();
     const layout = createLayoutStore();
+    const search = searchStore(view);
 
     // 默认九宫格大小（如果是移动端且开启该逻辑）
     $: squareSize = $layout.squareSize;
@@ -265,6 +270,7 @@
     }
     // 手机端全屏编辑状态判断
     $: isMobilePopupEditing = Platform.isMobile && $editingState.activeNodeId && !$editingState.isInSidebar;
+    $: isMobileFullScreenSearch = Platform.isMobile && $search.showInput;
 
     let showSettings = false;
     const toggleSettings = () => {
@@ -287,6 +293,7 @@
     const handleDecreaseFontSize = () => {
         mobilePopupFontSizeStore.setFontSize($mobilePopupFontSizeStore - 1);
     };
+
 </script>
 
 <div
@@ -334,10 +341,19 @@
                 />
             </div>
         </div>
+    {:else if isMobileFullScreenSearch}
+        <MobileFullScreenSearch />
     {:else}
         <div class="mandala-topbar">
-            <Toolbar />
-            <VerticalToolbar />
+            <div class="mandala-topbar__left">
+                <Toolbar />
+            </div>
+            <div class="mandala-topbar__center">
+                <ToolbarCenter />
+            </div>
+            <div class="mandala-topbar__right">
+                <VerticalToolbar />
+            </div>
         </div>
         <div class="mandala-content-wrapper" bind:this={contentWrapperRef}>
             <div
@@ -443,8 +459,8 @@
     }
 
     .mandala-topbar {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
         align-items: center;
         gap: 8px;
         padding: 4px var(--size-4-2);
@@ -456,6 +472,25 @@
     }
     .mandala-topbar :global(> *) {
         pointer-events: auto;
+    }
+
+    .mandala-topbar__left,
+    .mandala-topbar__center,
+    .mandala-topbar__right {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+        min-width: 0;
+    }
+    .mandala-topbar__left {
+        justify-self: start;
+    }
+    .mandala-topbar__center {
+        justify-self: center;
+        overflow: hidden;
+    }
+    .mandala-topbar__right {
+        justify-self: end;
     }
 
     .mandala-toggle {
@@ -473,6 +508,7 @@
         overflow: auto;
         padding: 12px;
     }
+
     
     /* 桌面端调整格子右侧间距为 6px，为 6+6=12px 做准备 */
     :global(body:not(.is-mobile)) .mandala-root:not(.mandala-a4-mode) .mandala-scroll {

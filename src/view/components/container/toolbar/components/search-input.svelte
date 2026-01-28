@@ -3,6 +3,7 @@
     import { searchStore } from 'src/stores/view/derived/search-store';
     import { Eye, Text } from 'lucide-svelte';
     import { lang } from 'src/lang/lang';
+    import { Platform } from 'obsidian';
 
     const view = getView();
     const viewStore = view.viewStore;
@@ -18,6 +19,18 @@
     const onCompositionEnd = (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
         isComposing = false;
         // 中文输入完成后，立即触发搜索
+        viewStore.dispatch({
+            type: 'view/search/set-query',
+            payload: {
+                query: e.currentTarget.value,
+            },
+        });
+    };
+
+    const onCompositionUpdate = (
+        e: Event & { currentTarget: EventTarget & HTMLInputElement },
+    ) => {
+        // 移动端希望“输入法拼音阶段”也能实时更新结果（虽然不一定精确，但更符合预期）。
         viewStore.dispatch({
             type: 'view/search/set-query',
             payload: {
@@ -50,8 +63,15 @@
             return; // 允许这些键冒泡
         }
         
-        // Enter 键：将焦点转移到搜索结果列表
-        if (e.key === 'Enter' && $search.results.size > 0) {
+        // 移动端：不要因为 Enter/确定 而把焦点转到列表（否则键盘会收起）。
+        if (Platform.isMobile && e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+
+        // 桌面端：Enter 键将焦点转移到搜索结果列表，方便键盘导航
+        if (!Platform.isMobile && e.key === 'Enter' && $search.results.size > 0) {
             e.preventDefault();
             e.stopPropagation();
             
@@ -81,6 +101,7 @@
         enterkeyhint="search"
         on:input={onInput}
         on:compositionstart={onCompositionStart}
+        on:compositionupdate={onCompositionUpdate}
         on:compositionend={onCompositionEnd}
         on:keydown={onKeyDown}
         placeholder={'search'}

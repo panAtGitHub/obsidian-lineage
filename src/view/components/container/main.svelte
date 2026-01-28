@@ -6,7 +6,6 @@
     import { viewHotkeysAction } from 'src/view/actions/keyboard-shortcuts/view-hotkeys-action';
     import { mouseWheelZoom } from 'src/view/actions/mouse-wheel-zoom';
     import MandalaViewComponent from 'src/view/components/mandala/mandala-view.svelte';
-    import Toolbar from 'src/view/components/container/toolbar/toolbar.svelte';
     import HotkeysModal from 'src/view/components/container/modals/hotkeys/hotkeys.svelte';
     import SettingsModal from 'src/view/components/container/modals/settings/settings.svelte';
     import SnapshotsListModal from 'src/view/components/container/modals/snapshots-list/file-histoy.svelte';
