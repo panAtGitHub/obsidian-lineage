@@ -1,5 +1,5 @@
 <script>
-    import NavigationHistory from './components/navigation-buttons.svelte';
+    // import NavigationHistory from './components/navigation-buttons.svelte';
     import SearchToggle from './components/search-toggle.svelte';
     import { getView } from 'src/view/components/container/context';
     import { searchStore } from 'src/stores/view/derived/search-store';
@@ -83,7 +83,7 @@
             >
                 <Eye class="svg-icon" />
             </Button>
-            <NavigationHistory />
+            <!-- <NavigationHistory /> -->
             <!-- <DocumentHistoryButtons /> -->
             <SearchToggle />
         </div>

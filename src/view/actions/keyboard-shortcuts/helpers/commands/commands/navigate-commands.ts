@@ -208,6 +208,7 @@ export const navigateCommands = () => {
             },
             hotkeys: [{ key: 'End', modifiers: [], editorState: 'editor-off' }],
         }, */
+        /*
         {
             name: 'navigate_back',
             callback: (view, event) => {
@@ -228,6 +229,7 @@ export const navigateCommands = () => {
             },
             hotkeys: [{ key: 'K', modifiers: ['Alt'], editorState: 'both' }],
         },
+        */
     );
     return commands;
 };
