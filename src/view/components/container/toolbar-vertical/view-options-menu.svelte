@@ -48,6 +48,7 @@
         openMandalaTemplateSelectModal,
         openMandalaTemplatesFileModal,
     } from 'src/obsidian/modals/mandala-templates-modal';
+    import ColorSwatchInput from './color-swatch-input.svelte';
 
     const dispatch = createEventDispatcher();
     const view = getView();
@@ -1574,10 +1575,10 @@
                                     <label class="view-options-menu__row">
                                         <span>网格容器背景颜色</span>
                                         <div class="view-options-menu__row-controls">
-                                            <input
-                                                type="color"
+                                            <ColorSwatchInput
                                                 value={$containerBg}
-                                                on:input={updateContainerBg}
+                                                onInput={updateContainerBg}
+                                                ariaLabel="选择网格容器背景颜色"
                                             />
                                             <button
                                                 class="view-options-menu__reset"
@@ -1592,10 +1593,10 @@
                                     <label class="view-options-menu__row">
                                         <span>活跃格子背景颜色</span>
                                         <div class="view-options-menu__row-controls">
-                                            <input
-                                                type="color"
+                                            <ColorSwatchInput
                                                 value={$activeBranchBg}
-                                                on:input={updateActiveBranchBg}
+                                                onInput={updateActiveBranchBg}
+                                                ariaLabel="选择活跃格子背景颜色"
                                             />
                                             <button
                                                 class="view-options-menu__reset"
@@ -1610,10 +1611,10 @@
                                     <label class="view-options-menu__row">
                                         <span>活跃格子文字颜色</span>
                                         <div class="view-options-menu__row-controls">
-                                            <input
-                                                type="color"
+                                            <ColorSwatchInput
                                                 value={$activeBranchColor}
-                                                on:input={updateActiveBranchColor}
+                                                onInput={updateActiveBranchColor}
+                                                ariaLabel="选择活跃格子文字颜色"
                                             />
                                             <button
                                                 class="view-options-menu__reset"
@@ -2232,15 +2233,12 @@
     }
 
     :global(.is-mobile) .view-options-menu__row {
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
-        gap: 6px;
+        flex-wrap: wrap;
     }
 
     :global(.is-mobile) .view-options-menu__row > span {
-        flex: 0 0 auto;
-        white-space: normal;
+        flex: 1 1 160px;
+        min-width: 160px;
         line-height: 1.3;
     }
 
@@ -2274,18 +2272,9 @@
     }
 
     :global(.is-mobile) .view-options-menu__row-controls {
+        flex: 1 1 220px;
+        min-width: 220px;
         justify-content: flex-end;
-    }
-
-    .view-options-menu__row input[type='color'] {
-        width: 28px;
-        height: 20px;
-        padding: 0;
-        border: 1px solid var(--background-modifier-border);
-        border-radius: 4px;
-        background: transparent;
-        appearance: none;
-        -webkit-appearance: none;
     }
 
     .view-options-menu__reset {
@@ -2315,10 +2304,9 @@
     }
 
     :global(.is-mobile) .view-options-menu__range {
-        display: grid;
-        grid-template-columns: 32px 1fr 32px 64px 32px;
-        gap: 8px;
-        align-items: center;
+        flex: 1 1 220px;
+        min-width: 220px;
+        justify-content: flex-end;
     }
 
     .view-options-menu__range-step {
@@ -2350,13 +2338,19 @@
 
     :global(.is-mobile) .view-options-menu__range-step,
     :global(.is-mobile) .view-options-menu__reset {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
+    }
+
+    :global(.is-mobile) .view-options-menu__reset {
+        border: 1px solid var(--background-modifier-border);
+        border-radius: 8px;
+        background: var(--background-secondary);
     }
 
     :global(.is-mobile) .view-options-menu__range input[type='number'] {
-        width: 64px;
-        height: 32px;
+        width: 60px;
+        height: 28px;
         padding: 0 6px;
         box-sizing: border-box;
     }
