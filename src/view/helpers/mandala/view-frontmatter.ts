@@ -1,15 +1,10 @@
 import { debounce } from 'obsidian';
-import { get } from 'svelte/store';
 import { MandalaView } from 'src/view/view';
 import {
     maxZoomLevel,
     minZoomLevel,
 } from 'src/stores/settings/reducers/change-zoom-level';
 import { setActiveCell9x9 } from 'src/view/helpers/mandala/set-active-cell-9x9';
-import {
-    mobileInteractionMode,
-    setMobileInteractionMode,
-} from 'src/stores/view/mobile-interaction-store';
 
 const KEY_SUBGRID_THEME = 'mandala_view_subgrid_theme';
 const KEY_ACTIVE_SECTION = 'mandala_view_active_section';
@@ -20,7 +15,6 @@ const KEY_LEFT_SIDEBAR = 'mandala_view_left_sidebar';
 const KEY_LEFT_SIDEBAR_WIDTH = 'mandala_view_left_sidebar_width';
 const KEY_DETAIL_SIDEBAR = 'mandala_view_detail_sidebar';
 const KEY_DETAIL_SIDEBAR_WIDTH = 'mandala_view_detail_sidebar_width';
-const KEY_INTERACTION_MODE = 'mandala_view_interaction_mode';
 
 type PersistedViewState = {
     subgridTheme: string | null;
@@ -32,7 +26,6 @@ type PersistedViewState = {
     leftSidebarWidth: number | null;
     detailSidebar: boolean | null;
     detailSidebarWidth: number | null;
-    interactionMode: 'locked' | 'unlocked' | null;
 };
 
 const coerceString = (value: unknown): string | null =>
@@ -46,11 +39,6 @@ const coerceBoolean = (value: unknown): boolean | null =>
 
 const coerceMode = (value: unknown): '3x3' | '9x9' | null =>
     value === '3x3' || value === '9x9' ? value : null;
-
-const coerceInteractionMode = (
-    value: unknown,
-): 'locked' | 'unlocked' | null =>
-    value === 'locked' || value === 'unlocked' ? value : null;
 
 const coerceCell = (
     value: unknown,
@@ -81,9 +69,6 @@ export const readMandalaViewStateFromFrontmatter = (
     const detailSidebarWidth = coerceNumber(
         frontmatter[KEY_DETAIL_SIDEBAR_WIDTH],
     );
-    const interactionMode = coerceInteractionMode(
-        frontmatter[KEY_INTERACTION_MODE],
-    );
 
     const hasAny =
         subgridTheme ||
@@ -94,8 +79,7 @@ export const readMandalaViewStateFromFrontmatter = (
         leftSidebar !== null ||
         leftSidebarWidth !== null ||
         detailSidebar !== null ||
-        detailSidebarWidth !== null ||
-        interactionMode;
+        detailSidebarWidth !== null;
     if (!hasAny) return null;
 
     return {
@@ -108,7 +92,6 @@ export const readMandalaViewStateFromFrontmatter = (
         leftSidebarWidth,
         detailSidebar,
         detailSidebarWidth,
-        interactionMode,
     };
 };
 
@@ -119,7 +102,6 @@ const getCurrentViewState = (view: MandalaView): PersistedViewState => {
     const activeNodeId = viewState.document.activeNode;
     const activeSection =
         activeNodeId ? docState.sections.id_section[activeNodeId] : null;
-    const interactionMode = get(mobileInteractionMode);
 
     return {
         subgridTheme: viewState.ui.mandala.subgridTheme ?? null,
@@ -131,7 +113,6 @@ const getCurrentViewState = (view: MandalaView): PersistedViewState => {
         leftSidebarWidth: settings.view.leftSidebarWidth ?? null,
         detailSidebar: settings.view.showMandalaDetailSidebar ?? null,
         detailSidebarWidth: settings.view.mandalaDetailSidebarWidth ?? null,
-        interactionMode,
     };
 };
 
@@ -189,11 +170,6 @@ export const persistMandalaViewStateToFrontmatter = (view: MandalaView) => {
                     state.detailSidebarWidth;
             } else {
                 delete frontmatter[KEY_DETAIL_SIDEBAR_WIDTH];
-            }
-            if (state.interactionMode) {
-                frontmatter[KEY_INTERACTION_MODE] = state.interactionMode;
-            } else {
-                delete frontmatter[KEY_INTERACTION_MODE];
             }
         },
     );
@@ -265,11 +241,6 @@ export const applyMandalaViewStateFromFrontmatter = (view: MandalaView) => {
                 type: 'view/mandala-detail-sidebar/set-width',
                 payload: { width: persisted.detailSidebarWidth },
             });
-        }
-    }
-    if (persisted.interactionMode) {
-        if (persisted.interactionMode !== get(mobileInteractionMode)) {
-            setMobileInteractionMode(persisted.interactionMode);
         }
     }
 

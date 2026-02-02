@@ -1,11 +1,7 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
     import Button from 'src/view/components/container/shared/button.svelte';
-    import {
-        mobileInteractionMode,
-        toggleMobileInteractionMode,
-    } from 'src/stores/view/mobile-interaction-store';
-    import { Lock, Unlock, Grid3x3, Grid2x2, Type } from 'lucide-svelte';
+    import { Grid3x3, Grid2x2, Type } from 'lucide-svelte';
     import {
         MandalaModeStore,
         Show9x9TitleOnlyStore,
@@ -52,21 +48,6 @@
                 <Grid2x2 class="svg-icon" size="18" />
             {/if}
         </Button>
-        <div class="divider" aria-hidden="true"></div>
-        <Button
-            active={$mobileInteractionMode === 'unlocked'}
-            label={$mobileInteractionMode === 'locked'
-                ? '锁定模式 (导航优先)'
-                : '解锁模式 (编辑优先)'}
-            on:click={toggleMobileInteractionMode}
-            tooltipPosition="bottom"
-        >
-            {#if $mobileInteractionMode === 'locked'}
-                <Lock class="svg-icon" size="18" />
-            {:else}
-                <Unlock class="svg-icon" size="18" />
-            {/if}
-        </Button>
     </div>
 </div>
 
@@ -84,13 +65,6 @@
         gap: 4px;
     }
 
-    .divider {
-        width: 1px;
-        height: 16px;
-        background-color: var(--background-modifier-border);
-        margin: 0 4px;
-    }
-
     :global(.is-mobile) .lock-toggle-container {
         transform: none;
         z-index: 1002;
@@ -101,4 +75,3 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 </style>
-

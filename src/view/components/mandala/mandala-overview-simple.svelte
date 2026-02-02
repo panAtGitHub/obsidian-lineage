@@ -299,6 +299,11 @@
             return;
         }
 
+        // 移动端：9x9 双击格子无功能（编辑仅由右侧栏双击触发）
+        if (Platform.isMobile) {
+            return;
+        }
+
         if ($mobileInteractionMode === 'locked') {
             // 锁定模式：双击不进入编辑
             return;

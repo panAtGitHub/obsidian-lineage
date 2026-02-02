@@ -9,10 +9,8 @@
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import { NodeStylesStore } from 'src/stores/view/derived/style-rules';
-    import { ActiveStatus } from '../container/column/components/group/components/active-status.enum';
     import { Platform } from 'obsidian';
     import { createLayoutStore } from 'src/stores/view/orientation-store';
-    import { mobileInteractionMode } from 'src/stores/view/mobile-interaction-store';
 
     const MIN_SIZE = 200;
     
@@ -20,7 +18,6 @@
     const layout = createLayoutStore();
 
     // 用于交互的临时偏移值（用于持久化网格尺寸的微调，如果有必要的话）
-    let userSizeOffset = 0;
     // 用于 CSS transition 动画的宽度/高度，可以为 0
     let animatedSidebarSize = 0;
     // 实际大小值，不为 0
@@ -31,7 +28,6 @@
 
     const view = getView();
     const showSidebarStore = ShowMandalaDetailSidebarStore(view);
-    const savedWidthStore = MandalaDetailSidebarWidthStore(view);
     const editingState = derived(view.viewStore, (state) => state.document.editing);
     const activeNodeId = derived(
         view.viewStore,
@@ -141,7 +137,7 @@
         }
     };
     const handleDblClick = () => {
-        if (Platform.isMobile && $mobileInteractionMode === 'unlocked' && $activeNodeId) {
+        if (Platform.isMobile && $activeNodeId) {
             view.viewStore.dispatch({
                 type: 'view/editor/enable-main-editor',
                 payload: { nodeId: $activeNodeId, isInSidebar: false },

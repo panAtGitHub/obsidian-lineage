@@ -86,8 +86,8 @@
         if (isGrabbing(view)) return;
         recordClick();
         
-        // 移动端锁定模式：仅激活节点，禁止任何编辑相关的副作用
-        if (Platform.isMobile && $mobileInteractionMode === 'locked') {
+        // 移动端：仅激活节点，禁止任何编辑相关的副作用
+        if (Platform.isMobile) {
             const target = e.target as HTMLElement | null;
             const anchor = target?.closest('a.internal-link');
             if (anchor) {
@@ -125,7 +125,11 @@
         if (isGrabbing(view)) return;
         if (!isFastDoubleClick()) return;
 
-        // 移动端锁定模式：绝对禁止双击触发编辑，由父组件 MandalaCard 处理导航
+        // 移动端：双击不进入编辑，由父组件 MandalaCard 处理导航（3x3）/无动作（9x9）
+        if (Platform.isMobile) {
+            return;
+        }
+
         if ($mobileInteractionMode === 'locked') {
             return;
         }

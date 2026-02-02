@@ -66,8 +66,8 @@
         }
         setActiveMainSplitNode(view, nodeId, e);
         
-        // 移动端锁定模式下，绝对禁止触发编辑逻辑
-        if ($mobileInteractionMode === 'locked') {
+        // 移动端：绝对禁止触发编辑逻辑（编辑由右侧栏双击触发）
+        if (isMobile || $mobileInteractionMode === 'locked') {
             return;
         }
 
@@ -92,19 +92,6 @@
         // 触发卸载并自动保存
         handleCancel();
     };
-
-    const DOUBLE_CLICK_THRESHOLD_MS = 250;
-    let lastClickAt = 0;
-    let prevClickAt = 0;
-
-    const recordClick = () => {
-        prevClickAt = lastClickAt;
-        lastClickAt = Date.now();
-    };
-
-    const isFastDoubleClick = () =>
-        lastClickAt - prevClickAt <= DOUBLE_CLICK_THRESHOLD_MS;
-
 
     // 防抖定时器
     let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -132,7 +119,6 @@
             return;
         }
 
-        recordClick();
         if (!isMobile && $mobileInteractionMode === 'locked') {
             handleSelect(e);
             return;
@@ -160,7 +146,17 @@
     on:click={handleCardClick}
     on:dblclick={(e) => {
         if ($swapState.active) return;
-        if (!isFastDoubleClick()) return;
+
+        // 移动端：双击仅用于导航（进入/退出子九宫）
+        if (isMobile) {
+            if (isGridCenter(view, nodeId, section)) {
+                exitCurrentSubgrid(view);
+            } else {
+                enterSubgridForNode(view, nodeId);
+            }
+            return;
+        }
+
         if ($mobileInteractionMode === 'locked') {
             if (isGridCenter(view, nodeId, section)) {
                 exitCurrentSubgrid(view);
@@ -171,15 +167,6 @@
         }
 
         handleSelect(e);
-        
-        if (isMobile && $mobileInteractionMode === 'unlocked') {
-            // 解锁模式下双击：强制进入全屏 Popup (场景 3, 4, 7, 8)
-            view.viewStore.dispatch({
-                type: 'view/editor/enable-main-editor',
-                payload: { nodeId: nodeId, isInSidebar: false },
-            });
-            return;
-        }
 
         // PC 端逻辑：根据侧栏状态决定编辑位置
         if ($showDetailSidebar) {

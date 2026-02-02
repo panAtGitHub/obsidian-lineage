@@ -5,6 +5,7 @@
     import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import { focusContainer } from 'src/stores/view/subscriptions/effects/focus-container';
+    import { Platform } from 'obsidian';
     import {
         nextRaw9x9Cell,
         posOfRaw9x9Section,
@@ -145,6 +146,7 @@
                 }}
                 on:dblclick={() => {
                     ensureFocus();
+                    if (Platform.isMobile) return;
                     if (!section || !nodeId) return;
                     selectCell({ row, col });
                     enableEditModeInMainSplit(view, nodeId);
