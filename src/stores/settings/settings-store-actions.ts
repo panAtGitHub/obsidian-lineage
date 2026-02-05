@@ -154,14 +154,14 @@ export type SettingsActions =
         payload: {
             filePath: string;
             sections: string[];
-            section: string;
+            section: string | null;
         };
     }
     | {
         type: 'settings/pinned-nodes/persist-active-node';
         payload: {
             filePath: string;
-            section: string;
+            section: string | null;
         };
     }
     | { type: 'view/modes/gap-between-cards/toggle' }
