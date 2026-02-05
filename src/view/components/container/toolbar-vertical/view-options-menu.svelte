@@ -1,17 +1,6 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
-    import {
-        ChevronDown,
-        ChevronRight,
-        Frame,
-        Grid3x3,
-        Printer,
-        RotateCcw,
-        Settings,
-        Trash2,
-        Type,
-        X,
-    } from 'lucide-svelte';
+    import { Trash2, X } from 'lucide-svelte';
     import { Notice, Platform, TFile } from 'obsidian';
     import { createEventDispatcher } from 'svelte';
     import { toPng } from 'html-to-image';
@@ -28,7 +17,6 @@
         MandalaFontSize9x9MobileStore,
         MandalaFontSizeSidebarDesktopStore,
         MandalaFontSizeSidebarMobileStore,
-        MandalaModeStore,
         MandalaGridOrientationStore,
         MandalaSectionColorOpacityStore,
         SquareLayoutStore,
@@ -51,7 +39,10 @@
         openMandalaTemplateSelectModal,
         openMandalaTemplatesFileModal,
     } from 'src/obsidian/modals/mandala-templates-modal';
-    import ColorSwatchInput from './color-swatch-input.svelte';
+    import ViewOptionsFontPanel from './components/view-options-font-panel.svelte';
+    import ViewOptionsEditPanel from './components/view-options-edit-panel.svelte';
+    import ViewOptionsExportPanel from './components/view-options-export-panel.svelte';
+    import ViewOptionsTemplatePanel from './components/view-options-template-panel.svelte';
 
     const dispatch = createEventDispatcher();
     const view = getView();
@@ -70,7 +61,6 @@
     const borderOpacity = MandalaBorderOpacityStore(view);
     const sectionColorOpacity = MandalaSectionColorOpacityStore(view);
     const backgroundMode = MandalaBackgroundModeStore(view);
-    const mode = MandalaModeStore(view);
     const whiteThemeMode = WhiteThemeModeStore(view);
     const squareLayout = SquareLayoutStore(view);
     const gridOrientation = MandalaGridOrientationStore(view);
@@ -1394,782 +1384,98 @@
                     </div>
                 </button>
             {/if}
-            <button
-                class="view-options-menu__item"
-                on:click={() => (showFontOptions = !showFontOptions)}
-            >
-                <div class="view-options-menu__icon">
-                    <Type class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">
-                        字体设置（{isMobile ? '手机端' : 'PC端'}）
-                    </div>
-                    <div class="view-options-menu__desc">
-                        对 3x3 视图、9x9 视图、侧边栏字体进行调整
-                    </div>
-                </div>
-            </button>
+            <ViewOptionsFontPanel
+                isMobile={isMobile}
+                show={showFontOptions}
+                fontSize3x3={$fontSize3x3}
+                fontSize9x9={$fontSize9x9}
+                fontSizeSidebar={$fontSizeSidebar}
+                headingsFontSizeEm={$headingsFontSizeEm}
+                toggle={() => (showFontOptions = !showFontOptions)}
+                {stepFontSize3x3}
+                {updateFontSize3x3}
+                {resetFontSize3x3}
+                {stepFontSize9x9}
+                {updateFontSize9x9}
+                {resetFontSize9x9}
+                {stepFontSizeSidebar}
+                {updateFontSizeSidebar}
+                {resetFontSizeSidebar}
+                {stepHeadingsFontSize}
+                {updateHeadingsFontSize}
+                {resetHeadingsFontSize}
+            />
 
-            {#if showFontOptions}
-                <div class="view-options-menu__submenu">
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            格子字体大小（{isMobile ? '手机端' : 'PC端'}）
-                        </div>
+            <ViewOptionsEditPanel
+                show={showEditOptions}
+                whiteThemeMode={$whiteThemeMode}
+                showImmersiveOptions={showImmersiveOptions}
+                showPanoramaOptions={showPanoramaOptions}
+                containerBg={$containerBg}
+                activeBranchBg={$activeBranchBg}
+                activeBranchColor={$activeBranchColor}
+                inactiveNodeOpacity={$inactiveNodeOpacity}
+                borderOpacity={$borderOpacity}
+                backgroundMode={$backgroundMode}
+                sectionColorOpacity={$sectionColorOpacity}
+                squareLayout={$squareLayout}
+                cardsGap={$cardsGap}
+                gridOrientation={$gridOrientation}
+                toggle={() => (showEditOptions = !showEditOptions)}
+                {updateWhiteThemeMode}
+                {toggleImmersiveOptions}
+                {togglePanoramaOptions}
+                {updateContainerBg}
+                {resetContainerBg}
+                {updateActiveBranchBg}
+                {resetActiveBranchBg}
+                {updateActiveBranchColor}
+                {resetActiveBranchColor}
+                {stepInactiveOpacity}
+                {updateInactiveNodeOpacity}
+                {resetInactiveNodeOpacity}
+                {stepBorderOpacity}
+                {updateBorderOpacity}
+                {updateBackgroundMode}
+                {stepOpacity}
+                {updateSectionColorOpacity}
+                {updateSquareLayout}
+                {stepCardsGap}
+                {updateCardsGap}
+                {resetCardsGap}
+                {updateGridOrientation}
+            />
 
-                        <label class="view-options-menu__row">
-                            <span>3x3视图：</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSize3x3($fontSize3x3, -1)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSize3x3}
-                                    on:input={updateFontSize3x3}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSize3x3($fontSize3x3, 1)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSize3x3}
-                                    on:change={updateFontSize3x3}
-                                />
-                                <button
-                                    class="view-options-menu__reset"
-                                    type="button"
-                                    on:click={resetFontSize3x3}
-                                    aria-label="重置为默认"
-                                >
-                                    <RotateCcw size={14} />
-                                </button>
-                            </div>
-                        </label>
-
-                        <label class="view-options-menu__row">
-                            <span>9x9视图：</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSize9x9($fontSize9x9, -1)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSize9x9}
-                                    on:input={updateFontSize9x9}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSize9x9($fontSize9x9, 1)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSize9x9}
-                                    on:change={updateFontSize9x9}
-                                />
-                                <button
-                                    class="view-options-menu__reset"
-                                    type="button"
-                                    on:click={resetFontSize9x9}
-                                    aria-label="重置为默认"
-                                >
-                                    <RotateCcw size={14} />
-                                </button>
-                            </div>
-                        </label>
-
-                        <label class="view-options-menu__row">
-                            <span>侧边栏：</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSizeSidebar(
-                                            $fontSizeSidebar,
-                                            -1,
-                                        )}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSizeSidebar}
-                                    on:input={updateFontSizeSidebar}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepFontSizeSidebar(
-                                            $fontSizeSidebar,
-                                            1,
-                                        )}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="6"
-                                    max="36"
-                                    step="1"
-                                    value={$fontSizeSidebar}
-                                    on:change={updateFontSizeSidebar}
-                                />
-                                <button
-                                    class="view-options-menu__reset"
-                                    type="button"
-                                    on:click={resetFontSizeSidebar}
-                                    aria-label="重置为默认"
-                                >
-                                    <RotateCcw size={14} />
-                                </button>
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            标题字体大小（em）（可理解为正文字体的放大倍数）
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>H1</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepHeadingsFontSize(
-                                            $headingsFontSizeEm,
-                                            -0.1,
-                                        )}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="1"
-                                    max="4"
-                                    step="0.1"
-                                    value={$headingsFontSizeEm}
-                                    on:input={updateHeadingsFontSize}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() =>
-                                        stepHeadingsFontSize(
-                                            $headingsFontSizeEm,
-                                            0.1,
-                                        )}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max="4"
-                                    step="0.1"
-                                    value={$headingsFontSizeEm}
-                                    on:change={updateHeadingsFontSize}
-                                />
-                                <button
-                                    class="view-options-menu__reset"
-                                    type="button"
-                                    on:click={resetHeadingsFontSize}
-                                    aria-label="重置为默认"
-                                >
-                                    <RotateCcw size={14} />
-                                </button>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-            {/if}
-
-            <button
-                class="view-options-menu__item"
-                on:click={() => (showEditOptions = !showEditOptions)}
-            >
-                <div class="view-options-menu__icon">
-                    <Grid3x3 class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">编辑模式</div>
-                    <div class="view-options-menu__desc">背景与布局</div>
-                </div>
-            </button>
-
-            {#if showEditOptions}
-                <div class="view-options-menu__submenu">
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            格子风格
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <div class="view-options-menu__inline-group">
-                                <label class="view-options-menu__inline-option">
-                                    <input
-                                        type="radio"
-                                        name="mandala-background"
-                                        checked={!$whiteThemeMode}
-                                        on:change={() =>
-                                            updateWhiteThemeMode(false)}
-                                    />
-                                    <span>卡片风格，沉浸模式</span>
-                                </label>
-                                <button
-                                    class="view-options-menu__inline-toggle"
-                                    type="button"
-                                    on:click|stopPropagation={toggleImmersiveOptions}
-                                    disabled={$whiteThemeMode}
-                                    aria-label="展开沉浸模式设置"
-                                >
-                                    <Settings size={14} />
-                                </button>
-                            </div>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background"
-                                    checked={$whiteThemeMode}
-                                    on:change={() => updateWhiteThemeMode(true)}
-                                />
-                                <span>表格风格，全景模式</span>
-                            </label>
-                            <button
-                                class="view-options-menu__inline-toggle"
-                                type="button"
-                                on:click|stopPropagation={togglePanoramaOptions}
-                                disabled={!$whiteThemeMode}
-                                aria-label="展开全景模式设置"
-                            >
-                                <Settings size={14} />
-                            </button>
-                        </div>
-
-                        {#if !$whiteThemeMode && showImmersiveOptions}
-                            <div class="view-options-menu__submenu view-options-menu__submenu--nested">
-                                <div class="view-options-menu__subsection">
-                                    <label class="view-options-menu__row">
-                                        <span>网格容器背景颜色</span>
-                                        <div class="view-options-menu__row-controls">
-                                            <ColorSwatchInput
-                                                value={$containerBg}
-                                                onInput={updateContainerBg}
-                                                ariaLabel="选择网格容器背景颜色"
-                                            />
-                                            <button
-                                                class="view-options-menu__reset"
-                                                type="button"
-                                                on:click={resetContainerBg}
-                                                aria-label="重置为默认"
-                                            >
-                                                <RotateCcw size={14} />
-                                            </button>
-                                        </div>
-                                    </label>
-                                    <label class="view-options-menu__row">
-                                        <span>活跃格子背景颜色</span>
-                                        <div class="view-options-menu__row-controls">
-                                            <ColorSwatchInput
-                                                value={$activeBranchBg}
-                                                onInput={updateActiveBranchBg}
-                                                ariaLabel="选择活跃格子背景颜色"
-                                            />
-                                            <button
-                                                class="view-options-menu__reset"
-                                                type="button"
-                                                on:click={resetActiveBranchBg}
-                                                aria-label="重置为默认"
-                                            >
-                                                <RotateCcw size={14} />
-                                            </button>
-                                        </div>
-                                    </label>
-                                    <label class="view-options-menu__row">
-                                        <span>活跃格子文字颜色</span>
-                                        <div class="view-options-menu__row-controls">
-                                            <ColorSwatchInput
-                                                value={$activeBranchColor}
-                                                onInput={updateActiveBranchColor}
-                                                ariaLabel="选择活跃格子文字颜色"
-                                            />
-                                            <button
-                                                class="view-options-menu__reset"
-                                                type="button"
-                                                on:click={resetActiveBranchColor}
-                                                aria-label="重置为默认"
-                                            >
-                                                <RotateCcw size={14} />
-                                            </button>
-                                        </div>
-                                    </label>
-                                    <label class="view-options-menu__row">
-                                        <span>非活跃格子透明度</span>
-                                        <div class="view-options-menu__range">
-                                            <button
-                                                class="view-options-menu__range-step"
-                                                type="button"
-                                                on:click={() =>
-                                                    stepInactiveOpacity(
-                                                        $inactiveNodeOpacity,
-                                                        -5,
-                                                    )}
-                                            >
-                                                -
-                                            </button>
-                                            <input
-                                                type="range"
-                                                min="0"
-                                                max="100"
-                                                value={$inactiveNodeOpacity}
-                                                on:input={updateInactiveNodeOpacity}
-                                            />
-                                            <button
-                                                class="view-options-menu__range-step"
-                                                type="button"
-                                                on:click={() =>
-                                                    stepInactiveOpacity(
-                                                        $inactiveNodeOpacity,
-                                                        5,
-                                                    )}
-                                            >
-                                                +
-                                            </button>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                value={$inactiveNodeOpacity}
-                                                on:change={updateInactiveNodeOpacity}
-                                            />
-                                            <button
-                                                class="view-options-menu__reset"
-                                                type="button"
-                                                on:click={resetInactiveNodeOpacity}
-                                                aria-label="重置为默认"
-                                            >
-                                                <RotateCcw size={14} />
-                                            </button>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                        {/if}
-
-                        {#if $whiteThemeMode && showPanoramaOptions}
-                            <div class="view-options-menu__submenu view-options-menu__submenu--nested">
-                                <div class="view-options-menu__subsection">
-                                    <div class="view-options-menu__subsection-title">
-                                        线框选项
-                                    </div>
-                                    <label class="view-options-menu__row">
-                                        <span>线框透明度</span>
-                                        <div class="view-options-menu__range">
-                                            <button
-                                                class="view-options-menu__range-step"
-                                                type="button"
-                                                on:click={() =>
-                                                    stepBorderOpacity(
-                                                        $borderOpacity,
-                                                        -5,
-                                                    )}
-                                            >
-                                                -
-                                            </button>
-                                            <input
-                                                type="range"
-                                                min="0"
-                                                max="100"
-                                                value={$borderOpacity}
-                                                on:input={updateBorderOpacity}
-                                            />
-                                            <button
-                                                class="view-options-menu__range-step"
-                                                type="button"
-                                                on:click={() =>
-                                                    stepBorderOpacity(
-                                                        $borderOpacity,
-                                                        5,
-                                                    )}
-                                            >
-                                                +
-                                            </button>
-                                            <input
-                                                type="number"
-                                                min="0"
-                                                max="100"
-                                                value={$borderOpacity}
-                                                on:input={updateBorderOpacity}
-                                            />
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                        {/if}
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            背景色选项
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'none'}
-                                    on:change={() =>
-                                        updateBackgroundMode('none')}
-                                />
-                                <span>无背景色</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'custom'}
-                                    on:change={() =>
-                                        updateBackgroundMode('custom')}
-                                />
-                                <span>色块卡片</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-background-color"
-                                    checked={$backgroundMode === 'gray'}
-                                    on:change={() =>
-                                        updateBackgroundMode('gray')}
-                                />
-                                <span>间隔灰色色块</span>
-                            </label>
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>背景色透明度</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    disabled={$backgroundMode === 'none'}
-                                    on:click={() =>
-                                        stepOpacity($sectionColorOpacity, -5)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    value={$sectionColorOpacity}
-                                    on:input={updateSectionColorOpacity}
-                                    disabled={$backgroundMode === 'none'}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    disabled={$backgroundMode === 'none'}
-                                    on:click={() =>
-                                        stepOpacity($sectionColorOpacity, 5)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={$sectionColorOpacity}
-                                    on:change={updateSectionColorOpacity}
-                                    disabled={$backgroundMode === 'none'}
-                                />
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            格子形状布局
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-square-layout"
-                                    checked={!$squareLayout}
-                                    on:change={() =>
-                                        updateSquareLayout(false)}
-                                />
-                                <span>自适应布局</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-square-layout"
-                                    checked={$squareLayout}
-                                    on:change={() =>
-                                        updateSquareLayout(true)}
-                                />
-                                <span>正方形布局</span>
-                            </label>
-                        </div>
-                        <label class="view-options-menu__row">
-                            <span>网格间距</span>
-                            <div class="view-options-menu__range">
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() => stepCardsGap($cardsGap, -2)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="20"
-                                    step="2"
-                                    value={$cardsGap}
-                                    on:input={updateCardsGap}
-                                />
-                                <button
-                                    class="view-options-menu__range-step"
-                                    type="button"
-                                    on:click={() => stepCardsGap($cardsGap, 2)}
-                                >
-                                    +
-                                </button>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max="20"
-                                    step="2"
-                                    value={$cardsGap}
-                                    on:change={updateCardsGap}
-                                />
-                                <button
-                                    class="view-options-menu__reset"
-                                    type="button"
-                                    on:click={resetCardsGap}
-                                    aria-label="重置为默认"
-                                >
-                                    <RotateCcw size={14} />
-                                </button>
-                            </div>
-                        </label>
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            九宫格方位布局
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-grid-orientation"
-                                    checked={$gridOrientation === 'south-start'}
-                                    on:change={() =>
-                                        updateGridOrientation('south-start')}
-                                />
-                                <span>从南开始</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-grid-orientation"
-                                    checked={$gridOrientation === 'left-to-right'}
-                                    on:change={() =>
-                                        updateGridOrientation(
-                                            'left-to-right',
-                                        )}
-                                />
-                                <span>从左到右（Z形）</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-grid-orientation"
-                                    checked={$gridOrientation === 'bottom-to-top'}
-                                    on:change={() =>
-                                        updateGridOrientation(
-                                            'bottom-to-top',
-                                        )}
-                                />
-                                <span>从下到上（S形）</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            {/if}
-
-            <button
-                class="view-options-menu__item"
-                on:click={() => {
-                    if (isMobile) {
-                        new Notice('移动端不支持导出，请在桌面端操作');
-                        return;
-                    }
-                    showPrintOptions = !showPrintOptions;
+            <ViewOptionsExportPanel
+                isMobile={isMobile}
+                show={showPrintOptions}
+                a4Mode={$a4Mode}
+                {exportSquareSize}
+                toggle={() => (showPrintOptions = !showPrintOptions)}
+                setPngSquareMode={() => {
+                    exportFormat = 'png';
+                    enableSquareExport();
                 }}
-            >
-                <div class="view-options-menu__icon">
-                    <Printer class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">导出模式</div>
-                    <div class="view-options-menu__desc">
-                        可按自定义页面大小进行导出
-                    </div>
-                </div>
-            </button>
+                setPngScreenMode={() => {
+                    exportFormat = 'png';
+                    updateExportViewSize('screen');
+                }}
+                setPdfMode={() => {
+                    exportFormat = 'pdf';
+                    updateExportViewSize('a4');
+                }}
+                {exportCurrentFile}
+            />
 
-            {#if showPrintOptions}
-                <div class="view-options-menu__submenu">
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            导出分享用 PNG
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-export-mode-png"
-                                    checked={!$a4Mode && exportSquareSize}
-                                    on:change={() => {
-                                        exportFormat = 'png';
-                                        enableSquareExport();
-                                    }}
-                                />
-                                <span>仅导出正方形九宫格</span>
-                            </label>
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-export-mode-png"
-                                    checked={!$a4Mode && !exportSquareSize}
-                                    on:change={() => {
-                                        exportFormat = 'png';
-                                        updateExportViewSize('screen');
-                                    }}
-                                />
-                                <span>导出屏幕视图内容，可包含侧边栏</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="view-options-menu__subsection">
-                        <div class="view-options-menu__subsection-title">
-                            导出打印用 PDF
-                        </div>
-                        <div class="view-options-menu__row view-options-menu__row--inline">
-                            <label class="view-options-menu__inline-option">
-                                <input
-                                    type="radio"
-                                    name="mandala-export-mode-pdf"
-                                    checked={$a4Mode}
-                                    on:change={() => {
-                                        exportFormat = 'pdf';
-                                        updateExportViewSize('a4');
-                                    }}
-                                />
-                                <span>导出 A4 打印页面（推荐表格风格）</span>
-                            </label>
-                        </div>
-                    </div>
-                    <button
-                        class="view-options-menu__subitem"
-                        on:click={exportCurrentFile}
-                    >
-                        导出文件
-                    </button>
-                </div>
-            {/if}
-
-            <button
-                class="view-options-menu__item"
-                on:click={() => (showTemplateOptions = !showTemplateOptions)}
-            >
-                <div class="view-options-menu__icon">
-                    <Frame class="view-options-menu__icon-svg" size={18} />
-                </div>
-                <div class="view-options-menu__content">
-                    <div class="view-options-menu__label">九宫格模板</div>
-                    <div class="view-options-menu__desc">
-                        保存与应用周边八格
-                    </div>
-                </div>
-            </button>
-
-            {#if showTemplateOptions}
-                <div class="view-options-menu__submenu">
-                    <div class="view-options-menu__subsection">
-                        <button
-                            class="view-options-menu__subitem"
-                            on:click={pickTemplatesFile}
-                        >
-                            指定模板文件
-                        </button>
-                        <button
-                            class="view-options-menu__path"
-                            on:click={openTemplatesFileFromPath}
-                            disabled={!$templatesFilePathStore}
-                            title={$templatesFilePathStore ?? '未指定'}
-                        >
-                            模板文件：
-                            {$templatesFilePathStore ?? '未指定'}
-                        </button>
-                    </div>
-                    <div class="view-options-menu__row view-options-menu__row--inline">
-                        <button
-                            class="view-options-menu__subitem"
-                            on:click={saveCurrentThemeAsTemplate}
-                        >
-                            保存当前九宫格为模板
-                        </button>
-                        <button
-                            class="view-options-menu__subitem"
-                            on:click={applyTemplateToCurrentTheme}
-                        >
-                            将模板应用到当前九宫格
-                        </button>
-                    </div>
-                </div>
-            {/if}
+            <ViewOptionsTemplatePanel
+                show={showTemplateOptions}
+                templatesFilePath={$templatesFilePathStore}
+                toggle={() => (showTemplateOptions = !showTemplateOptions)}
+                {pickTemplatesFile}
+                {openTemplatesFileFromPath}
+                {saveCurrentThemeAsTemplate}
+                {applyTemplateToCurrentTheme}
+            />
 
             <button class="view-options-menu__item" on:click={clearEmptySubgrids}>
                 <div class="view-options-menu__icon">
@@ -2186,413 +1492,4 @@
     </div>
 {/if}
 
-<style>
-    .view-options-menu {
-        min-width: 260px;
-        gap: 0;
-        padding: 0;
-    }
 
-    :global(.is-mobile) .view-options-menu {
-        padding: 0 !important;
-        max-width: none;
-        max-height: none;
-        right: auto;
-        bottom: auto;
-        display: flex;
-        flex-direction: column;
-        border-radius: 16px;
-        overflow: hidden;
-        border: 1px solid var(--background-modifier-border);
-        background: color-mix(
-            in srgb,
-            var(--background-primary) 92%,
-            var(--background-secondary)
-        );
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-    }
-
-    .view-options-menu:not(.is-mobile) {
-        top: 48px;
-        right: 8px;
-    }
-
-    .view-options-menu__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px 12px;
-        border-bottom: 1px solid var(--background-modifier-border);
-        background: var(--background-secondary);
-    }
-
-    .view-options-menu__title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-normal);
-    }
-
-    .view-options-menu__close {
-        background: transparent;
-        border: none;
-        padding: 4px;
-        cursor: pointer;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        border-radius: 3px;
-    }
-
-    .view-options-menu__close:hover {
-        background: var(--background-modifier-hover);
-        color: var(--text-normal);
-    }
-
-    .view-options-menu__items {
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
-        min-height: 0;
-        overflow: auto;
-        padding: 6px;
-    }
-
-    :global(.is-mobile) .view-options-menu__items {
-        padding: 8px 12px 14px;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 18px;
-    }
-
-    .view-options-menu__submenu {
-        margin: 6px;
-        padding: 8px;
-        border: 1px solid var(--background-modifier-border);
-        border-radius: 6px;
-        background: var(--background-secondary);
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .view-options-menu__submenu--nested {
-        margin: 0;
-        background: var(--background-primary);
-    }
-
-    .view-options-menu__subitem {
-        background: var(--background-primary);
-        border: 1px solid var(--background-modifier-border);
-        border-radius: 6px;
-        padding: 6px 8px;
-        cursor: pointer;
-        text-align: left;
-    }
-
-    .view-options-menu__path {
-        padding: 0;
-        border: none;
-        background: transparent;
-        font-size: 11px;
-        color: var(--text-muted);
-        text-align: left;
-        cursor: pointer;
-        line-height: 1.4;
-    }
-
-    .view-options-menu__path:disabled {
-        cursor: default;
-        opacity: 0.6;
-    }
-
-    .view-options-menu__path:not(:disabled):hover {
-        color: var(--text-normal);
-        text-decoration: underline;
-    }
-
-    .view-options-menu__subsection {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        padding-top: 8px;
-        border-top: 1px solid var(--background-modifier-border);
-    }
-
-    .view-options-menu__subsection:first-child {
-        padding-top: 0;
-        border-top: none;
-    }
-
-    .view-options-menu__subsection-title {
-        font-size: 12px;
-        color: var(--text-accent);
-        margin-bottom: 2px;
-    }
-
-    .view-options-menu__inline-group {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .view-options-menu__inline-toggle {
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        outline: none;
-        box-shadow: none;
-    }
-
-    .view-options-menu__inline-toggle:disabled {
-        opacity: 0.5;
-        cursor: default;
-    }
-
-    .view-options-menu__row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        font-size: 12px;
-        color: var(--text-normal);
-    }
-
-    :global(.is-mobile) .view-options-menu__row {
-        flex-wrap: wrap;
-    }
-
-    :global(.is-mobile) .view-options-menu__row > span {
-        flex: 1 1 160px;
-        min-width: 160px;
-        line-height: 1.3;
-    }
-
-    .view-options-menu__row--inline {
-        justify-content: flex-start;
-        gap: 16px;
-        flex-wrap: wrap;
-    }
-
-    .view-options-menu__inline-option {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .view-options-menu__note {
-        font-size: 11px;
-        color: var(--text-muted);
-        line-height: 1.3;
-    }
-
-    .view-options-menu__row select,
-    .view-options-menu__row input[type='range'] {
-        flex: 1 1 auto;
-    }
-
-    .view-options-menu__row-controls {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    :global(.is-mobile) .view-options-menu__row-controls {
-        flex: 1 1 220px;
-        min-width: 220px;
-        justify-content: flex-end;
-    }
-
-    .view-options-menu__reset {
-        width: 22px;
-        height: 22px;
-        padding: 0;
-        border-radius: 50%;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        line-height: 1;
-    }
-
-    .view-options-menu__reset:hover {
-        color: var(--text-normal);
-    }
-
-    .view-options-menu__range {
-        flex: 1 1 auto;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    :global(.is-mobile) .view-options-menu__range {
-        flex: 1 1 220px;
-        min-width: 220px;
-        justify-content: flex-end;
-    }
-
-    .view-options-menu__range-step {
-        width: 22px;
-        height: 22px;
-        padding: 0;
-        border-radius: 4px;
-        border: 1px solid var(--background-modifier-border);
-        background: var(--background-primary);
-        color: var(--text-normal);
-        cursor: pointer;
-        line-height: 1;
-    }
-
-    .view-options-menu__range-step:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .view-options-menu__range input[type='range'] {
-        flex: 1 1 auto;
-    }
-
-    .view-options-menu__range input[type='number'] {
-        width: 56px;
-        padding: 2px 4px;
-        text-align: center;
-    }
-
-    :global(.is-mobile) .view-options-menu__range-step,
-    :global(.is-mobile) .view-options-menu__reset {
-        width: 28px;
-        height: 28px;
-    }
-
-    :global(.is-mobile) .view-options-menu__reset {
-        border: 1px solid var(--background-modifier-border);
-        border-radius: 8px;
-        background: var(--background-secondary);
-    }
-
-    :global(.is-mobile) .view-options-menu__range input[type='number'] {
-        width: 60px;
-        height: 28px;
-        padding: 0 6px;
-        box-sizing: border-box;
-    }
-
-    .view-options-menu__item {
-        width: 100%;
-        display: flex !important;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 10px 12px;
-        min-height: 44px;
-        height: auto !important;
-        border: none !important;
-        background: transparent !important;
-        cursor: pointer;
-        border-radius: 4px;
-        text-align: left;
-        box-sizing: border-box;
-        overflow: hidden;
-    }
-
-    .view-options-menu__item:hover {
-        background: var(--background-modifier-hover);
-    }
-
-    .view-options-menu__item:active {
-        background: var(--background-modifier-active-hover);
-    }
-
-    .view-options-menu__item + .view-options-menu__item {
-        margin-top: 4px;
-    }
-
-    .view-options-menu__icon {
-        flex-shrink: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .view-options-menu__icon-svg {
-        color: var(--text-accent);
-    }
-
-    .view-options-menu__content {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .view-options-menu__label {
-        font-size: 14px;
-        font-weight: 500;
-        color: var(--text-normal);
-        line-height: 1.3;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .view-options-menu__desc {
-        font-size: 12px;
-        color: var(--text-muted);
-        line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .mobile-modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-height: 64px;
-        padding: 10px 14px;
-        border-bottom: 1px solid var(--background-modifier-border);
-        background: color-mix(
-            in srgb,
-            var(--background-primary) 88%,
-            var(--background-secondary)
-        );
-        position: sticky;
-        top: 0;
-        z-index: 20;
-    }
-
-    .mobile-modal-title {
-        font-weight: var(--font-bold);
-        color: var(--text-normal);
-    }
-
-    .mobile-done-button {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        background: var(--background-primary);
-        color: var(--text-normal);
-        border: 1px solid var(--background-modifier-border);
-        border-radius: 12px;
-        padding: 8px 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.15s ease;
-    }
-
-    .mobile-done-button:hover {
-        background: var(--background-modifier-hover);
-    }
-</style>
