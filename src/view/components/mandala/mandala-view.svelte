@@ -61,12 +61,6 @@
     const a4Orientation = MandalaA4OrientationStore(view);
     const borderOpacity = MandalaBorderOpacityStore(view);
     const show3x3SubgridNavButtons = Show3x3SubgridNavButtonsStore(view);
-    const toggleMode = () => {
-        view.plugin.settings.dispatch({
-            type: 'settings/view/mandala/toggle-mode',
-        });
-        focusContainer(view);
-    };
 
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
     const detailSidebarWidth = MandalaDetailSidebarWidthStore(view);
@@ -582,16 +576,6 @@
         justify-self: end;
     }
 
-    .mandala-toggle {
-        padding: 6px 10px;
-        border-radius: 8px;
-        background: var(--interactive-normal);
-        color: var(--text-normal);
-        outline: 1px solid var(--background-modifier-border);
-        outline-offset: -1px;
-        cursor: pointer;
-    }
-
     .mandala-scroll {
         flex: 1 1 auto;
         overflow: auto;
@@ -746,16 +730,6 @@
         pointer-events: none;
         box-sizing: border-box;
     }
-
-
-    .mandala-blocks {
-        display: grid;
-        grid-template-columns: repeat(3, max-content);
-        gap: var(--mandala-block-gap);
-        justify-content: center;
-        align-content: start;
-    }
-
     .mandala-grid {
         display: grid;
         grid-template-columns: repeat(3, var(--node-width));
@@ -846,8 +820,7 @@
         --mandala-card-overflow: hidden;
     }
 
-    .mandala-root--3 .mandala-empty,
-    .mandala-root--3 .mandala-mirror {
+    .mandala-root--3 .mandala-empty {
         width: 100%;
         height: 100%;
         min-height: 0;
@@ -921,20 +894,6 @@
         --mandala-card-overflow: hidden;
     }
 
-    .mandala-root--9 .mandala-blocks {
-        width: 100%;
-        height: 100%;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-template-rows: repeat(3, minmax(0, 1fr));
-        justify-content: stretch;
-        align-content: stretch;
-    }
-
-    .mandala-root--9 .mandala-block {
-        width: 100%;
-        height: 100%;
-    }
-
     .mandala-root--9 .mandala-grid {
         width: 100%;
         height: 100%;
@@ -943,8 +902,7 @@
         align-items: stretch;
     }
 
-    .mandala-root--9 .mandala-empty,
-    .mandala-root--9 .mandala-mirror {
+    .mandala-root--9 .mandala-empty {
         width: 100%;
         height: 100%;
         min-height: 0;
@@ -987,8 +945,7 @@
         height: 100%;
     }
 
-    .mandala-empty,
-    .mandala-mirror {
+    .mandala-empty {
         width: var(--node-width);
         min-height: var(--min-node-height);
         border: 1px dashed var(--background-modifier-border);
@@ -999,18 +956,6 @@
         background: var(--background-primary);
     }
 
-    .mandala-mirror :global(.lng-prev) {
-        pointer-events: auto;
-    }
-
-    .mandala-center-cell {
-        width: 100%;
-        height: 100%;
-        border: 1px dashed var(--background-modifier-border);
-        border-radius: 8px;
-        opacity: 0.35;
-        pointer-events: none;
-    }
     .is-editing-mobile.mandala-root {
         height: 100dvh !important;
         overflow: hidden !important;

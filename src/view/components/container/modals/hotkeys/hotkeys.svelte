@@ -137,46 +137,6 @@
         }
     }
 
-    :global(.is-mobile) .hotkeys-modal .front {
-        padding: 6px 12px 0;
-    }
-
-    :global(.is-mobile) .hotkeys-modal .groups {
-        padding: 12px;
-        gap: 12px;
-    }
-
-    :global(.is-mobile) .hotkeys-modal .hotkey-group {
-        background: var(--background-secondary);
-        border-radius: 14px;
-        padding: 12px;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-    }
-
-    :global(.is-mobile) .hotkeys-modal .hotkey-group-name {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-muted);
-        padding-bottom: 8px;
-    }
-
-    :global(.is-mobile) .hotkeys-modal .command {
-        background: var(--background-primary);
-        border-radius: 10px;
-        padding: 10px 12px;
-    }
-
-    :global(.is-mobile) .hotkeys-modal .hotkey {
-        padding: 4px 6px;
-        border-radius: 8px;
-    }
-
-    :global(.is-mobile) .hotkeys-modal kbd {
-        font-size: 12px;
-        padding: 2px 6px;
-        border-radius: 6px;
-    }
-
     .groups {
         width: 500px;
         display: flex;

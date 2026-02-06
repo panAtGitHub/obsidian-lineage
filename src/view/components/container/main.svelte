@@ -127,12 +127,4 @@
         -webkit-user-select: text;
     }
 
-    :global(.is-mobile) .mandala-view input,
-    :global(.is-mobile) .mandala-view textarea,
-    :global(.is-mobile) .mandala-view [contenteditable='true'],
-    :global(.is-mobile) .mandala-view .mobile-popup-editor-container,
-    :global(.is-mobile) .mandala-view .mobile-popup-editor-container * {
-        user-select: text;
-        -webkit-user-select: text;
-    }
 </style>
