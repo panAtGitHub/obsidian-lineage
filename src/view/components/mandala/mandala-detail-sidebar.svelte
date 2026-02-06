@@ -4,13 +4,18 @@
     import {
         ShowMandalaDetailSidebarStore,
         MandalaDetailSidebarWidthStore,
+        MandalaModeStore,
     } from 'src/stores/settings/derived/view-settings-store';
     import { onDestroy, tick } from 'svelte';
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
     import Content from 'src/view/components/container/column/components/group/components/card/components/content/content.svelte';
     import { NodeStylesStore } from 'src/stores/view/derived/style-rules';
-    import { Platform } from 'obsidian';
+    import { Platform, setIcon } from 'obsidian';
     import { createLayoutStore } from 'src/stores/view/orientation-store';
+    import {
+        enterSubgridForNode,
+        exitCurrentSubgrid,
+    } from 'src/view/helpers/mandala/mobile-navigation';
 
     const MIN_SIZE = 200;
     
@@ -29,11 +34,29 @@
     const view = getView();
     const showSidebarStore = ShowMandalaDetailSidebarStore(view);
     const editingState = derived(view.viewStore, (state) => state.document.editing);
+    const mode = MandalaModeStore(view);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
     );
+    const subgridTheme = derived(
+        view.viewStore,
+        (state) => state.ui.mandala.subgridTheme,
+    );
+    const idToSection = derived(
+        view.documentStore,
+        (state) => state.sections.id_section,
+    );
     const styleRules = NodeStylesStore(view);
+    let activeSection: string | null = null;
+    $: activeSection = $activeNodeId ? ($idToSection[$activeNodeId] ?? null) : null;
+    $: canExitSubgrid = Boolean($subgridTheme && $subgridTheme !== '1');
+    $: canEnterSubgrid = Boolean($activeNodeId) &&
+        !Boolean(
+            $subgridTheme &&
+            $subgridTheme.includes('.') &&
+            activeSection === $subgridTheme,
+        );
 
     let editorContainer: HTMLElement;
 
@@ -144,6 +167,27 @@
             });
         }
     };
+
+    const applyObsidianIcon = (node: HTMLElement, iconName: string) => {
+        setIcon(node, iconName);
+        return {
+            update(nextIconName: string) {
+                setIcon(node, nextIconName);
+            },
+        };
+    };
+
+    const enterSubgridFromFloatingButton = (event: MouseEvent) => {
+        event.stopPropagation();
+        if (!$activeNodeId || !canEnterSubgrid) return;
+        enterSubgridForNode(view, $activeNodeId);
+    };
+
+    const exitSubgridFromFloatingButton = (event: MouseEvent) => {
+        event.stopPropagation();
+        if (!canExitSubgrid) return;
+        exitCurrentSubgrid(view);
+    };
 </script>
 
 <div
@@ -177,6 +221,34 @@
                 </div>
             {:else}
                 <div class="no-selection">请选择一个格子进行编辑</div>
+            {/if}
+            {#if Platform.isMobile && $mode === '3x3'}
+                <div class="mobile-subgrid-floating-controls">
+                    <button
+                        class="mobile-subgrid-floating-btn"
+                        type="button"
+                        aria-label="退出上一层子九宫格"
+                        disabled={!canExitSubgrid}
+                        on:click={exitSubgridFromFloatingButton}
+                    >
+                        <span
+                            class="mobile-subgrid-floating-btn__icon"
+                            use:applyObsidianIcon={'chevron-up'}
+                        />
+                    </button>
+                    <button
+                        class="mobile-subgrid-floating-btn"
+                        type="button"
+                        aria-label="进入下一层子九宫格"
+                        disabled={!canEnterSubgrid}
+                        on:click={enterSubgridFromFloatingButton}
+                    >
+                        <span
+                            class="mobile-subgrid-floating-btn__icon"
+                            use:applyObsidianIcon={'chevron-down'}
+                        />
+                    </button>
+                </div>
             {/if}
         </div>
     {/if}
@@ -271,9 +343,46 @@
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
+        position: relative;
         /* 移动端不再有最小宽度限制，自适应填充 */
         padding: 12px;
         overflow-y: auto;
+    }
+
+    .mobile-subgrid-floating-controls {
+        position: absolute;
+        right: 12px;
+        top: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 12;
+        pointer-events: auto;
+    }
+
+    .mobile-subgrid-floating-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        border: 1px solid var(--background-modifier-border);
+        background: var(--background-primary);
+        color: var(--text-normal);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-s);
+    }
+
+    .mobile-subgrid-floating-btn:disabled {
+        opacity: 0.35;
+    }
+
+    .mobile-subgrid-floating-btn__icon {
+        width: 18px;
+        height: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
     /* 桌面端调整侧边栏左侧间距为 6px，实现总计 6+6=12px 间距 */
