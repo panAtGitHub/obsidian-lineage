@@ -8,7 +8,50 @@ export const DEFAULT_H1_FONT_SIZE_EM = 1.802;
 export const DEFAULT_SETTINGS = (): Settings => ({
     documents: {},
     hotkeys: {
-        customHotkeys: {},
+        customHotkeys: {
+            save_changes_and_exit_card: {
+                primary: { key: 'Escape', modifiers: [] },
+            },
+            enter_subgrid: {
+                primary: { key: 'ArrowDown', modifiers: ['Mod'] },
+            },
+            exit_subgrid: {
+                primary: { key: 'ArrowUp', modifiers: ['Mod'] },
+            },
+            toggle_search_input: {
+                primary: { key: '/', modifiers: [] },
+            },
+            go_up: {
+                primary: { key: 'ArrowUp', modifiers: [] },
+            },
+            go_down: {
+                primary: { key: 'ArrowDown', modifiers: [] },
+            },
+            go_left: {
+                primary: { key: 'ArrowLeft', modifiers: [] },
+            },
+            go_right: {
+                primary: { key: 'ArrowRight', modifiers: [] },
+            },
+            jump_core_next: {
+                primary: { key: 'ArrowRight', modifiers: ['Mod'] },
+            },
+            jump_core_prev: {
+                primary: { key: 'ArrowLeft', modifiers: ['Mod'] },
+            },
+            enable_edit_mode: {
+                primary: { key: 'Enter', modifiers: [] },
+            },
+            undo_change: {
+                primary: { key: 'z', modifiers: ['Mod'] },
+            },
+            redo_change: {
+                primary: { key: 'y', modifiers: ['Mod'] },
+            },
+            toggle_mandala_mode: {
+                primary: { key: 'l', modifiers: ['Mod'] },
+            },
+        },
     },
     view: {
         fontSize: 16,
