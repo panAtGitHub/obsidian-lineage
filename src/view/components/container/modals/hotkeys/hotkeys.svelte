@@ -185,6 +185,15 @@
         overflow-y: auto;
         flex: 1;
     }
+
+    .hotkeys-modal:not(.is-mobile) :global(.front) {
+        padding: var(--size-4-2) var(--size-4-6) 0;
+    }
+
+    .hotkeys-modal:not(.is-mobile) :global(.front .search-input-container) {
+        padding-right: 40px;
+    }
+
     @media (max-width: 720px) {
         .groups {
             width: 100%;
