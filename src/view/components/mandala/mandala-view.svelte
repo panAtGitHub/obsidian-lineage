@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Platform } from 'obsidian';
+    import { Platform, setIcon } from 'obsidian';
     import { onDestroy, onMount } from 'svelte';
     import { derived } from 'src/lib/store/derived';
     import {
@@ -41,6 +41,10 @@
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
     import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
     import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
+    import {
+        enterSubgridForNode,
+        exitCurrentSubgrid,
+    } from 'src/view/helpers/mandala/mobile-navigation';
 
     const view = getView();
     const layout = createLayoutStore();
@@ -294,6 +298,25 @@
         mobilePopupFontSizeStore.setFontSize($mobilePopupFontSizeStore - 1);
     };
 
+    const applyObsidianIcon = (node: HTMLElement, iconName: string) => {
+        setIcon(node, iconName);
+        return {
+            update(nextIconName: string) {
+                setIcon(node, nextIconName);
+            },
+        };
+    };
+
+    const enterSubgridFromButton = (event: MouseEvent, nodeId: string) => {
+        event.stopPropagation();
+        enterSubgridForNode(view, nodeId);
+    };
+
+    const exitSubgridFromButton = (event: MouseEvent) => {
+        event.stopPropagation();
+        exitCurrentSubgrid(view);
+    };
+
 </script>
 
 <div
@@ -407,6 +430,53 @@
                                         sectionColor={sectionBackground}
                                         draggable={cell.section !== theme}
                                     />
+                                    {#if !Platform.isMobile}
+                                        <div
+                                            class="mandala-subgrid-controls"
+                                            on:click|stopPropagation
+                                            on:mousedown|stopPropagation
+                                        >
+                                            {#if cell.section === theme}
+                                                <button
+                                                    class="mandala-subgrid-btn mandala-subgrid-btn--up"
+                                                    type="button"
+                                                    aria-label="退出子九宫"
+                                                    on:click={(event) =>
+                                                        exitSubgridFromButton(event)}
+                                                >
+                                                    <span
+                                                        class="mandala-subgrid-btn__icon"
+                                                        use:applyObsidianIcon={'chevron-up'}
+                                                    />
+                                                </button>
+                                                <button
+                                                    class="mandala-subgrid-btn mandala-subgrid-btn--down"
+                                                    type="button"
+                                                    aria-label="进入子九宫"
+                                                    on:click={(event) =>
+                                                        enterSubgridFromButton(event, cell.nodeId)}
+                                                >
+                                                    <span
+                                                        class="mandala-subgrid-btn__icon"
+                                                        use:applyObsidianIcon={'chevron-down'}
+                                                    />
+                                                </button>
+                                            {:else}
+                                                <button
+                                                    class="mandala-subgrid-btn mandala-subgrid-btn--single"
+                                                    type="button"
+                                                    aria-label="进入子九宫"
+                                                    on:click={(event) =>
+                                                        enterSubgridFromButton(event, cell.nodeId)}
+                                                >
+                                                    <span
+                                                        class="mandala-subgrid-btn__icon"
+                                                        use:applyObsidianIcon={'chevron-down'}
+                                                    />
+                                                </button>
+                                            {/if}
+                                        </div>
+                                    {/if}
                                 {:else}
                                     <div
                                         class="mandala-empty"
@@ -677,6 +747,7 @@
     .mandala-cell {
         width: 100%;
         height: 100%;
+        position: relative;
     }
 
     /* 3×3 主视图：铺满可视区域（避免横向滚动） */
@@ -761,6 +832,45 @@
         width: 100%;
         height: 100%;
         min-height: 0;
+    }
+
+    .mandala-subgrid-controls {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        z-index: 7;
+        display: flex;
+        gap: 6px;
+        pointer-events: auto;
+    }
+
+    .mandala-subgrid-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid var(--background-modifier-border);
+        background: var(--background-primary);
+        color: var(--text-normal);
+        box-shadow: var(--shadow-s);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .mandala-subgrid-btn:hover {
+        background: var(--background-primary-alt);
+    }
+
+    .mandala-subgrid-btn:active {
+        transform: translateY(1px);
+    }
+
+    .mandala-subgrid-btn__icon :global(svg) {
+        width: 14px;
+        height: 14px;
+        stroke-width: 2.2;
     }
 
     /* 9×9：格子约等于 3×3 的 1/3，并铺满屏幕 */
