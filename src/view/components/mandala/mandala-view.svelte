@@ -452,18 +452,20 @@
                                                         />
                                                     </button>
                                                 {/if}
-                                                <button
-                                                    class="mandala-subgrid-btn mandala-subgrid-btn--down"
-                                                    type="button"
-                                                    aria-label="进入子九宫"
-                                                    on:click={(event) =>
-                                                        enterSubgridFromButton(event, cell.nodeId)}
-                                                >
-                                                    <span
-                                                        class="mandala-subgrid-btn__icon"
-                                                        use:applyObsidianIcon={'chevron-down'}
-                                                    />
-                                                </button>
+                                                {#if !theme.includes('.')}
+                                                    <button
+                                                        class="mandala-subgrid-btn mandala-subgrid-btn--down"
+                                                        type="button"
+                                                        aria-label="进入子九宫"
+                                                        on:click={(event) =>
+                                                            enterSubgridFromButton(event, cell.nodeId)}
+                                                    >
+                                                        <span
+                                                            class="mandala-subgrid-btn__icon"
+                                                            use:applyObsidianIcon={'chevron-down'}
+                                                        />
+                                                    </button>
+                                                {/if}
                                             {:else}
                                                 <button
                                                     class="mandala-subgrid-btn mandala-subgrid-btn--single"
