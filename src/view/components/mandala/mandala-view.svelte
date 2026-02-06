@@ -129,8 +129,6 @@
         );
     };
 
-    // 强制锁定为 3x3 模式以支持无限嵌套逻辑，保留 9x9 代码备用
-    // $: view.mandalaMode = '3x3';
     $: view.mandalaMode = $mode;
 
     const sectionToNodeId = derived(

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getView } from '../../context';
     import { searchStore } from 'src/stores/view/derived/search-store';
-    import { Eye, Text } from 'lucide-svelte';
+    import { Text } from 'lucide-svelte';
     import { lang } from 'src/lang/lang';
     import { Platform } from 'obsidian';
 
@@ -123,23 +123,6 @@
         style={'right: 49px; top: -1px;'+($search.query ? '' : ' display: none;')}
     ></div>
 
-    <!-- Mandala 模式下不需要"显示所有节点"按钮，已注释
-    {#if $search.query.length > 0}
-        <div
-            aria-label={lang.tlb_search_show_all_nodes}
-            class={'input-right-decorator clickable-icon' +
-                ($search.showAllNodes ? ' is-active' : '')}
-            on:click={() => {
-                viewStore.dispatch({
-                    type: 'search/view/toggle-show-all-nodes',
-                });
-            }}
-            style="right: 28px"
-        >
-            <Eye class="svg-icon" />
-        </div>
-    {/if}
-    -->
     <div
         aria-label={lang.tlb_search_fuzzy_search}
         class={'input-right-decorator clickable-icon' +

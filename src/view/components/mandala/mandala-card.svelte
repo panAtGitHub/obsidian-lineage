@@ -19,12 +19,7 @@
     import { executeMandalaSwap } from 'src/view/helpers/mandala/mandala-swap';
     import { setActiveCell9x9 } from 'src/view/helpers/mandala/set-active-cell-9x9';
     import { enableSidebarEditorForNode } from 'src/view/helpers/mandala/node-editing';
-    import {
-        ShowMandalaDetailSidebarStore,
-        // AlwaysShowCardButtons,
-        OutlineModeStore,
-    } from 'src/stores/settings/derived/view-settings-store';
-    // import CardButtons from 'src/view/components/container/column/components/group/components/card/components/card-buttons/card-buttons/card-buttons.svelte';
+    import { ShowMandalaDetailSidebarStore } from 'src/stores/settings/derived/view-settings-store';
     import { derived } from 'src/lib/store/derived';
     import { localFontStore } from 'src/stores/local-font-store';
 
@@ -45,21 +40,7 @@
 
     const view = getView();
     const showDetailSidebar = ShowMandalaDetailSidebarStore(view);
-    // const alwaysShowCardButtons = AlwaysShowCardButtons(view);
-    const outlineMode = OutlineModeStore(view);
     const swapState = derived(view.viewStore, (state) => state.ui.mandala.swap);
-
-    const hasChildrenStore = derived(view.documentStore, (state) => {
-        const section = state.sections.id_section[nodeId];
-        if (!section) return false;
-        return Object.keys(state.sections.section_id).some((s) =>
-            s.startsWith(section + '.'),
-        );
-    });
-
-    const collapsedStore = derived(view.viewStore, (state) =>
-        state.outline.collapsedParents.has(nodeId),
-    );
 
     const handleSelect = (e: MouseEvent) => {
         if (gridCell) {
@@ -129,7 +110,6 @@
         selected ? 'node-border--selected' : undefined,
         pinned ? 'node-border--pinned' : undefined,
         active ? 'node-border--active' : undefined,
-        // $alwaysShowCardButtons ? 'always-show-buttons' : undefined,
     )}
     class:mandala-card--swap-source={$swapState.active &&
         $swapState.sourceNodeId === nodeId}
@@ -192,17 +172,6 @@
             active={active ? ActiveStatus.node : null}
         />
     {/if}
-
-    <!-- <CardButtons
-        {editing}
-        {nodeId}
-        hasChildren={$hasChildrenStore}
-        isInSidebar={false}
-        collapsed={$collapsedStore}
-        active={active ? ActiveStatus.node : null}
-        alwaysShowCardButtons={$alwaysShowCardButtons}
-        outlineMode={$outlineMode}
-    /> -->
 
     <div class="mandala-section-label">{section}</div>
 </div>

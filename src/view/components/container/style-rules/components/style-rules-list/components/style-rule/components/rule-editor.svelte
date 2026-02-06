@@ -87,8 +87,6 @@
             />
         {/if}
     </div>
-
-    <!--    <div class="debug-node-id">{rule.id}</div>-->
 </div>
 
 <style>

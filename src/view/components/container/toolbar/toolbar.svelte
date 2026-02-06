@@ -1,12 +1,10 @@
 <script>
-    // import NavigationHistory from './components/navigation-buttons.svelte';
     import SearchToggle from './components/search-toggle.svelte';
     import { getView } from 'src/view/components/container/context';
     import { searchStore } from 'src/stores/view/derived/search-store';
     import SearchInput from './components/search-input.svelte';
     import LeftSidebarToggle from './components/left-sidebar-toggle.svelte';
     import SearchNavigationButtons from './components/search/search-navigation-buttons.svelte';
-    // import DocumentHistoryButtons from './components/document-history-buttons.svelte';
     import SearchActions from './components/search-actions.svelte';
     import { writable, derived } from 'svelte/store';
     import { Menu } from 'lucide-svelte';
@@ -63,8 +61,6 @@
 
         <div class="buttons-group-wrapper" data-visible={$showControls}>
             <LeftSidebarToggle />
-            <!-- <NavigationHistory /> -->
-            <!-- <DocumentHistoryButtons /> -->
             <SearchToggle />
         </div>
     </div>
