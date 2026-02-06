@@ -9,7 +9,7 @@
     // import DocumentHistoryButtons from './components/document-history-buttons.svelte';
     import SearchActions from './components/search-actions.svelte';
     import { writable, derived } from 'svelte/store';
-    import { Eye, Menu } from 'lucide-svelte';
+    import { Menu } from 'lucide-svelte';
     import { Platform } from 'obsidian';
     import Button from '../shared/button.svelte';
     import { lang } from 'src/lang/lang';
@@ -24,18 +24,6 @@
     const showControls = writable(false);
     const toggleShowControls = () => {
         showControls.update((v) => !v);
-    };
-
-    import {
-        ShowHiddenCardInfoStore,
-    } from 'src/stores/settings/derived/view-settings-store';
-
-    const showHiddenCardInfo = ShowHiddenCardInfoStore(view);
-
-    const toggleHiddenCardInfo = () => {
-        view.plugin.settings.dispatch({
-            type: 'settings/view/toggle-hidden-card-info',
-        });
     };
 
     // The center controls (9x9/3x3 + lock toggle) live in toolbar-center.svelte.
@@ -75,14 +63,6 @@
 
         <div class="buttons-group-wrapper" data-visible={$showControls}>
             <LeftSidebarToggle />
-            <Button
-                active={$showHiddenCardInfo}
-                label={lang.controls_toggle_hidden_card_info}
-                on:click={toggleHiddenCardInfo}
-                tooltipPosition="bottom"
-            >
-                <Eye class="svg-icon" />
-            </Button>
             <!-- <NavigationHistory /> -->
             <!-- <DocumentHistoryButtons /> -->
             <SearchToggle />

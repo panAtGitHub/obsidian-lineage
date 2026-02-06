@@ -19,6 +19,7 @@
         MandalaFontSizeSidebarMobileStore,
         MandalaGridOrientationStore,
         MandalaSectionColorOpacityStore,
+        ShowHiddenCardInfoStore,
         SquareLayoutStore,
         WhiteThemeModeStore,
     } from 'src/stores/settings/derived/view-settings-store';
@@ -40,6 +41,7 @@
         openMandalaTemplatesFileModal,
     } from 'src/obsidian/modals/mandala-templates-modal';
     import ViewOptionsFontPanel from './components/view-options-font-panel.svelte';
+    import ViewOptionsDisplayPanel from './components/view-options-display-panel.svelte';
     import ViewOptionsEditPanel from './components/view-options-edit-panel.svelte';
     import ViewOptionsExportPanel from './components/view-options-export-panel.svelte';
     import ViewOptionsTemplatePanel from './components/view-options-template-panel.svelte';
@@ -51,6 +53,7 @@
     export let show = false;
     let showEditOptions = false;
     let showFontOptions = false;
+    let showDisplayOptions = false;
     let showPrintOptions = false;
     let showTemplateOptions = false;
     let mobileBoundsStyle = '';
@@ -64,6 +67,7 @@
     const whiteThemeMode = WhiteThemeModeStore(view);
     const squareLayout = SquareLayoutStore(view);
     const gridOrientation = MandalaGridOrientationStore(view);
+    const showHiddenCardInfo = ShowHiddenCardInfoStore(view);
     const themeDefaults = getDefaultTheme();
     const cardsGap = derived(view.plugin.settings, (state) => state.view.cardsGap);
     const fontSize3x3 = isMobile
@@ -104,6 +108,12 @@
     const toggleWhiteTheme = () => {
         view.plugin.settings.dispatch({
             type: 'settings/view/toggle-white-theme',
+        });
+    };
+
+    const toggleHiddenCardInfo = () => {
+        view.plugin.settings.dispatch({
+            type: 'settings/view/toggle-hidden-card-info',
         });
     };
 
@@ -1287,6 +1297,7 @@
         dispatch('close');
         showEditOptions = false;
         showFontOptions = false;
+        showDisplayOptions = false;
         showPrintOptions = false;
         showTemplateOptions = false;
         showImmersiveOptions = false;
@@ -1406,6 +1417,14 @@
                 {resetHeadingsFontSize}
             />
 
+            <ViewOptionsDisplayPanel
+                show={showDisplayOptions}
+                showHiddenCardInfo={$showHiddenCardInfo}
+                showMandalaEntryButtons={true}
+                toggle={() => (showDisplayOptions = !showDisplayOptions)}
+                {toggleHiddenCardInfo}
+            />
+
             <ViewOptionsEditPanel
                 show={showEditOptions}
                 whiteThemeMode={$whiteThemeMode}
@@ -1491,5 +1510,3 @@
         </div>
     </div>
 {/if}
-
-
