@@ -437,18 +437,20 @@
                                             on:mousedown|stopPropagation
                                         >
                                             {#if cell.section === theme}
-                                                <button
-                                                    class="mandala-subgrid-btn mandala-subgrid-btn--up"
-                                                    type="button"
-                                                    aria-label="退出子九宫"
-                                                    on:click={(event) =>
-                                                        exitSubgridFromButton(event)}
-                                                >
-                                                    <span
-                                                        class="mandala-subgrid-btn__icon"
-                                                        use:applyObsidianIcon={'chevron-up'}
-                                                    />
-                                                </button>
+                                                {#if theme !== '1'}
+                                                    <button
+                                                        class="mandala-subgrid-btn mandala-subgrid-btn--up"
+                                                        type="button"
+                                                        aria-label="退出子九宫"
+                                                        on:click={(event) =>
+                                                            exitSubgridFromButton(event)}
+                                                    >
+                                                        <span
+                                                            class="mandala-subgrid-btn__icon"
+                                                            use:applyObsidianIcon={'chevron-up'}
+                                                        />
+                                                    </button>
+                                                {/if}
                                                 <button
                                                     class="mandala-subgrid-btn mandala-subgrid-btn--down"
                                                     type="button"
