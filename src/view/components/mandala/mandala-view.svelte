@@ -317,6 +317,12 @@
         exitCurrentSubgrid(view);
     };
 
+    const getUpButtonLabel = (theme: string) =>
+        theme.includes('.') ? '退出上一层子九宫格' : '上一层核心九宫格';
+
+    const getDownButtonLabel = (theme: string) =>
+        theme.includes('.') ? '进入下一层子九宫格' : '下一层核心九宫格';
+
 </script>
 
 <div
@@ -442,7 +448,8 @@
                                                     <button
                                                         class="mandala-subgrid-btn mandala-subgrid-btn--up"
                                                         type="button"
-                                                        aria-label="退出子九宫"
+                                                        aria-label={getUpButtonLabel(theme)}
+                                                        title={getUpButtonLabel(theme)}
                                                         on:click={(event) =>
                                                             exitSubgridFromButton(event)}
                                                     >
@@ -456,7 +463,8 @@
                                                     <button
                                                         class="mandala-subgrid-btn mandala-subgrid-btn--down"
                                                         type="button"
-                                                        aria-label="进入子九宫"
+                                                        aria-label={getDownButtonLabel(theme)}
+                                                        title={getDownButtonLabel(theme)}
                                                         on:click={(event) =>
                                                             enterSubgridFromButton(event, cell.nodeId)}
                                                     >
