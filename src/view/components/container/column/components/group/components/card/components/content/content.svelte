@@ -67,21 +67,8 @@
 
     import { Platform } from 'obsidian';
 
-    const DOUBLE_CLICK_THRESHOLD_MS = 250;
-    let lastClickAt = 0;
-    let prevClickAt = 0;
-
-    const recordClick = () => {
-        prevClickAt = lastClickAt;
-        lastClickAt = Date.now();
-    };
-
-    const isFastDoubleClick = () =>
-        lastClickAt - prevClickAt <= DOUBLE_CLICK_THRESHOLD_MS;
-
     const handleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
-        recordClick();
         
         // 移动端：仅激活节点，禁止任何编辑相关的副作用
         if (Platform.isMobile) {
@@ -110,7 +97,6 @@
 
     const handleDoubleClick = (e: MouseEvent) => {
         if (isGrabbing(view)) return;
-        if (!isFastDoubleClick()) return;
 
         // 移动端：双击不进入编辑，由父组件 MandalaCard 处理导航（3x3）/无动作（9x9）
         if (Platform.isMobile) {
