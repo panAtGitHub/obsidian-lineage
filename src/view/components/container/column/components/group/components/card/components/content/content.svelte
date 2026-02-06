@@ -93,6 +93,9 @@
             handleLinks(view, e);
             setActiveNode(e);
         }
+
+        // 内容层已完成点击处理，避免继续冒泡到外层卡片重复触发选择逻辑
+        e.stopPropagation();
     };
 
     const handleDoubleClick = (e: MouseEvent) => {
@@ -104,6 +107,9 @@
         }
 
         enableEditModeAtCursor(e);
+
+        // 避免双击同时触发外层卡片的双击处理，造成重复进入编辑与卡顿
+        e.stopPropagation();
     };
 </script>
 
