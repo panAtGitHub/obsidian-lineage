@@ -38,7 +38,7 @@ export const editCommands = () => {
             name: 'enable_edit_mode',
             callback: (view, event) => {
                 event.preventDefault();
-                const showDetailSidebar =
+                let showDetailSidebar =
                     view.plugin.settings.getValue().view
                         .showMandalaDetailSidebar;
                 let nodeId = view.viewStore.getValue().document.activeNode;
@@ -61,6 +61,12 @@ export const editCommands = () => {
                             existing ??
                             ensureNodeForSection(view, section) ??
                             nodeId;
+                    }
+                    if (!showDetailSidebar) {
+                        view.plugin.settings.dispatch({
+                            type: 'view/mandala-detail-sidebar/toggle',
+                        });
+                        showDetailSidebar = true;
                     }
                 }
                 view.viewStore.dispatch({

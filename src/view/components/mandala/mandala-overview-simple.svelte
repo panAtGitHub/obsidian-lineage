@@ -313,13 +313,6 @@ $: {
             type: 'view/set-active-node/mouse',
             payload: { id: cell.nodeId },
         });
-
-        // 仅在非移动端时保留原有的自动开启逻辑 (为了保护 PC 端逻辑)
-        if (!Platform.isMobile && !view.plugin.settings.getValue().view.showMandalaDetailSidebar) {
-            view.plugin.settings.dispatch({
-                type: 'view/mandala-detail-sidebar/toggle',
-            });
-        }
     };
 
     const onCellDblClick = (cell: (typeof styledCells)[number]) => {
@@ -338,30 +331,23 @@ $: {
             return;
         }
 
-        if (Platform.isMobile) {
-            if ($mobileInteractionMode === 'unlocked') {
-                // 场景 7, 8: 弹出全屏编辑
-                view.viewStore.dispatch({
-                    type: 'view/editor/enable-main-editor',
-                    payload: { nodeId: cell.nodeId, isInSidebar: false },
-                });
-                return;
-            } else {
-                // 场景 5: 锁定+侧栏关 = 无反应
-                if (!$showDetailSidebar) return;
-                // 场景 6: 锁定+侧栏开 = 仅选中 (等同于单击)
-                onCellClick(cell);
-                return;
-            }
+        const showSidebar =
+            view.plugin.settings.getValue().view.showMandalaDetailSidebar;
+        if (!showSidebar) {
+            view.plugin.settings.dispatch({
+                type: 'view/mandala-detail-sidebar/toggle',
+            });
         }
 
-    // PC 端逻辑保持不变
-    view.viewStore.dispatch({
-        type: 'view/editor/enable-sidebar-editor',
-        payload: { id: cell.nodeId },
-        context: { activeSidebarTab: 'mandala-detail' as any }
-    });
-};
+        view.viewStore.dispatch({
+            type: 'view/set-active-node/mouse-silent',
+            payload: { id: cell.nodeId },
+        });
+        view.viewStore.dispatch({
+            type: 'view/editor/enable-main-editor',
+            payload: { nodeId: cell.nodeId, isInSidebar: true },
+        });
+    };
 
 const applyObsidianIcon = (node: HTMLElement, iconName: string) => {
     setIcon(node, iconName);
