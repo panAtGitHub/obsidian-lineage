@@ -1394,23 +1394,6 @@
             </div>
         {/if}
         <div class="view-options-menu__items">
-            {#if !isMobile}
-                <button
-                    class="view-options-menu__item view-options-menu__item--close"
-                    on:click={closeMenu}
-                    aria-label="关闭"
-                >
-                    <div class="view-options-menu__icon">
-                        <X class="view-options-menu__icon-svg" size={18} />
-                    </div>
-                    <div class="view-options-menu__content">
-                        <div class="view-options-menu__label">关闭</div>
-                        <div class="view-options-menu__desc">
-                            返回主界面
-                        </div>
-                    </div>
-                </button>
-            {/if}
             <ViewOptionsFontPanel
                 isMobile={isMobile}
                 show={showFontOptions}
