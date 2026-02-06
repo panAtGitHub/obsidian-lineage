@@ -499,7 +499,7 @@
     }
 
     .cell-title {
-        font-size: max(0.9em, calc(1em * var(--mandala-h1-scale, 1)));
+        font-size: var(--mandala-h1-size, 1em);
         font-weight: 600;
         line-height: 1.2;
         color: var(--text-normal);
