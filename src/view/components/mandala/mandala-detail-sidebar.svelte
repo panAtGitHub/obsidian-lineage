@@ -6,6 +6,7 @@
         MandalaDetailSidebarWidthStore,
         MandalaModeStore,
         Show3x3SubgridNavButtonsStore,
+        Show9x9ParallelNavButtonsStore,
     } from 'src/stores/settings/derived/view-settings-store';
     import { onDestroy, tick } from 'svelte';
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
@@ -17,6 +18,7 @@
         enterSubgridForNode,
         exitCurrentSubgrid,
     } from 'src/view/helpers/mandala/mobile-navigation';
+    import { jumpCoreTheme } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/jump-core-theme';
 
     const MIN_SIZE = 200;
 
@@ -40,6 +42,7 @@
     );
     const mode = MandalaModeStore(view);
     const show3x3SubgridNavButtons = Show3x3SubgridNavButtonsStore(view);
+    const show9x9ParallelNavButtons = Show9x9ParallelNavButtonsStore(view);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
@@ -57,6 +60,7 @@
     $: activeSection = $activeNodeId
         ? $idToSection[$activeNodeId] ?? null
         : null;
+    $: activeCoreNumber = Number(activeSection?.split('.')[0] ?? '1') || 1;
     $: canExitSubgrid = Boolean($subgridTheme && $subgridTheme !== '1');
     $: canEnterSubgrid =
         Boolean($activeNodeId) &&
@@ -65,6 +69,7 @@
                 $subgridTheme.includes('.') &&
                 activeSection === $subgridTheme,
         );
+    $: canJumpPrevCore = activeCoreNumber > 1;
 
     let editorContainer: HTMLElement;
 
@@ -205,6 +210,17 @@
         exitCurrentSubgrid(view);
     };
 
+    const jumpPrevCoreFromFloatingButton = (event: MouseEvent) => {
+        event.stopPropagation();
+        if (!canJumpPrevCore) return;
+        jumpCoreTheme(view, 'up');
+    };
+
+    const jumpNextCoreFromFloatingButton = (event: MouseEvent) => {
+        event.stopPropagation();
+        jumpCoreTheme(view, 'down');
+    };
+
 </script>
 
 <div
@@ -270,6 +286,32 @@
                         <span
                             class="mobile-subgrid-floating-btn__icon"
                             use:applyObsidianIcon={'chevron-down'}
+                        />
+                    </button>
+                </div>
+            {:else if Platform.isMobile && $mode === '9x9' && $show9x9ParallelNavButtons}
+                <div class="mobile-subgrid-floating-controls">
+                    <button
+                        class="mobile-subgrid-floating-btn"
+                        type="button"
+                        aria-label="进入上一层核心九宫格"
+                        disabled={!canJumpPrevCore}
+                        on:click={jumpPrevCoreFromFloatingButton}
+                    >
+                        <span
+                            class="mobile-subgrid-floating-btn__icon"
+                            use:applyObsidianIcon={'chevron-left'}
+                        />
+                    </button>
+                    <button
+                        class="mobile-subgrid-floating-btn"
+                        type="button"
+                        aria-label="进入下一层核心九宫格"
+                        on:click={jumpNextCoreFromFloatingButton}
+                    >
+                        <span
+                            class="mobile-subgrid-floating-btn__icon"
+                            use:applyObsidianIcon={'chevron-right'}
                         />
                     </button>
                 </div>
