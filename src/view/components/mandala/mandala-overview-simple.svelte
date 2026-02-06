@@ -269,7 +269,9 @@
             return;
         }
 
-        setActiveCell9x9(view, null);
+        // A section can appear in multiple 9x9 cells. Keep the clicked cell
+        // as the single visual focus instead of highlighting all same-node copies.
+        setActiveCell9x9(view, { row: cell.row, col: cell.col });
 
         if (Platform.isMobile) {
             // 场景 5：锁定 + 侧栏关 = 无反应
@@ -283,7 +285,6 @@
             type: 'view/set-active-node/mouse',
             payload: { id: cell.nodeId },
         });
-        setActiveCell9x9(view, null);
 
         // 仅在非移动端时保留原有的自动开启逻辑 (为了保护 PC 端逻辑)
         if (!Platform.isMobile && !view.plugin.settings.getValue().view.showMandalaDetailSidebar) {
