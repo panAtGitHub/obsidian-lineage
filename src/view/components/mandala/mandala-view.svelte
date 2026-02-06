@@ -433,6 +433,7 @@
                                     {#if !Platform.isMobile}
                                         <div
                                             class="mandala-subgrid-controls"
+                                            class:is-center-controls={cell.section === theme}
                                             on:click|stopPropagation
                                             on:mousedown|stopPropagation
                                         >
@@ -846,6 +847,13 @@
         pointer-events: auto;
     }
 
+    .mandala-subgrid-controls.is-center-controls {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        display: block;
+    }
+
     .mandala-subgrid-btn {
         width: 24px;
         height: 24px;
@@ -873,6 +881,20 @@
         width: 14px;
         height: 14px;
         stroke-width: 2.2;
+    }
+
+    .mandala-subgrid-controls.is-center-controls
+        .mandala-subgrid-btn--up {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+    }
+
+    .mandala-subgrid-controls.is-center-controls
+        .mandala-subgrid-btn--down {
+        position: absolute;
+        right: 0;
+        bottom: 0;
     }
 
     /* 9×9：格子约等于 3×3 的 1/3，并铺满屏幕 */
