@@ -73,15 +73,20 @@
                     >
                         +
                     </button>
-                    <input
-                        type="number"
-                        min="6"
-                        max="36"
-                        step="1"
-                        inputmode="numeric"
-                        value={fontSize3x3}
-                        on:change={updateFontSize3x3}
-                    />
+                    {#if isMobile}
+                        <span class="view-options-menu__value-readout">
+                            {fontSize3x3}
+                        </span>
+                    {:else}
+                        <input
+                            type="number"
+                            min="6"
+                            max="36"
+                            step="1"
+                            value={fontSize3x3}
+                            on:change={updateFontSize3x3}
+                        />
+                    {/if}
                     <button
                         class="view-options-menu__reset"
                         type="button"
@@ -118,15 +123,20 @@
                     >
                         +
                     </button>
-                    <input
-                        type="number"
-                        min="6"
-                        max="36"
-                        step="1"
-                        inputmode="numeric"
-                        value={fontSize9x9}
-                        on:change={updateFontSize9x9}
-                    />
+                    {#if isMobile}
+                        <span class="view-options-menu__value-readout">
+                            {fontSize9x9}
+                        </span>
+                    {:else}
+                        <input
+                            type="number"
+                            min="6"
+                            max="36"
+                            step="1"
+                            value={fontSize9x9}
+                            on:change={updateFontSize9x9}
+                        />
+                    {/if}
                     <button
                         class="view-options-menu__reset"
                         type="button"
@@ -163,15 +173,20 @@
                     >
                         +
                     </button>
-                    <input
-                        type="number"
-                        min="6"
-                        max="36"
-                        step="1"
-                        inputmode="numeric"
-                        value={fontSizeSidebar}
-                        on:change={updateFontSizeSidebar}
-                    />
+                    {#if isMobile}
+                        <span class="view-options-menu__value-readout">
+                            {fontSizeSidebar}
+                        </span>
+                    {:else}
+                        <input
+                            type="number"
+                            min="6"
+                            max="36"
+                            step="1"
+                            value={fontSizeSidebar}
+                            on:change={updateFontSizeSidebar}
+                        />
+                    {/if}
                     <button
                         class="view-options-menu__reset"
                         type="button"
@@ -213,15 +228,20 @@
                     >
                         +
                     </button>
-                    <input
-                        type="number"
-                        min="1"
-                        max="4"
-                        step="0.1"
-                        inputmode="decimal"
-                        value={headingsFontSizeEm}
-                        on:change={updateHeadingsFontSize}
-                    />
+                    {#if isMobile}
+                        <span class="view-options-menu__value-readout">
+                            {headingsFontSizeEm}
+                        </span>
+                    {:else}
+                        <input
+                            type="number"
+                            min="1"
+                            max="4"
+                            step="0.1"
+                            value={headingsFontSizeEm}
+                            on:change={updateHeadingsFontSize}
+                        />
+                    {/if}
                     <button
                         class="view-options-menu__reset"
                         type="button"

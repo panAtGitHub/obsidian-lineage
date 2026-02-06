@@ -279,6 +279,14 @@
     text-align: center;
 }
 
+.view-options-menu__value-readout {
+    width: 56px;
+    padding: 2px 4px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    color: var(--text-normal);
+}
+
 .is-mobile .view-options-menu__range-step,
 .is-mobile .view-options-menu__reset {
     width: 28px;
