@@ -102,10 +102,13 @@ export const exitCurrentSubgrid = (view: MandalaView) => {
     }
 
     const focusTheme =
-        parentTheme ||
-        (!Number.isNaN(themeNumber) && themeNumber > 1
-            ? String(themeNumber - 1)
-            : '1');
+        // For nested themes like 1.1 or 1.1.1:
+        // after exiting, keep focus on the original center theme in the parent grid.
+        parentTheme
+            ? theme
+            : !Number.isNaN(themeNumber) && themeNumber > 1
+              ? String(themeNumber - 1)
+              : '1';
     const focusNodeId = docState.sections.section_id[focusTheme];
     if (focusNodeId) {
         view.viewStore.dispatch({
