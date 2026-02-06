@@ -5,6 +5,8 @@
         ShowMandalaDetailSidebarStore,
         MandalaDetailSidebarWidthStore,
         MandalaModeStore,
+        Show3x3SubgridNavButtonsStore,
+        Show9x9ParallelNavButtonsStore,
     } from 'src/stores/settings/derived/view-settings-store';
     import { onDestroy, tick } from 'svelte';
     import InlineEditor from 'src/view/components/container/column/components/group/components/card/components/content/inline-editor.svelte';
@@ -19,7 +21,7 @@
     import { jumpCoreTheme } from 'src/view/actions/keyboard-shortcuts/helpers/commands/commands/helpers/jump-core-theme';
 
     const MIN_SIZE = 200;
-    
+
     // 我们在侧边栏中也引入布局监听，仅用于响应 Resizer
     const layout = createLayoutStore();
 
@@ -34,8 +36,13 @@
 
     const view = getView();
     const showSidebarStore = ShowMandalaDetailSidebarStore(view);
-    const editingState = derived(view.viewStore, (state) => state.document.editing);
+    const editingState = derived(
+        view.viewStore,
+        (state) => state.document.editing,
+    );
     const mode = MandalaModeStore(view);
+    const show3x3SubgridNavButtons = Show3x3SubgridNavButtonsStore(view);
+    const show9x9ParallelNavButtons = Show9x9ParallelNavButtonsStore(view);
     const activeNodeId = derived(
         view.viewStore,
         (state) => state.document.activeNode,
@@ -50,14 +57,17 @@
     );
     const styleRules = NodeStylesStore(view);
     let activeSection: string | null = null;
-    $: activeSection = $activeNodeId ? ($idToSection[$activeNodeId] ?? null) : null;
+    $: activeSection = $activeNodeId
+        ? $idToSection[$activeNodeId] ?? null
+        : null;
     $: activeCoreNumber = Number(activeSection?.split('.')[0] ?? '1') || 1;
     $: canExitSubgrid = Boolean($subgridTheme && $subgridTheme !== '1');
-    $: canEnterSubgrid = Boolean($activeNodeId) &&
+    $: canEnterSubgrid =
+        Boolean($activeNodeId) &&
         !Boolean(
             $subgridTheme &&
-            $subgridTheme.includes('.') &&
-            activeSection === $subgridTheme,
+                $subgridTheme.includes('.') &&
+                activeSection === $subgridTheme,
         );
     $: canJumpPrevCore = activeCoreNumber > 1;
 
@@ -71,9 +81,9 @@
     const focusEditor = async () => {
         await tick();
         if (editorContainer) {
-            const editor = editorContainer.querySelector(
-                '.common-editor',
-            ) as HTMLTextAreaElement | HTMLDivElement;
+            const editor = editorContainer.querySelector('.common-editor') as
+                | HTMLTextAreaElement
+                | HTMLDivElement;
             if (editor) {
                 editor.focus();
             }
@@ -86,7 +96,9 @@
     } else if (!$editingState.activeNodeId) {
         // 当退出编辑时，尝试将焦点还给网格根容器，确保方向键继续工作
         tick().then(() => {
-            const root = view.contentEl.querySelector('.mandala-scroll') as HTMLElement;
+            const root = view.contentEl.querySelector(
+                '.mandala-scroll',
+            ) as HTMLElement;
             if (root) root.focus();
         });
     }
@@ -94,10 +106,14 @@
     const unsub = showSidebarStore.subscribe((show) => {
         // 在移动端正方形布局下，侧边栏主要通过 flex: 1 填充
         // 我们利用这个状态来控制内部内容的可见性
-        if (!Platform.isMobile) { // Only apply size logic on desktop
+        if (!Platform.isMobile) {
+            // Only apply size logic on desktop
             if (show) {
-                const savedSize = view.plugin.settings.getValue().view.mandalaDetailSidebarWidth;
-                animatedSidebarSize = savedSize || ($layout.isPortrait ? MIN_SIZE : MIN_SIZE); // Use MIN_SIZE
+                const savedSize =
+                    view.plugin.settings.getValue().view
+                        .mandalaDetailSidebarWidth;
+                animatedSidebarSize =
+                    savedSize || ($layout.isPortrait ? MIN_SIZE : MIN_SIZE); // Use MIN_SIZE
                 sidebarSize = animatedSidebarSize;
             } else {
                 animatedSidebarSize = 0;
@@ -117,10 +133,12 @@
         startSize = animatedSidebarSize;
         view.contentEl.addEventListener('mousemove', onResize);
         view.contentEl.addEventListener('mouseup', onStopResize);
-        
+
         // 设置全局光标，防止拖动过快导致光标闪烁
-        document.body.style.cursor = $layout.isPortrait ? 'row-resize' : 'col-resize';
-        
+        document.body.style.cursor = $layout.isPortrait
+            ? 'row-resize'
+            : 'col-resize';
+
         event.preventDefault();
         event.stopPropagation();
     };
@@ -128,7 +146,7 @@
     const onResize = (event: MouseEvent) => {
         if (!isResizing || Platform.isMobile) return;
         event.preventDefault();
-        
+
         if ($layout.isPortrait) {
             const dy = event.clientY - startX;
             animatedSidebarSize = Math.max(MIN_SIZE, startSize - dy);
@@ -143,7 +161,7 @@
         isResizing = false;
         view.contentEl.removeEventListener('mousemove', onResize);
         view.contentEl.removeEventListener('mouseup', onStopResize);
-        
+
         // 恢复全局光标
         document.body.style.cursor = '';
 
@@ -208,7 +226,11 @@
     class={'mandala-detail-sidebar' + (isResizing ? '' : ' size-transition')}
     class:is-mobile={Platform.isMobile}
     class:is-portrait={$layout.isPortrait}
-    style={Platform.isMobile ? (!$showSidebarStore ? 'display: none;' : '') : `--animated-sidebar-size: ${animatedSidebarSize}px; --sidebar-size: ${sidebarSize}px;`}
+    style={Platform.isMobile
+        ? !$showSidebarStore
+            ? 'display: none;'
+            : ''
+        : `--animated-sidebar-size: ${animatedSidebarSize}px; --sidebar-size: ${sidebarSize}px;`}
 >
     <!-- 移动端 Resizer 位置：竖排在顶，横排在左 -->
     <div class="resizer" on:mousedown={onStartResize} />
@@ -218,7 +240,10 @@
                 <div class="editor-wrapper">
                     {#key $activeNodeId}
                         {#if isEditingInSidebar}
-                            <div bind:this={editorContainer} class="sidebar-editor-container">
+                            <div
+                                bind:this={editorContainer}
+                                class="sidebar-editor-container"
+                            >
                                 <InlineEditor
                                     nodeId={$activeNodeId}
                                     style={$styleRules.get($activeNodeId)}
@@ -236,7 +261,7 @@
             {:else}
                 <div class="no-selection">请选择一个格子进行编辑</div>
             {/if}
-            {#if Platform.isMobile && $mode === '3x3'}
+            {#if Platform.isMobile && $mode === '3x3' && $show3x3SubgridNavButtons}
                 <div class="mobile-subgrid-floating-controls">
                     <button
                         class="mobile-subgrid-floating-btn"
@@ -263,7 +288,7 @@
                         />
                     </button>
                 </div>
-            {:else if Platform.isMobile && $mode === '9x9'}
+            {:else if Platform.isMobile && $mode === '9x9' && $show9x9ParallelNavButtons}
                 <div class="mobile-subgrid-floating-controls">
                     <button
                         class="mobile-subgrid-floating-btn"
@@ -317,7 +342,9 @@
     }
 
     .size-transition {
-        transition: width 0.3s ease, height 0.3s ease;
+        transition:
+            width 0.3s ease,
+            height 0.3s ease;
     }
 
     .mandala-detail-sidebar.is-portrait {
@@ -333,7 +360,7 @@
     }
 
     /* 当侧边栏关闭时，强制在移动端不占用 Flex 空间 */
-    .is-mobile.mandala-detail-sidebar[style*="display: none"] {
+    .is-mobile.mandala-detail-sidebar[style*='display: none'] {
         flex: 0 0 0px !important;
         margin: 0 !important;
         padding: 0 !important;
@@ -473,7 +500,7 @@
         background-color: transparent !important;
         padding: 6px 6px 10px 12px !important; /* 匹配 Content.svelte 原生边距 */
     }
-    
+
     :global(.mandala-detail-sidebar .lng-prev) {
         padding: 6px 6px 10px 12px !important; /* 匹配 Content.svelte 原生边距 */
         background-color: transparent !important;

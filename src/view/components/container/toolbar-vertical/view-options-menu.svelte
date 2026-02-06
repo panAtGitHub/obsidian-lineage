@@ -128,13 +128,17 @@
 
     const toggle9x9ParallelNavButtons = () => {
         view.plugin.settings.dispatch({
-            type: 'settings/view/toggle-9x9-parallel-nav-buttons',
+            type: isMobile
+                ? 'settings/view/toggle-9x9-parallel-nav-buttons-mobile'
+                : 'settings/view/toggle-9x9-parallel-nav-buttons-desktop',
         });
     };
 
     const toggle3x3SubgridNavButtons = () => {
         view.plugin.settings.dispatch({
-            type: 'settings/view/toggle-3x3-subgrid-nav-buttons',
+            type: isMobile
+                ? 'settings/view/toggle-3x3-subgrid-nav-buttons-mobile'
+                : 'settings/view/toggle-3x3-subgrid-nav-buttons-desktop',
         });
     };
 

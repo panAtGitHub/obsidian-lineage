@@ -12,7 +12,8 @@ type SettingsActionHandler = (store: Settings, action: SettingsActions) => void;
 
 const settingsHandlers: Record<string, SettingsActionHandler> = {
     'settings/documents/delete-document-preferences': (store, action) => {
-        if (action.type !== 'settings/documents/delete-document-preferences') return;
+        if (action.type !== 'settings/documents/delete-document-preferences')
+            return;
         delete store.documents[action.payload.path];
         delete store.styleRules.documents[action.payload.path];
     },
@@ -33,7 +34,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
             };
             return;
         }
-        store.documents[action.payload.path].documentFormat = action.payload.format;
+        store.documents[action.payload.path].documentFormat =
+            action.payload.format;
     },
     'settings/documents/set-view-type': (store, action) => {
         if (action.type !== 'settings/documents/set-view-type') return;
@@ -89,19 +91,23 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.view.mandalaFontSize9x9Mobile = action.payload.fontSize;
     },
     'settings/view/font-size/set-sidebar-desktop': (store, action) => {
-        if (action.type !== 'settings/view/font-size/set-sidebar-desktop') return;
+        if (action.type !== 'settings/view/font-size/set-sidebar-desktop')
+            return;
         store.view.mandalaFontSizeSidebarDesktop = action.payload.fontSize;
     },
     'settings/view/font-size/set-sidebar-mobile': (store, action) => {
-        if (action.type !== 'settings/view/font-size/set-sidebar-mobile') return;
+        if (action.type !== 'settings/view/font-size/set-sidebar-mobile')
+            return;
         store.view.mandalaFontSizeSidebarMobile = action.payload.fontSize;
     },
     'settings/view/theme/set-container-bg-color': (store, action) => {
-        if (action.type !== 'settings/view/theme/set-container-bg-color') return;
+        if (action.type !== 'settings/view/theme/set-container-bg-color')
+            return;
         store.view.theme.containerBg = action.payload.backgroundColor;
     },
     'settings/view/theme/set-active-branch-bg-color': (store, action) => {
-        if (action.type !== 'settings/view/theme/set-active-branch-bg-color') return;
+        if (action.type !== 'settings/view/theme/set-active-branch-bg-color')
+            return;
         store.view.theme.activeBranchBg = action.payload.backgroundColor;
     },
     'settings/view/layout/set-card-width': (store, action) => {
@@ -113,7 +119,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.view.minimumCardHeight = action.payload.height;
     },
     'settings/view/layout/set-limit-card-height': (store, action) => {
-        if (action.type !== 'settings/view/layout/set-limit-card-height') return;
+        if (action.type !== 'settings/view/layout/set-limit-card-height')
+            return;
         store.view.limitPreviewHeight = action.payload.limit;
     },
     'settings/documents/remove-stale-documents': (store, action) => {
@@ -125,7 +132,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         changeZoomLevel(store, action.payload);
     },
     'settings/general/set-default-document-format': (store, action) => {
-        if (action.type !== 'settings/general/set-default-document-format') return;
+        if (action.type !== 'settings/general/set-default-document-format')
+            return;
         store.general.defaultDocumentFormat = action.payload.format;
     },
     'settings/view/toggle-minimap': (store, action) => {
@@ -160,7 +168,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         document.pinnedSections.activeSection = action.payload.section;
     },
     'settings/view/toggle-horizontal-scrolling-mode': (store, action) => {
-        if (action.type !== 'settings/view/toggle-horizontal-scrolling-mode') return;
+        if (action.type !== 'settings/view/toggle-horizontal-scrolling-mode')
+            return;
         store.view.scrolling.centerActiveNodeH =
             !store.view.scrolling.centerActiveNodeH;
         store.view.scrolling = {
@@ -168,7 +177,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         };
     },
     'settings/view/toggle-vertical-scrolling-mode': (store, action) => {
-        if (action.type !== 'settings/view/toggle-vertical-scrolling-mode') return;
+        if (action.type !== 'settings/view/toggle-vertical-scrolling-mode')
+            return;
         store.view.scrolling.centerActiveNodeV =
             !store.view.scrolling.centerActiveNodeV;
         store.view.scrolling = {
@@ -230,11 +240,13 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.view.maintainEditMode = action.payload.maintain;
     },
     'settings/view/theme/set-inactive-node-opacity': (store, action) => {
-        if (action.type !== 'settings/view/theme/set-inactive-node-opacity') return;
+        if (action.type !== 'settings/view/theme/set-inactive-node-opacity')
+            return;
         store.view.theme.inactiveNodeOpacity = action.payload.opacity;
     },
     'settings/view/theme/set-active-branch-color': (store, action) => {
-        if (action.type !== 'settings/view/theme/set-active-branch-color') return;
+        if (action.type !== 'settings/view/theme/set-active-branch-color')
+            return;
         if (action.payload.color) {
             store.view.theme.activeBranchColor = action.payload.color;
         } else {
@@ -305,15 +317,18 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         setHotkeyAsBlank(store, action);
     },
     'settings/document/persist-collapsed-sections': (store, action) => {
-        if (action.type !== 'settings/document/persist-collapsed-sections') return;
+        if (action.type !== 'settings/document/persist-collapsed-sections')
+            return;
         persistCollapsedSections(store, action);
     },
     'settings/view/set-always-show-card-buttons': (store, action) => {
-        if (action.type !== 'settings/view/set-always-show-card-buttons') return;
+        if (action.type !== 'settings/view/set-always-show-card-buttons')
+            return;
         store.view.alwaysShowCardButtons = action.payload.show;
     },
     'settings/view/vertical-toolbar/set-hidden-button': (store, action) => {
-        if (action.type !== 'settings/view/vertical-toolbar/set-hidden-button') return;
+        if (action.type !== 'settings/view/vertical-toolbar/set-hidden-button')
+            return;
         if (action.payload.hide) {
             store.view.hiddenVerticalToolbarButtons = Array.from(
                 new Set([
@@ -332,19 +347,52 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         if (action.type !== 'settings/view/toggle-hidden-card-info') return;
         store.view.showHiddenCardInfo = !store.view.showHiddenCardInfo;
     },
-    'settings/view/toggle-3x3-subgrid-nav-buttons': (store, action) => {
-        if (action.type !== 'settings/view/toggle-3x3-subgrid-nav-buttons') {
+    'settings/view/toggle-3x3-subgrid-nav-buttons-desktop': (store, action) => {
+        if (
+            action.type !==
+            'settings/view/toggle-3x3-subgrid-nav-buttons-desktop'
+        ) {
             return;
         }
-        store.view.show3x3SubgridNavButtons =
-            !(store.view.show3x3SubgridNavButtons ?? true);
+        store.view.show3x3SubgridNavButtonsDesktop = !(
+            store.view.show3x3SubgridNavButtonsDesktop ?? true
+        );
     },
-    'settings/view/toggle-9x9-parallel-nav-buttons': (store, action) => {
-        if (action.type !== 'settings/view/toggle-9x9-parallel-nav-buttons') {
+    'settings/view/toggle-3x3-subgrid-nav-buttons-mobile': (store, action) => {
+        if (
+            action.type !==
+            'settings/view/toggle-3x3-subgrid-nav-buttons-mobile'
+        ) {
             return;
         }
-        store.view.show9x9ParallelNavButtons =
-            !(store.view.show9x9ParallelNavButtons ?? true);
+        store.view.show3x3SubgridNavButtonsMobile = !(
+            store.view.show3x3SubgridNavButtonsMobile ?? true
+        );
+    },
+    'settings/view/toggle-9x9-parallel-nav-buttons-desktop': (
+        store,
+        action,
+    ) => {
+        if (
+            action.type !==
+            'settings/view/toggle-9x9-parallel-nav-buttons-desktop'
+        ) {
+            return;
+        }
+        store.view.show9x9ParallelNavButtonsDesktop = !(
+            store.view.show9x9ParallelNavButtonsDesktop ?? true
+        );
+    },
+    'settings/view/toggle-9x9-parallel-nav-buttons-mobile': (store, action) => {
+        if (
+            action.type !==
+            'settings/view/toggle-9x9-parallel-nav-buttons-mobile'
+        ) {
+            return;
+        }
+        store.view.show9x9ParallelNavButtonsMobile = !(
+            store.view.show9x9ParallelNavButtonsMobile ?? true
+        );
     },
     'settings/style-rules/set-active-tab': (store, action) => {
         if (action.type !== 'settings/style-rules/set-active-tab') return;
@@ -355,11 +403,13 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.general.linkPaneType = action.payload.position;
     },
     'settings/general/set-mandala-templates-file-path': (store, action) => {
-        if (action.type !== 'settings/general/set-mandala-templates-file-path') return;
+        if (action.type !== 'settings/general/set-mandala-templates-file-path')
+            return;
         store.general.mandalaTemplatesFilePath = action.payload.path;
     },
     'settings/view/set-mobile-edit-font-size-offset': (store, action) => {
-        if (action.type !== 'settings/view/set-mobile-edit-font-size-offset') return;
+        if (action.type !== 'settings/view/set-mobile-edit-font-size-offset')
+            return;
         store.view.mobileEditFontSizeOffset = action.payload.offset;
     },
     'settings/view/toggle-9x9-title-only': (store, action) => {
@@ -375,7 +425,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.view.whiteThemeMode = !store.view.whiteThemeMode;
     },
     'settings/view/mandala/set-grid-orientation': (store, action) => {
-        if (action.type !== 'settings/view/mandala/set-grid-orientation') return;
+        if (action.type !== 'settings/view/mandala/set-grid-orientation')
+            return;
         store.view.mandalaGridOrientation = action.payload.orientation;
     },
     'settings/view/mandala/toggle-a4-mode': (store, action) => {
@@ -395,7 +446,8 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
         store.view.mandalaGridBorderOpacity = action.payload.opacity;
     },
     'settings/view/mandala/set-section-color-opacity': (store, action) => {
-        if (action.type !== 'settings/view/mandala/set-section-color-opacity') return;
+        if (action.type !== 'settings/view/mandala/set-section-color-opacity')
+            return;
         store.view.mandalaSectionColorOpacity = action.payload.opacity;
     },
 };

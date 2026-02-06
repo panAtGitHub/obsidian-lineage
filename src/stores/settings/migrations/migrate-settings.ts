@@ -31,6 +31,12 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
         mandalaShowSectionColors?: boolean;
         mandalaSectionColorOpacity?: number;
         mandalaGrayBackground?: boolean;
+        show3x3SubgridNavButtons?: boolean;
+        show9x9ParallelNavButtons?: boolean;
+        show3x3SubgridNavButtonsDesktop?: boolean;
+        show3x3SubgridNavButtonsMobile?: boolean;
+        show9x9ParallelNavButtonsDesktop?: boolean;
+        show9x9ParallelNavButtonsMobile?: boolean;
     };
     if (viewSettings.mandalaA4Mode === undefined) {
         viewSettings.mandalaA4Mode = false;
@@ -55,5 +61,19 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
     }
     if (viewSettings.mandalaSectionColorOpacity === undefined) {
         viewSettings.mandalaSectionColorOpacity = 100;
+    }
+
+    // Legacy compatibility: split old shared toggle flags into desktop/mobile.
+    if (typeof viewSettings.show3x3SubgridNavButtons === 'boolean') {
+        viewSettings.show3x3SubgridNavButtonsDesktop =
+            viewSettings.show3x3SubgridNavButtons;
+        viewSettings.show3x3SubgridNavButtonsMobile =
+            viewSettings.show3x3SubgridNavButtons;
+    }
+    if (typeof viewSettings.show9x9ParallelNavButtons === 'boolean') {
+        viewSettings.show9x9ParallelNavButtonsDesktop =
+            viewSettings.show9x9ParallelNavButtons;
+        viewSettings.show9x9ParallelNavButtonsMobile =
+            viewSettings.show9x9ParallelNavButtons;
     }
 };

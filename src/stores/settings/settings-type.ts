@@ -90,8 +90,10 @@ export type Settings = {
         maintainEditMode: boolean;
         alwaysShowCardButtons: boolean;
         showHiddenCardInfo: boolean;
-        show3x3SubgridNavButtons: boolean;
-        show9x9ParallelNavButtons: boolean;
+        show3x3SubgridNavButtonsDesktop: boolean;
+        show3x3SubgridNavButtonsMobile: boolean;
+        show9x9ParallelNavButtonsDesktop: boolean;
+        show9x9ParallelNavButtonsMobile: boolean;
         mobileEditFontSizeOffset: number;
         show9x9TitleOnly: boolean;
         squareLayout: boolean;
