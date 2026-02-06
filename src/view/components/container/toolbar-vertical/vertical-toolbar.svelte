@@ -93,7 +93,11 @@
         (b) => (b.id as unknown as string) === 'mandala-detail-sidebar',
     );
     $: mobileOtherButtons = flattenedButtons.filter(
-        (b) => b !== mobileHotkeysButton && b !== mobileSidebarButton,
+        (b) =>
+            b !== mobileHotkeysButton &&
+            b !== mobileSidebarButton &&
+            b.id !== ('jump-core-prev' as ToolbarButton) &&
+            b.id !== ('jump-core-next' as ToolbarButton),
     );
     $: orderedButtons = Platform.isMobile
         ? $buttons
