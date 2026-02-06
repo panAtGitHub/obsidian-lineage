@@ -35,19 +35,30 @@ const show9x9ParallelNavButtons = Show9x9ParallelNavButtonsStore(view);
         (blockRow === 1 && blockCol === 0) ||
         (blockRow === 1 && blockCol === 2) ||
         (blockRow === 2 && blockCol === 1);
-    const activeNodeId = derived(
-        view.viewStore,
-        (state) => state.document.activeNode,
-    );
-    const activeCell = derived(
-        view.viewStore,
-        (state) => state.ui.mandala.activeCell9x9,
-    );
-    let gridEl: HTMLDivElement | null = null;
-    let bodyLineClamp = 3;
+const activeNodeId = derived(
+    view.viewStore,
+    (state) => state.document.activeNode,
+);
+const idToSection = derived(
+    view.documentStore,
+    (state) => state.sections.id_section,
+);
+const activeCell = derived(
+    view.viewStore,
+    (state) => state.ui.mandala.activeCell9x9,
+);
+let gridEl: HTMLDivElement | null = null;
+let bodyLineClamp = 3;
+let currentCoreNumber = 1;
 
-    const getBaseTheme = (section: string | undefined) =>
-        section ? section.split('.')[0] : '1';
+const getBaseTheme = (section: string | undefined) =>
+    section ? section.split('.')[0] : '1';
+
+$: {
+    const section = $idToSection[$activeNodeId];
+    const nextCore = Number(getBaseTheme(section));
+    currentCoreNumber = Number.isFinite(nextCore) ? nextCore : 1;
+}
 
     const escapeHtml = (value: string) =>
         value
@@ -424,17 +435,19 @@ const jumpToNextCore = (event: MouseEvent) => {
     </div>
 
     {#if !Platform.isMobile && $show9x9ParallelNavButtons}
-        <button
-            class="parallel-nav-button parallel-nav-button--left"
-            type="button"
-            aria-label="切换到上一个平行九宫格"
-            on:click={jumpToPrevCore}
-        >
-            <span
-                class="parallel-nav-button__icon"
-                use:applyObsidianIcon={'chevron-left'}
-            />
-        </button>
+        {#if currentCoreNumber > 1}
+            <button
+                class="parallel-nav-button parallel-nav-button--left"
+                type="button"
+                aria-label="切换到上一个平行九宫格"
+                on:click={jumpToPrevCore}
+            >
+                <span
+                    class="parallel-nav-button__icon"
+                    use:applyObsidianIcon={'chevron-left'}
+                />
+            </button>
+        {/if}
         <button
             class="parallel-nav-button parallel-nav-button--right"
             type="button"
