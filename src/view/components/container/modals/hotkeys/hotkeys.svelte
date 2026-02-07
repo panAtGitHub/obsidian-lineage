@@ -36,11 +36,11 @@
     on:touchstart|stopPropagation
 >
     {#if isMobile}
-        <div class="mobile-modal-header">
-            <div class="mobile-sheet-handle" aria-hidden="true" />
-            <div class="mobile-header-row">
-                <div class="mobile-modal-title">快捷键</div>
-                <button class="mobile-done-button" on:click={closeHotkeys}>
+        <div class="hotkeys-mobile-header">
+            <div class="hotkeys-mobile-sheet-handle" aria-hidden="true" />
+            <div class="hotkeys-mobile-header-row">
+                <div class="hotkeys-mobile-title">快捷键</div>
+                <button class="hotkeys-mobile-done-button" on:click={closeHotkeys}>
                     <Check size={18} />
                     <span>完成</span>
                 </button>
@@ -90,7 +90,7 @@
         -webkit-backdrop-filter: blur(20px) saturate(180%);
     }
 
-    .mobile-sheet-handle {
+    .hotkeys-mobile-sheet-handle {
         width: 36px;
         height: 4px;
         border-radius: 999px;
@@ -98,7 +98,7 @@
         margin: 6px auto 8px;
     }
 
-    .mobile-modal-header {
+    .hotkeys-mobile-header {
         display: flex;
         flex-direction: column;
         padding-top: calc(env(safe-area-inset-top, 12px) + 6px);
@@ -113,7 +113,7 @@
         width: 100%;
     }
 
-    .mobile-header-row {
+    .hotkeys-mobile-header-row {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -121,12 +121,12 @@
         min-height: 28px;
     }
 
-    .mobile-modal-title {
+    .hotkeys-mobile-title {
         font-weight: 600;
         color: var(--text-normal);
     }
 
-    .mobile-done-button {
+    .hotkeys-mobile-done-button {
         display: flex;
         align-items: center;
         gap: 4px;
