@@ -705,6 +705,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        width: min(
+            var(--mandala-a4-content-width),
+            var(--mandala-a4-content-height)
+        );
+        height: min(
+            var(--mandala-a4-content-width),
+            var(--mandala-a4-content-height)
+        );
     }
 
     /* A4 视觉校对：外框与内容区边界 */
