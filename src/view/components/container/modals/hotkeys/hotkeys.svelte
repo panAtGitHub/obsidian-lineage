@@ -151,11 +151,23 @@
     }
 
     .hotkeys-modal:not(.is-mobile) :global(.front .search-input-container) {
-        padding-right: 40px;
+        padding-right: 44px;
     }
 
     .hotkeys-modal:not(.is-mobile) {
         z-index: 1200;
+    }
+
+    .hotkeys-modal:not(.is-mobile) :global(.modal-close-button) {
+        top: var(--size-4-2);
+        right: var(--size-4-6);
+        width: 34px;
+        height: 34px;
+        padding: 0;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     @media (max-width: 720px) {
