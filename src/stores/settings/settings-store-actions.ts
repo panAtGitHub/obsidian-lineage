@@ -6,7 +6,6 @@ import {
     MandalaGridOrientation,
     LinkPaneType,
     RulesTab,
-    SquareExportMode,
     ViewType,
 } from 'src/stores/settings/settings-type';
 import { ChangeZoomLevelAction } from 'src/stores/settings/reducers/change-zoom-level';
@@ -275,26 +274,6 @@ export type SettingsActions =
     | {
           type: 'settings/view/mandala/set-section-color-opacity';
           payload: { opacity: number };
-      }
-    | {
-          type: 'settings/view/mandala/set-square-export-mode';
-          payload: { mode: SquareExportMode };
-      }
-    | {
-          type: 'settings/view/mandala/set-square-export-canvas-size';
-          payload: { size: number };
-      }
-    | {
-          type: 'settings/view/mandala/set-square-export-padding';
-          payload: { padding: number };
-      }
-    | {
-          type: 'settings/view/mandala/set-square-export-manual-scale';
-          payload: { scale: number };
-      }
-    | {
-          type: 'settings/view/mandala/set-square-export-offset';
-          payload: { x: number; y: number };
       };
 export type PersistCollapsedSectionsAction = {
     type: 'settings/document/persist-collapsed-sections';
