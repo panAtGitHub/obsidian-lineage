@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { Platform, setIcon } from 'obsidian';
+    import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-svelte';
+    import { Platform } from 'obsidian';
     import { onDestroy, onMount } from 'svelte';
     import { derived } from 'src/lib/store/derived';
     import {
@@ -288,15 +289,6 @@
         mobilePopupFontSizeStore.setFontSize($mobilePopupFontSizeStore - 1);
     };
 
-    const applyObsidianIcon = (node: HTMLElement, iconName: string) => {
-        setIcon(node, iconName);
-        return {
-            update(nextIconName: string) {
-                setIcon(node, nextIconName);
-            },
-        };
-    };
-
     const enterSubgridFromButton = (event: MouseEvent, nodeId: string) => {
         event.stopPropagation();
         enterSubgridForNode(view, nodeId);
@@ -444,12 +436,13 @@
                                                         on:click={(event) =>
                                                             exitSubgridFromButton(event)}
                                                     >
-                                                        <span
-                                                            class="mandala-subgrid-btn__icon"
-                                                            use:applyObsidianIcon={theme.includes('.')
-                                                                ? 'chevron-up'
-                                                                : 'chevron-left'}
-                                                        />
+                                                        <span class="mandala-subgrid-btn__icon">
+                                                            {#if theme.includes('.')}
+                                                                <ChevronUp class="mandala-subgrid-btn__svg" />
+                                                            {:else}
+                                                                <ChevronLeft class="mandala-subgrid-btn__svg" />
+                                                            {/if}
+                                                        </span>
                                                     </button>
                                                 {/if}
                                                 {#if !theme.includes('.')}
@@ -461,12 +454,13 @@
                                                         on:click={(event) =>
                                                             enterSubgridFromButton(event, cell.nodeId)}
                                                     >
-                                                        <span
-                                                            class="mandala-subgrid-btn__icon"
-                                                            use:applyObsidianIcon={theme.includes('.')
-                                                                ? 'chevron-down'
-                                                                : 'chevron-right'}
-                                                        />
+                                                        <span class="mandala-subgrid-btn__icon">
+                                                            {#if theme.includes('.')}
+                                                                <ChevronDown class="mandala-subgrid-btn__svg" />
+                                                            {:else}
+                                                                <ChevronRight class="mandala-subgrid-btn__svg" />
+                                                            {/if}
+                                                        </span>
                                                     </button>
                                                 {/if}
                                             {:else}
@@ -477,10 +471,9 @@
                                                     on:click={(event) =>
                                                         enterSubgridFromButton(event, cell.nodeId)}
                                                 >
-                                                    <span
-                                                        class="mandala-subgrid-btn__icon"
-                                                        use:applyObsidianIcon={'chevron-down'}
-                                                    />
+                                                    <span class="mandala-subgrid-btn__icon">
+                                                        <ChevronDown class="mandala-subgrid-btn__svg" />
+                                                    </span>
                                                 </button>
                                             {/if}
                                         </div>
