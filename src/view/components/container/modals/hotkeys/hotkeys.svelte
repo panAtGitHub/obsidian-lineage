@@ -48,7 +48,7 @@
         </div>
     {:else}
         <button class="modal-close-button" on:click={closeHotkeys} aria-label="关闭快捷键">
-            <X size={18} />
+            <X size={14} />
         </button>
     {/if}
     <Front />
@@ -159,12 +159,12 @@
     }
 
     .hotkeys-modal:not(.is-mobile) :global(.modal-close-button) {
-        top: var(--size-4-2);
+        top: calc(var(--size-4-2) + 6px);
         right: var(--size-4-6);
-        width: 34px;
-        height: 34px;
+        width: 22px;
+        height: 22px;
         padding: 0;
-        border-radius: 8px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
