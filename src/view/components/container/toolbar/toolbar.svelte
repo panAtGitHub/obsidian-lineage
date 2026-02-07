@@ -67,7 +67,7 @@
 </div>
 
 {#if $search.showInput && !isMobile}
-    <div class="search-input-wrapper" style="position: relative;">
+    <div class="toolbar-search-input-wrapper">
         <SearchInput />
         
         {#if $search.query.length > 0}
@@ -113,6 +113,11 @@
         display: flex;
         align-items: center;
         gap: var(--size-4-2);
+    }
+
+    .toolbar-search-input-wrapper {
+        position: relative;
+        margin-left: 6px;
     }
 
     .mobile-toggle {
