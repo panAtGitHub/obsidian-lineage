@@ -23,12 +23,12 @@
     outline-offset: 1px;
 }
 
-:global(.is-mobile) .mandala-context-menu-custom .mandala-color-palette {
+.is-mobile .mandala-context-menu-custom .mandala-color-palette {
     gap: 10px;
 }
 
-:global(.is-mobile) .mandala-color-swatch {
-    width: 24px;
-    height: 24px;
+.is-mobile .mandala-color-swatch {
+    width: 26px;
+    height: 26px;
     border-radius: 6px;
 }
