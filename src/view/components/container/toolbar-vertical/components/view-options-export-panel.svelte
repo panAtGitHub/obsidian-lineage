@@ -43,6 +43,7 @@
                         name="mandala-export-mode-png"
                         checked={!a4Mode && exportSquareSize}
                         on:change={setPngSquareMode}
+                        on:click={setPngSquareMode}
                     />
                     <span>仅导出正方形九宫格（自动等比留白）</span>
                 </label>
@@ -52,6 +53,7 @@
                         name="mandala-export-mode-png"
                         checked={!a4Mode && !exportSquareSize}
                         on:change={setPngScreenMode}
+                        on:click={setPngScreenMode}
                     />
                     <span>导出屏幕视图内容，可包含侧边栏</span>
                 </label>
@@ -67,6 +69,7 @@
                         name="mandala-export-mode-pdf"
                         checked={a4Mode}
                         on:change={setPdfMode}
+                        on:click={setPdfMode}
                     />
                     <span>导出 A4 打印页面（推荐表格风格）</span>
                 </label>

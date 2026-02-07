@@ -934,6 +934,14 @@
     let exportFormat: 'png' | 'pdf' = 'png';
     let exportSquareSize = false;
 
+    $: if ($a4Mode && exportFormat !== 'pdf') {
+        exportFormat = 'pdf';
+    }
+
+    $: if (!$a4Mode && exportFormat === 'pdf') {
+        exportFormat = 'png';
+    }
+
     $: if (!$squareLayout && exportSquareSize) {
         exportSquareSize = false;
     }
