@@ -839,7 +839,7 @@
         position: absolute;
         right: 8px;
         bottom: 8px;
-        z-index: 7;
+        z-index: 20;
         display: flex;
         gap: 6px;
         pointer-events: auto;
@@ -865,6 +865,8 @@
         justify-content: center;
         cursor: pointer;
         padding: 0;
+        position: relative;
+        z-index: 21;
         transition:
             background-color 120ms ease,
             border-color 120ms ease,

@@ -588,7 +588,7 @@
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%);
-        z-index: 6;
+        z-index: 20;
         width: 30px;
         height: 30px;
         border: 1px solid var(--background-modifier-border);
@@ -600,10 +600,32 @@
         justify-content: center;
         box-shadow: var(--shadow-s);
         cursor: pointer;
+        transition:
+            background-color 120ms ease,
+            border-color 120ms ease,
+            box-shadow 120ms ease,
+            transform 120ms ease;
     }
 
     .parallel-nav-button:hover {
-        background: var(--background-primary-alt);
+        background: color-mix(
+            in srgb,
+            var(--background-primary-alt) 75%,
+            var(--interactive-accent) 25%
+        );
+        border-color: color-mix(
+            in srgb,
+            var(--interactive-accent) 55%,
+            var(--background-modifier-border) 45%
+        );
+        box-shadow:
+            0 0 0 1px color-mix(
+                in srgb,
+                var(--interactive-accent) 45%,
+                transparent
+            ),
+            var(--shadow-s);
+        transform: translate(-50%, -50%) translateY(-1px);
     }
 
     .parallel-nav-button:active {
