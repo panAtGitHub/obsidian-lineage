@@ -701,6 +701,12 @@
         );
     }
 
+    .mandala-a4-mode.is-desktop-square-layout :global(.simple-9x9-shell) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     /* A4 视觉校对：外框与内容区边界 */
     .mandala-a4-mode .mandala-scroll::before,
     .mandala-a4-mode .mandala-scroll::after {
