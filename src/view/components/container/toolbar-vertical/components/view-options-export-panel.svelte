@@ -4,8 +4,8 @@
 
     export let isMobile = false;
     export let show = false;
-    export let a4Mode = false;
-    export let exportSquareSize = false;
+    export let exportMode: 'png-square' | 'png-screen' | 'pdf-a4' =
+        'png-screen';
 
     export let toggle: () => void;
     export let setPngSquareMode: () => void;
@@ -41,7 +41,7 @@
                     <input
                         type="radio"
                         name="mandala-export-mode-png"
-                        checked={!a4Mode && exportSquareSize}
+                        checked={exportMode === 'png-square'}
                         on:change={setPngSquareMode}
                         on:click={setPngSquareMode}
                     />
@@ -51,7 +51,7 @@
                     <input
                         type="radio"
                         name="mandala-export-mode-png"
-                        checked={!a4Mode && !exportSquareSize}
+                        checked={exportMode === 'png-screen'}
                         on:change={setPngScreenMode}
                         on:click={setPngScreenMode}
                     />
@@ -67,7 +67,7 @@
                     <input
                         type="radio"
                         name="mandala-export-mode-pdf"
-                        checked={a4Mode}
+                        checked={exportMode === 'pdf-a4'}
                         on:change={setPdfMode}
                         on:click={setPdfMode}
                     />

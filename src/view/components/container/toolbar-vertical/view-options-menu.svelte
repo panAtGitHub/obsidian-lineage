@@ -155,15 +155,21 @@
         }
     };
 
-    const updateExportViewSize = (mode: 'a4' | 'screen' | 'square') => {
-        if (mode === 'a4') {
-            exportSquareSize = false;
+    type ExportMode = 'png-square' | 'png-screen' | 'pdf-a4';
+    let exportMode: ExportMode = 'png-screen';
+
+    const setExportMode = (mode: ExportMode) => {
+        exportMode = mode;
+
+        if (mode === 'pdf-a4') {
             updateA4Mode(true);
             return;
         }
 
         updateA4Mode(false);
-        exportSquareSize = mode === 'square';
+        if (mode === 'png-square') {
+            updateSquareLayout(true);
+        }
     };
 
 
@@ -471,43 +477,30 @@
         }
     };
 
-    const enableSquareExport = () => {
-        updateSquareLayout(true);
-        updateExportViewSize('square');
-    };
-
     type PrintConfig = {
-        a4Mode: boolean;
+        exportMode: ExportMode;
         a4Orientation: 'portrait' | 'landscape';
         backgroundMode: 'none' | 'custom' | 'gray';
         sectionColorOpacity: number;
         borderOpacity: number;
         whiteThemeMode: boolean;
-        exportSquareSize: boolean;
     };
 
     let lastPrintConfig: PrintConfig | null = null;
 
     const capturePrintConfig = () => {
         lastPrintConfig = {
-            a4Mode: $a4Mode,
+            exportMode,
             a4Orientation: $a4Orientation,
             backgroundMode: $backgroundMode,
             sectionColorOpacity: $sectionColorOpacity,
             borderOpacity: $borderOpacity,
             whiteThemeMode: $whiteThemeMode,
-            exportSquareSize,
         };
     };
 
     const applyPrintConfig = (config: PrintConfig) => {
-        updateExportViewSize(
-            config.a4Mode
-                ? 'a4'
-                : config.exportSquareSize
-                  ? 'square'
-                  : 'screen',
-        );
+        setExportMode(config.exportMode);
         updateWhiteThemeMode(config.whiteThemeMode);
         updateBackgroundMode(config.backgroundMode);
         updateSectionColorOpacityValue(config.sectionColorOpacity);
@@ -524,13 +517,12 @@
             return;
         }
         const current = {
-            a4Mode: $a4Mode,
+            exportMode,
             a4Orientation: $a4Orientation,
             backgroundMode: $backgroundMode,
             sectionColorOpacity: $sectionColorOpacity,
             borderOpacity: $borderOpacity,
             whiteThemeMode: $whiteThemeMode,
-            exportSquareSize,
         };
         applyPrintConfig(lastPrintConfig);
         lastPrintConfig = current;
@@ -538,7 +530,7 @@
 
     const restoreEditMode = () => {
         capturePrintConfig();
-        updateExportViewSize('screen');
+        setExportMode('png-screen');
         updateWhiteThemeMode(false);
     };
 
@@ -613,80 +605,6 @@
 
     const applyCssVariables = (element: HTMLElement, vars: Record<string, string>) => {
         element.setCssProps(vars);
-    };
-
-    const createA4ExportTarget = (target: HTMLElement) => {
-        const computed = getComputedStyle(target);
-        const rect = target.getBoundingClientRect();
-        const width = Math.ceil(rect.width);
-        const height = Math.ceil(rect.height);
-        const borderColor = computed.getPropertyValue('--mandala-border-color');
-        const cssVars = collectCssVariables([
-            document.documentElement,
-            view.containerEl,
-            target,
-        ]);
-
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('mandala-a4-mode');
-        if ($a4Orientation === 'landscape') {
-            wrapper.classList.add('mandala-a4-landscape');
-        }
-        if ($squareLayout) {
-            wrapper.classList.add('is-desktop-square-layout');
-        }
-        applyCssVariables(wrapper, cssVars);
-        applyInlineStyles(wrapper, {
-            ['--mandala-border-opacity' as keyof CSSStyleDeclaration]:
-                `${$borderOpacity}%`,
-        });
-        if (borderColor.trim().length > 0) {
-            applyInlineStyles(wrapper, {
-                ['--mandala-border-color' as keyof CSSStyleDeclaration]:
-                    borderColor,
-            });
-        }
-        applyInlineStyles(wrapper, {
-            position: 'fixed',
-            left: '0',
-            top: '0',
-            width: `${width}px`,
-            height: `${height}px`,
-            zIndex: '-1',
-            pointerEvents: 'none',
-            overflow: 'hidden',
-            background: getComputedStyle(document.documentElement).getPropertyValue(
-                '--background-primary',
-            ),
-            padding: computed.padding,
-            boxSizing: 'border-box',
-        });
-
-        const clone = target.cloneNode(true) as HTMLElement;
-        if ($whiteThemeMode) {
-            clone.classList.add('mandala-white-theme');
-        }
-        applyInlineStyles(clone, {
-            margin: '0',
-            transform: 'none',
-            left: '0',
-            top: '0',
-            position: 'static',
-            width: '100%',
-            height: '100%',
-            padding: '0',
-            boxSizing: 'border-box',
-        });
-
-        wrapper.appendChild(clone);
-        document.body.appendChild(wrapper);
-
-        return {
-            element: wrapper,
-            width,
-            height,
-            cleanup: () => wrapper.remove(),
-        };
     };
 
     const withPrintTarget = (
@@ -806,7 +724,7 @@
         closeMenu();
     };
 
-    const exportCurrentView = async () => {
+    const exportCurrentView = async (mode: 'png-square' | 'png-screen') => {
         const createSquarePngExportTarget = (source: HTMLElement) => {
             const rect = source.getBoundingClientRect();
             const computed = getComputedStyle(source);
@@ -879,12 +797,7 @@
         };
 
         const getExportTarget = () => {
-            if ($a4Mode) {
-                return view.contentEl.querySelector(
-                    '.mandala-scroll',
-                ) as HTMLElement | null;
-            }
-            if (exportFormat === 'png' && exportSquareSize) {
+            if (mode === 'png-square') {
                 return view.contentEl.querySelector(
                     '.mandala-scroll',
                 ) as HTMLElement | null;
@@ -900,21 +813,7 @@
             return;
         }
 
-        if ($a4Mode) {
-            const exportTarget = createA4ExportTarget(target);
-            try {
-                await exportToPNG(exportTarget.element, {
-                    pixelRatio: 2,
-                    width: exportTarget.width,
-                    height: exportTarget.height,
-                });
-            } finally {
-                exportTarget.cleanup();
-            }
-            return;
-        }
-
-        if (exportFormat === 'png' && exportSquareSize) {
+        if (mode === 'png-square') {
             const exportTarget = createSquarePngExportTarget(target);
             try {
                 await exportToPNG(exportTarget.element, {
@@ -931,23 +830,12 @@
         await exportToPNG(target, { pixelRatio: 2 });
     };
 
-    let exportFormat: 'png' | 'pdf' = 'png';
-    let exportSquareSize = false;
-
-    $: if ($a4Mode && exportFormat !== 'pdf') {
-        exportFormat = 'pdf';
+    $: if ($a4Mode && exportMode !== 'pdf-a4') {
+        exportMode = 'pdf-a4';
     }
 
-    $: if (!$a4Mode && exportFormat === 'pdf') {
-        exportFormat = 'png';
-    }
-
-    $: if (!$squareLayout && exportSquareSize) {
-        exportSquareSize = false;
-    }
-
-    $: if (exportFormat !== 'png' && exportSquareSize) {
-        exportSquareSize = false;
+    $: if (!$a4Mode && exportMode === 'pdf-a4') {
+        exportMode = 'png-screen';
     }
 
     const exportCurrentFile = async () => {
@@ -955,11 +843,11 @@
             new Notice('移动端不支持导出，请在桌面端操作');
             return;
         }
-        if (exportFormat === 'pdf') {
+        if (exportMode === 'pdf-a4') {
             await exportCurrentViewPdf();
             return;
         }
-        await exportCurrentView();
+        await exportCurrentView(exportMode);
     };
 
     const exportCurrentViewPdf = async () => {
@@ -1627,21 +1515,11 @@
             <ViewOptionsExportPanel
                 {isMobile}
                 show={showPrintOptions}
-                a4Mode={$a4Mode}
-                {exportSquareSize}
+                {exportMode}
                 toggle={() => (showPrintOptions = !showPrintOptions)}
-                setPngSquareMode={() => {
-                    exportFormat = 'png';
-                    enableSquareExport();
-                }}
-                setPngScreenMode={() => {
-                    exportFormat = 'png';
-                    updateExportViewSize('screen');
-                }}
-                setPdfMode={() => {
-                    exportFormat = 'pdf';
-                    updateExportViewSize('a4');
-                }}
+                setPngSquareMode={() => setExportMode('png-square')}
+                setPngScreenMode={() => setExportMode('png-screen')}
+                setPdfMode={() => setExportMode('pdf-a4')}
                 {exportCurrentFile}
             />
 
