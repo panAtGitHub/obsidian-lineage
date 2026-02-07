@@ -619,6 +619,24 @@
         height: 16px;
     }
 
+    :global(.is-mobile) .mandala-topbar :global(.buttons-group) {
+        background: transparent;
+        box-shadow: none;
+        border-radius: 0;
+        overflow: visible;
+        gap: 6px;
+    }
+
+    :global(.is-mobile) .mandala-topbar :global(.mandala-view-button) {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 8px !important;
+        border-radius: 10px;
+        border: 1px solid var(--background-modifier-border);
+        background: var(--background-primary);
+        box-shadow: var(--shadow-s) !important;
+    }
+
     .mandala-scroll {
         flex: 1 1 auto;
         overflow: auto;

@@ -68,10 +68,11 @@
     :global(.is-mobile) .lock-toggle-container {
         transform: none;
         z-index: 1002;
-        background: var(--background-primary);
-        padding: 2px 6px;
-        border-radius: 16px;
-        border: 1px solid var(--background-modifier-border);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background: transparent;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+        gap: 6px;
     }
 </style>
