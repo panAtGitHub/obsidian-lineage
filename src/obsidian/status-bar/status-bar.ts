@@ -21,7 +21,7 @@ export class StatusBar {
             // numberOfChildren: this.container.createDiv(),
             documentProgress: this.container.createDiv(),
         };
-        this.elements.numberOfCards.style.marginRight = '5px';
+        this.elements.numberOfCards.setCssProps({ 'margin-right': '5px' });
         // this.elements.numberOfChildren.style.marginRight = '5px';
         this.elements.documentProgress.ariaLabel =
             'Progress through the document';

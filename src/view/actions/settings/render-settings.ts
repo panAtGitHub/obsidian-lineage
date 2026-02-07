@@ -23,9 +23,9 @@ type Tab = { element: HTMLDivElement; name: SettingsTab };
 const setVisibleTab = (tabs: Tab[], activeTab: SettingsTab) => {
     for (const tab of tabs) {
         if (tab.name === activeTab) {
-            tab.element.style.visibility = 'visible';
+            tab.element.setCssProps({ visibility: 'visible' });
         } else {
-            tab.element.style.visibility = 'hidden';
+            tab.element.setCssProps({ visibility: 'hidden' });
         }
     }
 };

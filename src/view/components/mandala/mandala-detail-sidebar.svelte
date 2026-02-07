@@ -132,9 +132,9 @@
         view.contentEl.addEventListener('mouseup', onStopResize);
 
         // 设置全局光标，防止拖动过快导致光标闪烁
-        document.body.style.cursor = $layout.isPortrait
-            ? 'row-resize'
-            : 'col-resize';
+        document.body.setCssProps({
+            cursor: $layout.isPortrait ? 'row-resize' : 'col-resize',
+        });
 
         event.preventDefault();
         event.stopPropagation();
@@ -160,7 +160,7 @@
         view.contentEl.removeEventListener('mouseup', onStopResize);
 
         // 恢复全局光标
-        document.body.style.cursor = '';
+        document.body.setCssProps({ cursor: '' });
 
         // Desktop specific logic
         if (!Platform.isMobile) {

@@ -36,7 +36,9 @@ class MandalaConversionModal extends Modal {
         const { title, message } = this.options;
         this.setTitle(title);
         contentEl.empty();
-        contentEl.createEl('p', { text: message }).style.whiteSpace = 'pre-wrap';
+        contentEl
+            .createEl('p', { text: message })
+            .setCssProps({ 'white-space': 'pre-wrap' });
 
         const confirmText = this.options.confirmText ?? '转换';
         const cancelText = this.options.cancelText ?? '取消';

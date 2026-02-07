@@ -31,20 +31,19 @@ export const onLongPress = (
     const restoreUserSelect = () => {
         if (!options?.suppressTextSelectionPredicate) return;
         if (state.previousBodyUserSelect === null) return;
-        document.body.style.userSelect = state.previousBodyUserSelect;
-        document.body.style.webkitUserSelect =
-            state.previousBodyWebkitUserSelect ?? '';
-        document.body.style.setProperty(
-            '-webkit-touch-callout',
-            state.previousBodyWebkitTouchCallout ?? '',
-        );
+        document.body.setCssProps({
+            'user-select': state.previousBodyUserSelect,
+            '-webkit-user-select': state.previousBodyWebkitUserSelect ?? '',
+            '-webkit-touch-callout':
+                state.previousBodyWebkitTouchCallout ?? '',
+        });
         const html = document.documentElement;
-        html.style.userSelect = state.previousHtmlUserSelect ?? '';
-        html.style.webkitUserSelect = state.previousHtmlWebkitUserSelect ?? '';
-        html.style.setProperty(
-            '-webkit-touch-callout',
-            state.previousHtmlWebkitTouchCallout ?? '',
-        );
+        html.setCssProps({
+            'user-select': state.previousHtmlUserSelect ?? '',
+            '-webkit-user-select': state.previousHtmlWebkitUserSelect ?? '',
+            '-webkit-touch-callout':
+                state.previousHtmlWebkitTouchCallout ?? '',
+        });
         state.previousBodyUserSelect = null;
         state.previousBodyWebkitUserSelect = null;
         state.previousBodyWebkitTouchCallout = null;
@@ -88,12 +87,16 @@ export const onLongPress = (
                 html.style.webkitUserSelect || '';
             state.previousHtmlWebkitTouchCallout =
                 html.style.getPropertyValue('-webkit-touch-callout') || '';
-            document.body.style.userSelect = 'none';
-            document.body.style.webkitUserSelect = 'none';
-            document.body.style.setProperty('-webkit-touch-callout', 'none');
-            html.style.userSelect = 'none';
-            html.style.webkitUserSelect = 'none';
-            html.style.setProperty('-webkit-touch-callout', 'none');
+            document.body.setCssProps({
+                'user-select': 'none',
+                '-webkit-user-select': 'none',
+                '-webkit-touch-callout': 'none',
+            });
+            html.setCssProps({
+                'user-select': 'none',
+                '-webkit-user-select': 'none',
+                '-webkit-touch-callout': 'none',
+            });
         }
         state.timer = setTimeout(() => {
             state.longPress = true;
