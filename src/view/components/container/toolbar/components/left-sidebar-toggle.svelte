@@ -14,7 +14,7 @@
     };
 </script>
 
-<div class="buttons-group topbar-buttons-group" style="overflow: inherit">
+<div class="topbar-buttons-group" style="overflow: inherit">
     <div class="badge-container">
         <Button
             on:click={toggleLeftSidebar}

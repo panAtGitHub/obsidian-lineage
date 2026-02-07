@@ -72,6 +72,8 @@
 }
 
 .topbar-buttons-group {
+    display: flex;
+    align-items: center;
     background: transparent;
     box-shadow: none;
     border-radius: 0;

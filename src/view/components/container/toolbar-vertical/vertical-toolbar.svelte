@@ -184,8 +184,8 @@
         </div>
     {:else}
         {#each orderedButtons as group (group.id)}
-            <div class="buttons-group topbar-buttons-group">
-                {#each group.buttons as button (button.label)}
+            {#each group.buttons as button (button.label)}
+                <div class="topbar-buttons-group">
                     <Button
                         active={$activeStates[button.id]}
                         classes="control-item topbar-button"
@@ -199,10 +199,12 @@
                             <svelte:component this={button.icon} class="svg-icon" />
                         {/if}
                     </Button>
-                {/each}
-                
-                <!-- 在侧边栏按钮组后添加快捷菜单按钮 -->
-                {#if group.id === 'mandala'}
+                </div>
+            {/each}
+
+            <!-- 在侧边栏按钮组后添加快捷菜单按钮 -->
+            {#if group.id === 'mandala'}
+                <div class="topbar-buttons-group">
                     <Button
                         active={$showOptionsMenu}
                         classes="control-item js-view-options-trigger topbar-button"
@@ -212,8 +214,8 @@
                     >
                         <Wrench class="svg-icon" />
                     </Button>
-                {/if}
-            </div>
+                </div>
+            {/if}
         {/each}
     {/if}
 </div>

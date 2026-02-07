@@ -10,7 +10,7 @@
     const search = searchStore(view);
 </script>
 
-<div class="search-container buttons-group topbar-buttons-group">
+<div class="search-container topbar-buttons-group">
     <Button
         active={$search.showInput}
         classes="topbar-button"
