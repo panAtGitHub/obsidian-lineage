@@ -46,12 +46,21 @@
                 </button>
             </div>
         </div>
+        <Front />
     {:else}
-        <button class="modal-close-button" on:click={closeHotkeys} aria-label="关闭快捷键">
-            <X size={14} />
-        </button>
+        <div class="hotkeys-desktop-header">
+            <div class="hotkeys-desktop-header__search">
+                <Front />
+            </div>
+            <button
+                class="modal-close-button hotkeys-desktop-close"
+                on:click={closeHotkeys}
+                aria-label="关闭快捷键"
+            >
+                <X size={14} />
+            </button>
+        </div>
     {/if}
-    <Front />
     <div class="groups">
         {#each Object.entries($store.hotkeys) as [groupName, group] (groupName)}
             <Group {groupName} {group} {labelState} />
@@ -146,25 +155,34 @@
         flex: 1;
     }
 
-    .hotkeys-modal:not(.is-mobile) :global(.front) {
-        padding: var(--size-4-2) var(--size-4-6) 0;
-    }
-
-    .hotkeys-modal:not(.is-mobile) :global(.front .search-input-container) {
-        padding-right: 44px;
-    }
-
     .hotkeys-modal:not(.is-mobile) {
         z-index: 1200;
     }
 
-    .hotkeys-modal:not(.is-mobile) :global(.modal-close-button) {
-        top: calc(var(--size-4-2) + 6px);
-        right: var(--size-4-6);
+    .hotkeys-desktop-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: var(--size-4-2) var(--size-4-6) 0;
+    }
+
+    .hotkeys-desktop-header__search {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .hotkeys-desktop-header__search :global(.front) {
+        width: 100%;
+    }
+
+    .hotkeys-desktop-close {
+        position: static !important;
+        flex: 0 0 auto;
         width: 22px;
         height: 22px;
         padding: 0;
         border-radius: 6px;
+        margin-top: 0;
         display: flex;
         align-items: center;
         justify-content: center;
