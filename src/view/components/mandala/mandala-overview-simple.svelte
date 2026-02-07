@@ -18,7 +18,8 @@
         Show9x9TitleOnlyStore,
     } from 'src/stores/settings/derived/view-settings-store';
 
-    import { Platform, setIcon } from 'obsidian';
+    import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+    import { Platform } from 'obsidian';
     import { SectionColorBySectionStore } from 'src/stores/document/derived/section-colors-store';
     import { applyOpacityToHex } from 'src/view/helpers/mandala/section-colors';
     import { isSafeExternalUrl } from 'src/view/helpers/link-utils';
@@ -326,15 +327,6 @@
         openSidebarAndEditMandalaNode(view, cell.nodeId);
     };
 
-    const applyObsidianIcon = (node: HTMLElement, iconName: string) => {
-        setIcon(node, iconName);
-        return {
-            update(nextIconName: string) {
-                setIcon(node, nextIconName);
-            },
-        };
-    };
-
     const jumpToPrevCore = (event: MouseEvent) => {
         event.stopPropagation();
         jumpCoreTheme(view, 'up');
@@ -409,10 +401,9 @@
                 aria-label="切换到上一个平行九宫格"
                 on:click={jumpToPrevCore}
             >
-                <span
-                    class="parallel-nav-button__icon"
-                    use:applyObsidianIcon={'chevron-left'}
-                />
+                <span class="parallel-nav-button__icon">
+                    <ChevronLeft class="parallel-nav-button__svg" />
+                </span>
             </button>
         {/if}
         <button
@@ -421,10 +412,9 @@
             aria-label="切换到下一个平行九宫格"
             on:click={jumpToNextCore}
         >
-            <span
-                class="parallel-nav-button__icon"
-                use:applyObsidianIcon={'chevron-right'}
-            />
+            <span class="parallel-nav-button__icon">
+                <ChevronRight class="parallel-nav-button__svg" />
+            </span>
         </button>
     {/if}
 </div>
@@ -649,8 +639,7 @@
         line-height: 0;
     }
 
-    .parallel-nav-button__icon :global(svg),
-    .parallel-nav-button__icon :global(.svg-icon) {
+    .parallel-nav-button__icon :global(svg) {
         display: block;
         width: 16px !important;
         height: 16px !important;
