@@ -154,6 +154,10 @@
         padding-right: 40px;
     }
 
+    .hotkeys-modal:not(.is-mobile) {
+        z-index: 1200;
+    }
+
     @media (max-width: 720px) {
         .groups {
             width: 100%;
