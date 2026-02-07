@@ -25,7 +25,7 @@
 </script>
 
 <div class="toolbar-center">
-    <div class="lock-toggle-container buttons-group topbar-buttons-group">
+    <div class="lock-toggle-container topbar-buttons-group">
         {#if $mode === '9x9'}
             <Button
                 active={$show9x9TitleOnly}
