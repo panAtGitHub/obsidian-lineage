@@ -22,3 +22,13 @@
     outline: 2px solid var(--interactive-accent);
     outline-offset: 1px;
 }
+
+:global(.is-mobile) .mandala-context-menu-custom .mandala-color-palette {
+    gap: 10px;
+}
+
+:global(.is-mobile) .mandala-color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+}
