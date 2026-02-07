@@ -649,10 +649,11 @@
         line-height: 0;
     }
 
-    .parallel-nav-button__icon :global(svg) {
+    .parallel-nav-button__icon :global(svg),
+    .parallel-nav-button__icon :global(.svg-icon) {
         display: block;
-        width: 16px;
-        height: 16px;
-        stroke-width: 2.3;
+        width: 16px !important;
+        height: 16px !important;
+        stroke-width: 2.3 !important;
     }
 </style>

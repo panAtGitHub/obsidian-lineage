@@ -932,11 +932,12 @@
         line-height: 0;
     }
 
-    .mandala-subgrid-btn__icon :global(svg) {
+    .mandala-subgrid-btn__icon :global(svg),
+    .mandala-subgrid-btn__icon :global(.svg-icon) {
         display: block;
-        width: 14px;
-        height: 14px;
-        stroke-width: 2.2;
+        width: 14px !important;
+        height: 14px !important;
+        stroke-width: 2.2 !important;
     }
 
     .mandala-subgrid-controls.is-center-controls
