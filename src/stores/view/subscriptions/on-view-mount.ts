@@ -59,7 +59,7 @@ export const onViewMount = (view: MandalaView) => {
     attachWheelScrollListener(view);
     documentStore.dispatch({ type: 'document/meta/refresh-group-parent-ids' });
     attachCloseModalsListener(view);
-    view.rulesProcessor.onRulesUpdate();
+    void view.rulesProcessor.onRulesUpdate();
     view.zoomFactor = view.plugin.settings.getValue().view.zoomLevel;
 
     subscriptions.add(watchViewSize(view));

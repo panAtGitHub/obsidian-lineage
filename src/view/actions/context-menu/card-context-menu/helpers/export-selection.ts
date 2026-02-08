@@ -16,7 +16,7 @@ export const exportSelection = async (
     if (isEditing) {
         saveNodeContent(view);
         setTimeout(() => {
-            exportSelection(view, includeSubItems);
+            void exportSelection(view, includeSubItems);
         }, 100);
         return;
     }

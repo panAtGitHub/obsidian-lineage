@@ -148,8 +148,11 @@ export default class MandalaGrid extends Plugin {
             'Open mandala grid',
             () => {
                 const file = getActiveFile(this);
-                if (file) toggleFileViewType(this, file, undefined);
-                else createMandalaGridDocument(this);
+                if (file) {
+                    void toggleFileViewType(this, file, undefined);
+                } else {
+                    void createMandalaGridDocument(this);
+                }
             },
         );
     }

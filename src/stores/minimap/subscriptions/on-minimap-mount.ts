@@ -12,8 +12,8 @@ export const onMinimapMount = async (view: MandalaView) => {
     invariant(minimapStore);
     refreshMinimapTheme();
     setMinimapDom(view);
-    initializeMinimapWorker(view);
+    void initializeMinimapWorker(view);
     setMinimapActiveNode(view);
-    setClientHeight(view);
+    void setClientHeight(view);
     await drawDocument(view);
 };

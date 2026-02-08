@@ -6,7 +6,7 @@ export const moveCommands = () => {
         {
             name: 'move_node_up',
             callback: (view) => {
-                moveNode(view, 'up');
+                void moveNode(view, 'up');
             },
             hotkeys: [
                 { key: 'K', modifiers: ['Alt', 'Shift'], editorState: 'both' },
@@ -20,7 +20,7 @@ export const moveCommands = () => {
         {
             name: 'move_node_down',
             callback: (view) => {
-                moveNode(view, 'down');
+                void moveNode(view, 'down');
             },
             hotkeys: [
                 { key: 'J', modifiers: ['Alt', 'Shift'], editorState: 'both' },
@@ -34,7 +34,7 @@ export const moveCommands = () => {
         {
             name: 'move_node_right',
             callback: (view) => {
-                moveNode(view, 'right');
+                void moveNode(view, 'right');
             },
             hotkeys: [
                 { key: 'L', modifiers: ['Alt', 'Shift'], editorState: 'both' },
@@ -48,7 +48,7 @@ export const moveCommands = () => {
         {
             name: 'move_node_left',
             callback: (view) => {
-                moveNode(view, 'left');
+                void moveNode(view, 'left');
             },
             hotkeys: [
                 { key: 'H', modifiers: ['Alt', 'Shift'], editorState: 'both' },

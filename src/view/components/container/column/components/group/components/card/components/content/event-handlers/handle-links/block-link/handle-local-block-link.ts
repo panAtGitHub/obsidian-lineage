@@ -8,7 +8,7 @@ export const handleLocalBlockLink = (view: MandalaView, id: string) => {
     if (element) {
         const card = element.closest('.mandala-card');
         if (card && card.id) {
-            selectCard(view, card.id);
+            void selectCard(view, card.id);
             return true;
         }
     }

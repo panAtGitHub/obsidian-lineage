@@ -35,7 +35,7 @@ export const onPluginSettingsUpdate = (
         applyZoomLevel(view, state.view.zoomLevel);
         view.zoomFactor = state.view.zoomLevel;
     } else if (action.type === 'settings/documents/set-document-format') {
-        view.saveDocument();
+        void view.saveDocument();
     } else if (type === 'settings/view/set-node-indentation-width') {
         applyCardIndentationWidth(view, state.view.nodeIndentationWidth);
     } else if (type === 'settings/view/theme/set-inactive-node-opacity') {
@@ -93,7 +93,7 @@ export const onPluginSettingsUpdate = (
         type === 'settings/style-rules/update-style' ||
         type === 'settings/style-rules/toggle-global';
     if (shouldUpdateStyleRules) {
-        view.rulesProcessor.onRulesUpdate();
+        void view.rulesProcessor.onRulesUpdate();
     }
 
 };

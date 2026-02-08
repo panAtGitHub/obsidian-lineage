@@ -14,7 +14,7 @@ export const clipboardCommands = () => {
                     return;
                 }
                 event.preventDefault();
-                copyActiveBranchesToClipboard(view, true, false);
+                void copyActiveBranchesToClipboard(view, true, false);
             },
             hotkeys: [
                 { key: 'C', modifiers: ['Mod'], editorState: 'editor-off' },
@@ -24,7 +24,7 @@ export const clipboardCommands = () => {
             name: 'copy_node_unformatted',
             callback: async (view, event) => {
                 event.preventDefault();
-                copyActiveBranchesToClipboard(view, false, false);
+                void copyActiveBranchesToClipboard(view, false, false);
             },
             hotkeys: [
                 {
@@ -38,7 +38,7 @@ export const clipboardCommands = () => {
             name: 'copy_node_without_subitems',
             callback: async (view, event) => {
                 event.preventDefault();
-                copyActiveNodesToClipboard(view, false);
+                void copyActiveNodesToClipboard(view, false);
             },
             hotkeys: [
                 {
@@ -52,7 +52,7 @@ export const clipboardCommands = () => {
             name: 'cut_node',
             callback: async (view, event) => {
                 event.preventDefault();
-                cutNode(view);
+                void cutNode(view);
             },
             hotkeys: [
                 { key: 'X', modifiers: ['Mod'], editorState: 'editor-off' },
@@ -62,7 +62,7 @@ export const clipboardCommands = () => {
             name: 'paste_node',
             callback: async (view, event) => {
                 event.preventDefault();
-                pasteNode(view);
+                void pasteNode(view);
             },
             hotkeys: [
                 {

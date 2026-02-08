@@ -21,7 +21,7 @@ export const copyLinkToBlock = async (
     if (isEditing) {
         saveNodeContent(view);
         setTimeout(() => {
-            copyLinkToBlock(view, isInSidebar);
+            void copyLinkToBlock(view, isInSidebar);
         }, 100);
         return;
     }

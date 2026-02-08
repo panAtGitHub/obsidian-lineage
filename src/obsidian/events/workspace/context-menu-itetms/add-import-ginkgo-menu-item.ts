@@ -15,8 +15,8 @@ export const addImportGinkgoMenuItem = (
         item.setTitle(lang.ocm_import_from_gingko);
         item.setIcon(customIcons.cards.name);
 
-        item.onClick(async () => {
-            importFromGingko(plugin, files);
+        item.onClick(() => {
+            void importFromGingko(plugin, files);
         });
     });
 };

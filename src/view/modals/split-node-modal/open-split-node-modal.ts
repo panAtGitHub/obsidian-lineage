@@ -12,7 +12,7 @@ export const openSplitNodeModal = async (view: MandalaView) => {
     if (isEditing) {
         saveNodeContent(view);
         setTimeout(() => {
-            openSplitNodeModal(view);
+            void openSplitNodeModal(view);
         }, 100);
         return;
     }

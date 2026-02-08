@@ -65,7 +65,7 @@ export class AlignBranch {
             controller: new AbortController(),
             completed: false,
         };
-        this.run(event);
+        void this.run(event);
         this.previousEvent = event;
     };
 

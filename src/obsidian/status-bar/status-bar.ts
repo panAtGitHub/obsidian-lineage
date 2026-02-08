@@ -42,7 +42,7 @@ export class StatusBar {
 
     updateAll = (view: MandalaView) => {
         this.updateCardsNumber(view);
-        this.updateProgressIndicatorAndChildCount(view);
+        void this.updateProgressIndicatorAndChildCount(view);
     };
 
     updateCardsNumber = (view: MandalaView) => {

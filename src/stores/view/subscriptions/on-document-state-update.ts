@@ -75,13 +75,13 @@ export const onDocumentStateUpdate = (
         view.alignBranch.align(action);
     }
     if (structuralChange || e.content) {
-        view.rulesProcessor.onDocumentUpdate(action);
+        void view.rulesProcessor.onDocumentUpdate(action);
     }
 
     if (!container || !view.isViewOfFile) return;
 
     if (e.content || structuralChange) {
-        view.saveDocument();
+        void view.saveDocument();
     }
 
     if (e.content || structuralChange) {

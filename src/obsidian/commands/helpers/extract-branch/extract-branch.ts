@@ -21,7 +21,7 @@ export const extractBranch = async (view: MandalaView) => {
         if (isEditing) {
             saveNodeContent(view);
             setTimeout(() => {
-                extractBranch(view);
+                void extractBranch(view);
             }, 100);
             return;
         }

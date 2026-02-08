@@ -10,16 +10,16 @@ export const minimapSubscriptions = (view: MandalaView) => {
     const unsub = view.minimapStore!.subscribe(
         (viewState, action, initialRun) => {
             if (initialRun) {
-                onMinimapMount(view);
+                void onMinimapMount(view);
             } else if (action) {
-                onMinimapStateUpdate(view, action, viewState, localState);
+                void onMinimapStateUpdate(view, action, viewState, localState);
             }
         },
     );
 
     return () => {
         unsub();
-        minimapWorker.run({
+        void minimapWorker.run({
             type: 'worker/destroy',
             payload: { canvasId: view.minimapStore!.getValue().canvasId },
         });

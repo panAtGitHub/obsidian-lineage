@@ -23,8 +23,8 @@ export const addToggleViewMenuItem = (
         );
         item.setIcon(isTree ? 'file-text' : customIcons.cards.name);
 
-        item.onClick(async () => {
-            toggleFileViewType(plugin, file, leaf);
+        item.onClick(() => {
+            void toggleFileViewType(plugin, file, leaf);
         });
     });
 };

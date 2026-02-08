@@ -30,7 +30,7 @@ export const onViewStateUpdate = (
     }
     if (activeNodeChange && activeNodeHasChanged) {
         persistActiveNodeInPluginSettings(view);
-        view.plugin.statusBar.updateProgressIndicatorAndChildCount(view);
+        void view.plugin.statusBar.updateProgressIndicatorAndChildCount(view);
     }
     if (activeNodeChange) {
         if (view.minimapStore) {

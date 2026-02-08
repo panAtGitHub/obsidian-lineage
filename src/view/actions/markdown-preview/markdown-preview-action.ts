@@ -24,7 +24,7 @@ export const markdownPreviewAction = (element: HTMLElement, nodeId: string) => {
                 view.file!.path,
                 view,
             );
-            Promise.resolve(renderResult).then(() =>
+            void Promise.resolve(renderResult).then(() =>
                 markHiddenInfoElements(element),
             );
         }

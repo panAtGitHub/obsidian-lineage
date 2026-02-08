@@ -88,7 +88,7 @@ export const createZoomMenu = (props: Props) => {
                 item.setTitle(zoom.label)
                     .setChecked(zoom.scale === lastClickedZoom)
                     .onClick(() => {
-                        apply(zoom, true);
+                        void apply(zoom, true);
                         menu.hide();
                         createZoomMenu(props);
                     });
@@ -96,7 +96,7 @@ export const createZoomMenu = (props: Props) => {
                 const dom = (item as MenuItem & { dom?: HTMLElement }).dom;
                 if (dom) {
                     dom.addEventListener('mouseenter', () => {
-                        apply(zoom, false);
+                        void apply(zoom, false);
                     });
                 }
             });

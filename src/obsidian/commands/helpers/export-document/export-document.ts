@@ -17,7 +17,7 @@ export const exportDocument = async (view: MandalaView) => {
         if (isEditing) {
             saveNodeContent(view);
             setTimeout(() => {
-                exportDocument(view);
+                void exportDocument(view);
             }, 100);
             return;
         }

@@ -126,7 +126,7 @@ export class MandalaView extends TextFileView {
     setViewData(data: string): void {
         if (!this.activeFilePath && this.file) {
             this.activeFilePath = this.file?.path;
-            this.loadInitialData();
+            void this.loadInitialData();
         } else {
             this.data = data;
             if (this.isViewOfFile) this.debouncedLoadDocumentToStore();
@@ -345,7 +345,7 @@ export class MandalaView extends TextFileView {
         if (!this.pendingEphemeralState) return;
         const pending = this.pendingEphemeralState;
         this.pendingEphemeralState = null;
-        this.setEphemeralState(pending);
+        void this.setEphemeralState(pending);
     }
 
     private async handleSubpathJump(subpath: string) {

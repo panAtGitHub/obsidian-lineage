@@ -13,7 +13,7 @@ export const handleLocalHeadingLink = (view: MandalaView, link: string) => {
         if (heading) {
             const card = heading.closest('.mandala-card');
             if (card && card.id) {
-                selectCard(view, card.id);
+                void selectCard(view, card.id);
                 break;
             }
         }

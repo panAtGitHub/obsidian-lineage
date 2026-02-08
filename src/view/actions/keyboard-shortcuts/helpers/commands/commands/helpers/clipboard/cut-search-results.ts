@@ -4,7 +4,7 @@ import { sortNodeIdsByDepthDesc } from 'src/lib/tree-utils/sort/sort-node-ids-by
 import { sortNodeIdsBySectionNumber } from 'src/lib/tree-utils/sort/sort-node-ids-by-section-number';
 
 export const cutSearchResults = async (view: MandalaView) => {
-    copySearchResultsToClipboard(view);
+    void copySearchResultsToClipboard(view);
     const viewState = view.viewStore.getValue();
     const documentState = view.documentStore.getValue();
     const results = Array.from(viewState.search.results.keys());

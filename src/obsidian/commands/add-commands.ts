@@ -31,7 +31,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (file) {
                 if (checking) return true;
                 else {
-                    toggleFileViewType(plugin, file, undefined);
+                    void toggleFileViewType(plugin, file, undefined);
                 }
             }
         },
@@ -42,7 +42,7 @@ const createCommands = (plugin: MandalaGrid) => {
         icon: customIcons.mandalaGrid.name,
         checkCallback: (checking) => {
             if (checking) return true;
-            createMandalaGridDocument(plugin);
+            void createMandalaGridDocument(plugin);
         },
     });
 
@@ -80,7 +80,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            openSplitNodeModal(view!);
+            void openSplitNodeModal(view!);
         },
     });
 
@@ -126,7 +126,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            copyLinkToBlock(view!, false);
+            void copyLinkToBlock(view!, false);
         },
     });
 
@@ -162,7 +162,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            extractBranch(view!);
+            void extractBranch(view!);
         },
     });
 
@@ -174,7 +174,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            exportSelection(view!, true);
+            void exportSelection(view!, true);
         },
     });
 
@@ -186,7 +186,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            exportSelection(view!, false);
+            void exportSelection(view!, false);
         },
     });
 
@@ -198,7 +198,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            exportDocument(view!);
+            void exportDocument(view!);
         },
     });
 
@@ -210,7 +210,7 @@ const createCommands = (plugin: MandalaGrid) => {
             if (checking) {
                 return Boolean(view);
             }
-            ejectDocument(view!);
+            void ejectDocument(view!);
         },
     });
 

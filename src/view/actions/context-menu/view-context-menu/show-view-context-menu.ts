@@ -83,14 +83,14 @@ export const showViewContextMenu = (
             title: lang.cm_export_document,
             icon: 'file-text',
             action: () => {
-                exportDocument(view);
+                void exportDocument(view);
             },
         },
         {
             title: lang.cm_eject_document,
             icon: 'file-text',
             action: () => {
-                ejectDocument(view);
+                void ejectDocument(view);
             },
             dangerous: true,
         },
