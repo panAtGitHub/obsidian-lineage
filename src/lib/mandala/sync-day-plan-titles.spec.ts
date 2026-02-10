@@ -31,6 +31,32 @@ describe('syncDayPlanTitlesInMarkdown', () => {
         expect(result.markdown).toContain('<!--section: 2.1-->\n### 接收太阳的能量，开心一天');
     });
 
+    it('creates missing children for each core and applies headings', () => {
+        const markdown =
+            '---\n' +
+            'mandala: true\n' +
+            'mandala_plan:\n' +
+            '  enabled: true\n' +
+            '  slots:\n' +
+            '    "1": "接收太阳的能量，开心一天"\n' +
+            '    "2": "09-12"\n' +
+            '    "3": "12-14"\n' +
+            '    "4": "14-16"\n' +
+            '    "5": "16-18"\n' +
+            '    "6": "18-19"\n' +
+            '    "7": "19-21"\n' +
+            '    "8": "睡觉准备"\n' +
+            '---\n' +
+            '<!--section: 1-->\n## 2026-02-10\n' +
+            '<!--section: 2-->\n## 2026-02-11\n';
+
+        const result = syncDayPlanTitlesInMarkdown(markdown);
+        expect(result.changed).toBe(true);
+        expect(result.markdown).toContain('<!--section: 1.1-->\n### 接收太阳的能量，开心一天');
+        expect(result.markdown).toContain('<!--section: 2.1-->\n### 接收太阳的能量，开心一天');
+        expect(result.markdown).toContain('<!--section: 2.8-->\n### 睡觉准备');
+    });
+
     it('does not change markdown when day plan is not enabled', () => {
         const markdown =
             '---\nmandala: true\n---\n<!--section: 1.1-->\n### old\n';
