@@ -242,22 +242,25 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
         upsertCenterDateHeading(centerSection, centerDate),
     );
 
+    const hasAnySlotContent = Array.from({ length: 8 }, (_, index) => {
+        const section = `1.${index + 1}`;
+        const content = getSectionContent(workingBody, section) ?? '';
+        return content.trim().length > 0;
+    }).some(Boolean);
+
+    if (hasAnySlotContent) {
+        const shouldOverwriteAll = await openDayPlanConfirmModal(plugin, {
+            title: '是否一次性覆盖 8 个格子的标题？',
+            message: '确认后将统一覆盖 section 1.1 ~ 1.8 的标题行。',
+            confirmText: '一次性覆盖',
+            cancelText: '取消',
+        });
+        if (!shouldOverwriteAll) return;
+    }
+
     for (let i = 0; i < 8; i += 1) {
         const section = `1.${i + 1}`;
         const currentContent = getSectionContent(workingBody, section) ?? '';
-
-        let shouldApply = true;
-        if (currentContent.trim().length > 0) {
-            shouldApply = await openDayPlanConfirmModal(plugin, {
-                title: `是否更新 ${section} 标题？`,
-                message: `将把 ${section} 首行更新为：\n${`### ${slots[i]}`}`,
-                confirmText: '覆盖标题',
-                cancelText: '跳过',
-            });
-        }
-
-        if (!shouldApply) continue;
-
         workingBody = replaceSectionContent(
             workingBody,
             section,
