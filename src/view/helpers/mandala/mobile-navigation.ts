@@ -1,6 +1,7 @@
 import { MandalaView } from 'src/view/view';
 import { Notice } from 'obsidian';
 import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
+import { applyDayPlanToCore } from 'src/view/helpers/mandala/apply-day-plan-to-core';
 
 export const enterSubgridForNode = (view: MandalaView, nodeId: string) => {
     if (view.mandalaMode !== '3x3') return;
@@ -23,6 +24,8 @@ export const enterSubgridForNode = (view: MandalaView, nodeId: string) => {
             type: 'document/mandala/ensure-core-theme',
             payload: { theme: nextTheme },
         });
+        if (!applyDayPlanToCore(view, currentTheme, nextTheme)) return;
+
         const nextNodeId =
             view.documentStore.getValue().sections.section_id[nextTheme];
         if (nextNodeId) {

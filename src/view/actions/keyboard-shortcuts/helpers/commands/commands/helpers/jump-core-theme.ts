@@ -1,4 +1,5 @@
 import { Notice } from 'obsidian';
+import { applyDayPlanToCore } from 'src/view/helpers/mandala/apply-day-plan-to-core';
 import { MandalaView } from 'src/view/view';
 
 type CoreJumpDirection = 'up' | 'down';
@@ -35,6 +36,8 @@ export const jumpCoreTheme = (
             type: 'document/mandala/ensure-core-theme',
             payload: { theme: nextCore },
         });
+        if (!applyDayPlanToCore(view, core, nextCore)) return;
+
         const nextNodeId =
             view.documentStore.getValue().sections.section_id[nextCore];
         if (!nextNodeId) return;

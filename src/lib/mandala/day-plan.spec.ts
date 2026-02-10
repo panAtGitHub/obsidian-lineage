@@ -1,4 +1,5 @@
 import {
+    addDaysIsoDate,
     allSlotsFilled,
     extractDateFromCenterHeading,
     hasValidCenterDateHeading,
@@ -15,6 +16,11 @@ describe('day-plan helpers', () => {
         expect(isIsoDate('2026-02-10')).toBe(true);
         expect(isIsoDate('2026-02-30')).toBe(false);
         expect(isIsoDate('2026/02/10')).toBe(false);
+    });
+
+    it('adds days for iso date', () => {
+        expect(addDaysIsoDate('2026-02-10', 1)).toBe('2026-02-11');
+        expect(addDaysIsoDate('2026-12-31', 1)).toBe('2027-01-01');
     });
 
     it('extracts date from H2 heading only', () => {

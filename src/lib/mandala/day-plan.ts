@@ -39,6 +39,16 @@ export const isIsoDate = (value: string) => {
     );
 };
 
+export const addDaysIsoDate = (value: string, days: number) => {
+    const [year, month, day] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    date.setUTCDate(date.getUTCDate() + days);
+    const nextYear = date.getUTCFullYear();
+    const nextMonth = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const nextDay = String(date.getUTCDate()).padStart(2, '0');
+    return `${nextYear}-${nextMonth}-${nextDay}`;
+};
+
 export const buildCenterDateHeading = (date: string) => `## ${date}`;
 
 export const extractDateFromCenterHeading = (heading: string) => {
