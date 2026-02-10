@@ -10,8 +10,16 @@ import {
     convertToMandalaMarkdown,
     MandalaConversionMode,
 } from 'src/lib/mandala/mandala-conversion';
-import { syncDayPlanTitlesInMarkdown } from 'src/lib/mandala/sync-day-plan-titles';
-import { parseDayPlanFromMarkdown, sectionFromDateInPlanYear } from 'src/lib/mandala/day-plan';
+import {
+    createDayPlanTitleSyncBatches,
+    syncDayPlanTitlesBySections,
+    syncDayPlanTitlesInMarkdown,
+} from 'src/lib/mandala/sync-day-plan-titles';
+import {
+    getHotCoreSections,
+    parseDayPlanFromMarkdown,
+    sectionFromDateInPlanYear,
+} from 'src/lib/mandala/day-plan';
 
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 
@@ -46,11 +54,13 @@ const focusDayPlanSection = (
         const view = leaf.view;
         const plan = parseDayPlanFromMarkdown(content);
         if (!plan) return;
+        view.dayPlanHotCores = getHotCoreSections(plan.year);
 
         const todaySection = sectionFromDateInPlanYear(plan.year);
         const targetSection = todaySection ?? '1';
         if (!todaySection) {
             new Notice('年份错误。');
+            view.dayPlanHotCores = new Set(['1']);
         }
         const nodeId = view.documentStore.getValue().sections.section_id[targetSection];
         if (!nodeId) return;
@@ -111,13 +121,28 @@ export const toggleFileViewType = async (
 
         const syncResult = syncDayPlanTitlesInMarkdown(nextContent);
         nextContent = syncResult.markdown;
-
-        if (nextContent !== content) {
+        const contentChangedOnEnter = nextContent !== content;
+        if (contentChangedOnEnter) {
             await plugin.app.vault.modify(file, nextContent);
         }
 
         if (syncResult.changed) {
-            new Notice('已根据文档前置区调整的标题进行全局替换。');
+            const batchPlan = createDayPlanTitleSyncBatches(nextContent, 120);
+            if (!batchPlan || batchPlan.batches.length <= 1) {
+                new Notice('已根据文档前置区调整的标题进行全局替换。');
+            } else {
+                new Notice(
+                    `正在根据 YAML 后台替换标题：0/${batchPlan.total}`,
+                    1200,
+                );
+                void runDayPlanTitleSyncInBackground(
+                    plugin,
+                    file,
+                    nextContent,
+                    batchPlan.batches,
+                    batchPlan.total,
+                );
+            }
         }
     }
     toggleObsidianViewType(plugin, fileLeaf, newViewType);
@@ -127,6 +152,34 @@ export const toggleFileViewType = async (
         refreshMandalaViewData(plugin, file, latest);
         focusDayPlanSection(plugin, file, latest);
     }
+};
+
+const runDayPlanTitleSyncInBackground = async (
+    plugin: MandalaGrid,
+    file: TFile,
+    sourceMarkdown: string,
+    batches: string[][],
+    total: number,
+) => {
+    let workingMarkdown = sourceMarkdown;
+    let changed = false;
+    let done = 0;
+    for (const sections of batches) {
+        const batchResult = syncDayPlanTitlesBySections(
+            workingMarkdown,
+            sections,
+        );
+        workingMarkdown = batchResult.markdown;
+        if (batchResult.changed) changed = true;
+        done += sections.length;
+        new Notice(`正在根据 YAML 后台替换标题：${done}/${total}`, 900);
+        await new Promise<void>((resolve) => window.setTimeout(resolve, 0));
+    }
+    if (changed && workingMarkdown !== sourceMarkdown) {
+        await plugin.app.vault.modify(file, workingMarkdown);
+        refreshMandalaViewData(plugin, file, workingMarkdown);
+    }
+    new Notice('已根据 YAML 区所调整的标题进行全局替换。');
 };
 
 const getConversionMode = (

@@ -5,6 +5,7 @@ import {
     extractDateFromCenterHeading,
     isIsoDate,
     parseDayPlanFrontmatter,
+    shiftHotWindowToCore,
     upsertCenterDateHeading,
     upsertSlotHeading,
 } from 'src/lib/mandala/day-plan';
@@ -117,6 +118,9 @@ export const applyDayPlanToCore = (
     if (config.valid === false) {
         new Notice('日计划配置无效，请重新运行“设置成「日计划」九宫格格式”。');
         return false;
+    }
+    if (!view.dayPlanHotCores.has(nextCore)) {
+        view.dayPlanHotCores = shiftHotWindowToCore(config.year, nextCore);
     }
 
     const docState = view.documentStore.getValue();

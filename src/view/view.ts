@@ -78,6 +78,7 @@ export class MandalaView extends TextFileView {
     zoomFactor: number;
     mandalaMode: '3x3' | '9x9' = '3x3';
     mandalaActiveCell9x9: { row: number; col: number } | null = null;
+    dayPlanHotCores: Set<string> = new Set();
     minimapDom: MinimapDomElements | null = null;
     private pendingEphemeralState: unknown = null;
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();

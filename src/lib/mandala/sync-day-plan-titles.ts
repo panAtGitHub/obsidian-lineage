@@ -28,7 +28,27 @@ const collectTargetSections = (body: string) => {
     return Array.from(result);
 };
 
-export const syncDayPlanTitlesInMarkdown = (markdown: string) => {
+export const createDayPlanTitleSyncBatches = (
+    markdown: string,
+    batchSize = 80,
+) => {
+    const { body, frontmatter } = extractFrontmatter(markdown);
+    const slots = parseSlotsFromFrontmatter(frontmatter);
+    if (!slots) return null;
+    const sections = collectTargetSections(body);
+    if (sections.length === 0) return null;
+    const normalizedBatchSize = Math.max(1, batchSize);
+    const batches: string[][] = [];
+    for (let i = 0; i < sections.length; i += normalizedBatchSize) {
+        batches.push(sections.slice(i, i + normalizedBatchSize));
+    }
+    return { total: sections.length, batches };
+};
+
+export const syncDayPlanTitlesBySections = (
+    markdown: string,
+    sections: string[],
+) => {
     const { body, frontmatter } = extractFrontmatter(markdown);
     const slots = parseSlotsFromFrontmatter(frontmatter);
     if (!slots) {
@@ -40,25 +60,40 @@ export const syncDayPlanTitlesInMarkdown = (markdown: string) => {
 
     let nextBody = body;
     let changed = false;
-
-    const sections = collectTargetSections(nextBody);
-
     for (const section of sections) {
         const slotIndex = Number(section.split('.')[1]) - 1;
         const title = slots[slotIndex] ?? '';
         if (!title) continue;
-
         const current = getSectionContent(nextBody, section) ?? '';
         if (!current.trim()) continue;
         const next = upsertSlotHeading(current, title);
         if (next === current) continue;
-
         nextBody = replaceSectionContent(nextBody, section, next);
         changed = true;
     }
-
     return {
         changed,
         markdown: frontmatter + nextBody,
+    };
+};
+
+export const syncDayPlanTitlesInMarkdown = (markdown: string) => {
+    const batches = createDayPlanTitleSyncBatches(markdown);
+    if (!batches) {
+        return {
+            changed: false,
+            markdown,
+        };
+    }
+    let nextMarkdown = markdown;
+    let changed = false;
+    for (const sections of batches.batches) {
+        const batch = syncDayPlanTitlesBySections(nextMarkdown, sections);
+        if (batch.changed) changed = true;
+        nextMarkdown = batch.markdown;
+    }
+    return {
+        changed,
+        markdown: nextMarkdown,
     };
 };

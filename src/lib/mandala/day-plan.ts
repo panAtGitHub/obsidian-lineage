@@ -100,6 +100,43 @@ export const sectionFromDateInPlanYear = (
     );
 };
 
+const normalizeCoreSection = (section: string) => section.split('.')[0];
+
+const mondayStartDayOfWeek = (date: Date) => {
+    const sundayStart = date.getUTCDay();
+    return (sundayStart + 6) % 7;
+};
+
+export const getHotCoreSections = (
+    planYear: number,
+    date: Date = new Date(),
+) => {
+    const total = daysInYear(planYear);
+    const day =
+        date.getFullYear() === planYear
+            ? dayOfYearFromDate(planYear, date.getMonth() + 1, date.getDate())
+            : 1;
+    const dateInPlan = new Date(Date.UTC(planYear, 0, day));
+    const weekStart = day - mondayStartDayOfWeek(dateInPlan);
+    const sections = new Set<string>();
+    for (let offset = 0; offset < 7; offset += 1) {
+        const candidate = weekStart + offset;
+        if (candidate < 1 || candidate > total) continue;
+        sections.add(String(candidate));
+    }
+    if (sections.size === 0) sections.add('1');
+    return sections;
+};
+
+export const shiftHotWindowToCore = (planYear: number, section: string) => {
+    const core = Number(normalizeCoreSection(section));
+    if (!Number.isInteger(core) || core < 1 || core > daysInYear(planYear)) {
+        return new Set<string>(['1']);
+    }
+    const dateInPlan = new Date(Date.UTC(planYear, 0, core));
+    return getHotCoreSections(planYear, dateInPlan);
+};
+
 export const buildCenterDateHeading = (date: string) => `## ${date}`;
 
 export const extractDateFromCenterHeading = (heading: string) => {

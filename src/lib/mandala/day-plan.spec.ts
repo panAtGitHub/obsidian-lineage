@@ -5,12 +5,14 @@ import {
     dayOfYearFromDate,
     daysInYear,
     extractDateFromCenterHeading,
+    getHotCoreSections,
     hasValidCenterDateHeading,
     isLeapYear,
     isIsoDate,
     normalizeSlotTitle,
     parseDayPlanFrontmatter,
     sectionFromDateInPlanYear,
+    shiftHotWindowToCore,
     toSlotsRecord,
     upsertCenterDateHeading,
     upsertSlotHeading,
@@ -143,5 +145,18 @@ describe('day-plan helpers', () => {
         const parsed = parseDayPlanFrontmatter(frontmatter);
         expect(parsed).not.toBeNull();
         expect(parsed?.daily_only_3x3).toBe(false);
+    });
+
+    it('builds hot core sections from week window', () => {
+        const sections = getHotCoreSections(2026, new Date('2026-02-10T08:00:00'));
+        expect(sections.has('41')).toBe(true);
+        expect(sections.has('43')).toBe(true);
+        expect(sections.has('45')).toBe(true);
+    });
+
+    it('shifts hot window around target core', () => {
+        const sections = shiftHotWindowToCore(2026, '120');
+        expect(sections.has('120')).toBe(true);
+        expect(sections.has('119')).toBe(true);
     });
 });

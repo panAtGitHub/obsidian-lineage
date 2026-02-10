@@ -36,6 +36,7 @@ import {
 } from 'src/obsidian/modals/day-plan-setup-modal';
 
 const MANDALA_KEY = 'mandala';
+let isSettingUpDayPlan = false;
 
 const getTodayInfo = () => {
     const now = new Date();
@@ -137,28 +138,28 @@ const getPlanDayFromToday = (planYear: number) => {
     return dayOfYearFromDate(planYear, month, day);
 };
 
-const createYearPlanBody = (
+const createYearPlanBodyAsync = async (
     planYear: number,
     todaySection: number,
     slots: string[],
+    onProgress: (done: number, total: number) => void,
 ) => {
     const totalDays = daysInYear(planYear);
     const lines: string[] = [];
-
     for (let day = 1; day <= totalDays; day += 1) {
         lines.push(`<!--section: ${day}-->`);
         lines.push(buildCenterDateHeading(dateFromDayOfYear(planYear, day)));
-
-        for (let i = 1; i <= 8; i += 1) {
-            lines.push(`<!--section: ${day}.${i}-->`);
-            if (day === todaySection) {
+        if (day === todaySection) {
+            for (let i = 1; i <= 8; i += 1) {
+                lines.push(`<!--section: ${todaySection}.${i}-->`);
                 lines.push(upsertSlotHeading('', slots[i - 1] ?? ''));
-            } else {
-                lines.push('');
             }
         }
+        if (day % 24 === 0 || day === totalDays) {
+            onProgress(day, totalDays);
+            await new Promise<void>((resolve) => window.setTimeout(resolve, 0));
+        }
     }
-
     return lines.join('\n') + '\n';
 };
 
@@ -182,6 +183,13 @@ const applyTodaySlotsForYear = (
 };
 
 export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
+    if (isSettingUpDayPlan) {
+        new Notice('正在生成年计划数据，请先不要使用。');
+        return;
+    }
+    isSettingUpDayPlan = true;
+    const processingNotice = new Notice('正在生成年计划数据，请先不要使用。', 0);
+    try {
     const file = getActiveFile(plugin);
     if (!file) {
         new Notice('未找到当前文件。');
@@ -255,7 +263,14 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
     let firstRun = !(existingPlan?.enabled === true);
 
     if (firstRun) {
-        nextBody = createYearPlanBody(selectedYear, Number(todaySection), slots);
+        nextBody = await createYearPlanBodyAsync(
+            selectedYear,
+            Number(todaySection),
+            slots,
+            (done, total) => {
+                new Notice(`正在生成：${done}/${total}`, 800);
+            },
+        );
     } else {
         const todayApplied = applyTodaySlotsForYear(nextBody, selectedYear);
         nextBody = todayApplied.body;
@@ -299,4 +314,8 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
     });
 
     new Notice('已设置为年计划日计划格式。');
+    } finally {
+        processingNotice.hide();
+        isSettingUpDayPlan = false;
+    }
 };
