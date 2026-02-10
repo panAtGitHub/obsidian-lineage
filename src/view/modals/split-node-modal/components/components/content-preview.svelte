@@ -15,12 +15,18 @@
             if (!markdown) {
                 return;
             }
+            const sourcePath =
+                props.plugin.app.workspace.getActiveFile()?.path;
+            if (!sourcePath) {
+                element.setText(markdown);
+                return;
+            }
             void Promise.resolve(
                 MarkdownRenderer.render(
                     props.plugin.app,
                     markdown,
                     element,
-                    '',
+                    sourcePath,
                     props.plugin,
                 ),
             );

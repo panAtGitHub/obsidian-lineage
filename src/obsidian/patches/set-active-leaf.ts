@@ -1,13 +1,20 @@
-import { WorkspaceLeaf } from 'obsidian';
+import { Workspace, WorkspaceLeaf } from 'obsidian';
 import { MandalaView } from 'src/view/view';
 
-export function setActiveLeaf(next: (...params: unknown[]) => unknown) {
-    return function (leaf: WorkspaceLeaf, param: unknown) {
+type SetActiveLeafArgs =
+    | [WorkspaceLeaf, { focus?: boolean; reveal?: boolean; state?: unknown }?]
+    | [WorkspaceLeaf, boolean, boolean];
+
+export function setActiveLeaf(
+    next: (this: Workspace, ...args: SetActiveLeafArgs) => unknown,
+) {
+    return function (this: Workspace, ...args: SetActiveLeafArgs) {
+        const leaf = args[0];
         const isMandalaViewAndIsEditing =
             leaf.view &&
             leaf.view instanceof MandalaView &&
             leaf.view.inlineEditor?.nodeId;
         if (isMandalaViewAndIsEditing) return;
-        return next(leaf, param);
+        next.call(this, ...args);
     };
 }

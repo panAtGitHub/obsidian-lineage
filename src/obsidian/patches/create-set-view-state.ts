@@ -1,10 +1,14 @@
-import { ViewState } from 'obsidian';
+import { ViewState, WorkspaceLeaf } from 'obsidian';
 import { MANDALA_VIEW_TYPE } from 'src/view/view';
 import MandalaGrid from 'src/main';
 
 export function createSetViewState(plugin: MandalaGrid) {
-    return function (next: (...params: unknown[]) => unknown) {
-        return function (state: ViewState, ...rest: unknown[]) {
+    return function (next: WorkspaceLeaf['setViewState']) {
+        return function (
+            this: WorkspaceLeaf,
+            state: ViewState,
+            eState?: unknown,
+        ) {
             const isMarkdownView = state.type === 'markdown';
 
             const stateData = state.state as
@@ -21,9 +25,9 @@ export function createSetViewState(plugin: MandalaGrid) {
                     ...state,
                     type: MANDALA_VIEW_TYPE,
                 };
-                return next(newState, ...rest);
+                return next.call(this, newState, eState) as Promise<void>;
             } else {
-                return next(state, ...rest);
+                return next.call(this, state, eState) as Promise<void>;
             }
         };
     };

@@ -309,12 +309,17 @@
             if (!content) {
                 return;
             }
+            const sourcePath = view.file?.path;
+            if (!sourcePath) {
+                element.setText(content);
+                return;
+            }
             void Promise.resolve(
                 MarkdownRenderer.render(
                     view.plugin.app,
                     content,
                     element,
-                    view.file?.path ?? '',
+                    sourcePath,
                     view,
                 ),
             );
