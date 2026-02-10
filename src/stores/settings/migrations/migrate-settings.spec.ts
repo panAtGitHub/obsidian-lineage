@@ -12,7 +12,7 @@ type SettingsWithLegacySidebar = Settings & {
 
 describe('migrateSettings', () => {
     test('migrates legacy showMandalaDetailSidebar into desktop/mobile fields', () => {
-        const input = {
+        const input: Partial<SettingsWithLegacySidebar> = {
             view: {
                 showMandalaDetailSidebar: true,
             },
