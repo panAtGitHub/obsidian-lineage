@@ -14,6 +14,23 @@ import { syncDayPlanTitlesInMarkdown } from 'src/lib/mandala/sync-day-plan-title
 
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 
+const refreshMandalaViewData = (
+    plugin: MandalaGrid,
+    file: TFile,
+    content: string,
+) => {
+    window.setTimeout(() => {
+        const leaf = getLeafOfFile(plugin, file, MANDALA_VIEW_TYPE);
+        if (!leaf) return;
+        const maybeTextView = leaf.view as unknown as {
+            setViewData?: (data: string) => void;
+        };
+        if (typeof maybeTextView.setViewData === 'function') {
+            maybeTextView.setViewData(content);
+        }
+    }, 50);
+};
+
 export const toggleFileViewType = async (
     plugin: MandalaGrid,
     file: TFile,
@@ -69,6 +86,9 @@ export const toggleFileViewType = async (
     }
     toggleObsidianViewType(plugin, fileLeaf, newViewType);
     setViewType(plugin, file.path, newViewType);
+    if (newViewType === MANDALA_VIEW_TYPE) {
+        refreshMandalaViewData(plugin, file, await plugin.app.vault.read(file));
+    }
 };
 
 const getConversionMode = (
