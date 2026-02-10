@@ -45,6 +45,7 @@
         exitCurrentSubgrid,
     } from 'src/view/helpers/mandala/mobile-navigation';
     import MandalaNavIcon from 'src/view/components/mandala/mandala-nav-icon.svelte';
+    import { parseDayPlanFrontmatter } from 'src/lib/mandala/day-plan';
 
     const view = getView();
     const layout = createLayoutStore();
@@ -250,7 +251,11 @@
     }
 
     $: {
+        const dayPlan = parseDayPlanFrontmatter($documentState.file.frontmatter);
+        const allowSubgridExpansion =
+            !(dayPlan && dayPlan.daily_only_3x3 && $subgridTheme?.includes('.'));
         if (
+            allowSubgridExpansion &&
             $mode === '3x3' &&
             $subgridTheme &&
             !$subgridTheme.includes('.') &&

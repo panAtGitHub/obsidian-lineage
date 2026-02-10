@@ -17,6 +17,7 @@ export const DAY_PLAN_H2_DATE_PATTERN = /^##\s+(\d{4}-\d{2}-\d{2})\s*$/;
 export type DayPlanFrontmatter = {
     enabled: boolean;
     year: number;
+    daily_only_3x3: boolean;
     center_date_h2?: string;
     slots: Record<string, string>;
 };
@@ -194,6 +195,7 @@ export const parseDayPlanFrontmatter = (
     let inSlots = false;
     let enabled = false;
     let year: number | null = null;
+    let dailyOnly3x3 = true;
     let centerDateH2: string | undefined;
     const slots: Record<string, unknown> = {};
 
@@ -231,6 +233,13 @@ export const parseDayPlanFrontmatter = (
             continue;
         }
 
+        const dailyOnlyMatch = trimmed.match(/^daily_only_3x3\s*:\s*(.*)$/);
+        if (dailyOnlyMatch) {
+            const value = stripQuotes(dailyOnlyMatch[1]).toLowerCase();
+            dailyOnly3x3 = value === 'true';
+            continue;
+        }
+
         if (!inSlots && /^slots\s*:\s*$/.test(trimmed)) {
             inSlots = true;
             continue;
@@ -252,6 +261,7 @@ export const parseDayPlanFrontmatter = (
     return {
         enabled: true,
         year,
+        daily_only_3x3: dailyOnly3x3,
         center_date_h2: centerDateH2,
         slots: toSlotsRecord(slotsRecordToArray(slots)),
     };

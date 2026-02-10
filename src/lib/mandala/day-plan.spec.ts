@@ -9,6 +9,7 @@ import {
     isLeapYear,
     isIsoDate,
     normalizeSlotTitle,
+    parseDayPlanFrontmatter,
     sectionFromDateInPlanYear,
     toSlotsRecord,
     upsertCenterDateHeading,
@@ -97,5 +98,50 @@ describe('day-plan helpers', () => {
             '7': 'g',
             '8': 'h',
         });
+    });
+
+    it('parses daily_only_3x3 as true when missing', () => {
+        const frontmatter =
+            '---\n' +
+            'mandala: true\n' +
+            'mandala_plan:\n' +
+            '  enabled: true\n' +
+            '  year: 2026\n' +
+            '  slots:\n' +
+            '    "1": "a"\n' +
+            '    "2": "b"\n' +
+            '    "3": "c"\n' +
+            '    "4": "d"\n' +
+            '    "5": "e"\n' +
+            '    "6": "f"\n' +
+            '    "7": "g"\n' +
+            '    "8": "h"\n' +
+            '---\n';
+        const parsed = parseDayPlanFrontmatter(frontmatter);
+        expect(parsed).not.toBeNull();
+        expect(parsed?.daily_only_3x3).toBe(true);
+    });
+
+    it('parses daily_only_3x3 as false when explicitly set', () => {
+        const frontmatter =
+            '---\n' +
+            'mandala: true\n' +
+            'mandala_plan:\n' +
+            '  enabled: true\n' +
+            '  year: 2026\n' +
+            '  daily_only_3x3: false\n' +
+            '  slots:\n' +
+            '    "1": "a"\n' +
+            '    "2": "b"\n' +
+            '    "3": "c"\n' +
+            '    "4": "d"\n' +
+            '    "5": "e"\n' +
+            '    "6": "f"\n' +
+            '    "7": "g"\n' +
+            '    "8": "h"\n' +
+            '---\n';
+        const parsed = parseDayPlanFrontmatter(frontmatter);
+        expect(parsed).not.toBeNull();
+        expect(parsed?.daily_only_3x3).toBe(false);
     });
 });

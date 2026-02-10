@@ -30,6 +30,7 @@ import { openMandalaTemplateSelectModal } from 'src/obsidian/modals/mandala-temp
 import { parseMandalaTemplates } from 'src/lib/mandala/mandala-templates';
 import {
     openDayPlanConfirmModal,
+    openDayPlanDailyOnlyModal,
     openDayPlanSlotsInputModal,
     openDayPlanYearInputModal,
 } from 'src/obsidian/modals/day-plan-setup-modal';
@@ -210,6 +211,12 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
     );
     if (!selectedYear) return;
 
+    const dailyOnly3x3 = await openDayPlanDailyOnlyModal(
+        plugin,
+        existingPlan?.daily_only_3x3 ?? true,
+    );
+    if (dailyOnly3x3 === null) return;
+
     const existingYear = Number(existingPlan?.year);
     if (
         existingPlan?.enabled === true &&
@@ -283,6 +290,7 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
         record[DAY_PLAN_FRONTMATTER_KEY] = {
             enabled: true,
             year: selectedYear,
+            daily_only_3x3: dailyOnly3x3,
             center_date_h2: buildCenterDateHeading(
                 dateFromDayOfYear(selectedYear, 1),
             ),

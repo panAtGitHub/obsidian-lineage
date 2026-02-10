@@ -1,6 +1,7 @@
 import { MandalaView } from 'src/view/view';
 import { Notice } from 'obsidian';
 import { findChildGroup } from 'src/lib/tree-utils/find/find-child-group';
+import { parseDayPlanFrontmatter } from 'src/lib/mandala/day-plan';
 import {
     applyDayPlanToCore,
     resolveNextDayPlanDate,
@@ -15,6 +16,11 @@ export const enterSubgridForNode = (view: MandalaView, nodeId: string) => {
     const section = docState.sections.id_section[nodeId];
     if (!section) return;
     const currentTheme = view.viewStore.getValue().ui.mandala.subgridTheme ?? '1';
+    const dayPlan = parseDayPlanFrontmatter(docState.file.frontmatter);
+    if (dayPlan && dayPlan.daily_only_3x3 && section.includes('.')) {
+        new Notice('已启用“每日仅九宫格”，不再展开子九宫。');
+        return;
+    }
 
     if (section === currentTheme && !currentTheme.includes('.')) {
         const content = docState.document.content[nodeId]?.content ?? '';

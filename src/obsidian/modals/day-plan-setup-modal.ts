@@ -24,6 +24,15 @@ export const openDayPlanYearInputModal = (
         modal.open();
     });
 
+export const openDayPlanDailyOnlyModal = (
+    plugin: MandalaGrid,
+    initialValue: boolean,
+) =>
+    new Promise<boolean | null>((resolve) => {
+        const modal = new DayPlanDailyOnlyModal(plugin, initialValue, resolve);
+        modal.open();
+    });
+
 export const openDayPlanSlotsInputModal = (
     plugin: MandalaGrid,
     initialSlots: string[],
@@ -210,6 +219,61 @@ class DayPlanSlotsInputModal extends Modal {
     }
 
     private resolveOnce(value: string[] | null) {
+        if (this.resolved) return;
+        this.resolved = true;
+        this.resolve(value);
+    }
+}
+
+class DayPlanDailyOnlyModal extends Modal {
+    private resolved = false;
+    private enabled: boolean;
+
+    constructor(
+        plugin: MandalaGrid,
+        initialValue: boolean,
+        private resolve: (value: boolean | null) => void,
+    ) {
+        super(plugin.app);
+        this.enabled = initialValue;
+    }
+
+    onOpen() {
+        const { contentEl } = this;
+        contentEl.empty();
+        this.setTitle('每日仅九宫格设置');
+
+        new Setting(contentEl)
+            .setName('推荐：每日仅九宫格（不展开子九宫）')
+            .setDesc('开启后将不再创建如 1.1.1 这类更深层子九宫。')
+            .addToggle((toggle) => {
+                toggle.setValue(this.enabled);
+                toggle.onChange((value) => {
+                    this.enabled = value;
+                });
+            });
+
+        new Setting(contentEl).addButton((button) => {
+            button.setButtonText('确认').setCta().onClick(() => {
+                this.resolveOnce(this.enabled);
+                this.close();
+            });
+        });
+
+        new Setting(contentEl).addButton((button) => {
+            button.setButtonText('取消').onClick(() => {
+                this.resolveOnce(null);
+                this.close();
+            });
+        });
+    }
+
+    onClose() {
+        this.resolveOnce(null);
+        this.contentEl.empty();
+    }
+
+    private resolveOnce(value: boolean | null) {
         if (this.resolved) return;
         this.resolved = true;
         this.resolve(value);
