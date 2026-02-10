@@ -10,6 +10,7 @@ import {
     convertToMandalaMarkdown,
     MandalaConversionMode,
 } from 'src/lib/mandala/mandala-conversion';
+import { syncDayPlanTitlesInMarkdown } from 'src/lib/mandala/sync-day-plan-titles';
 
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 
@@ -32,6 +33,7 @@ export const toggleFileViewType = async (
     if (newViewType === MANDALA_VIEW_TYPE) {
         const content = await plugin.app.vault.read(file);
         const analysis = analyzeMandalaContent(content);
+        let nextContent = content;
         const conversionMode = getConversionMode(analysis);
         if (conversionMode) {
             const { title, message } = getConversionPrompt(
@@ -43,16 +45,26 @@ export const toggleFileViewType = async (
                 message,
             });
             if (choice === 'cancel') return;
-            const nextContent = convertToMandalaMarkdown(
-                content,
+            nextContent = convertToMandalaMarkdown(
+                nextContent,
                 conversionMode,
             );
-            await plugin.app.vault.modify(file, nextContent);
             if (analysis.hasSection1 && !analysis.hasSection1_1) {
                 new Notice(
                     '当前非标准九宫格式，请切回 Markdown 视图核对 section 编号。',
                 );
             }
+        }
+
+        const syncResult = syncDayPlanTitlesInMarkdown(nextContent);
+        nextContent = syncResult.markdown;
+
+        if (nextContent !== content) {
+            await plugin.app.vault.modify(file, nextContent);
+        }
+
+        if (syncResult.changed) {
+            new Notice('已根据文档前置区调整的标题进行全局替换。');
         }
     }
     toggleObsidianViewType(plugin, fileLeaf, newViewType);
