@@ -240,7 +240,7 @@ class MandalaTemplatesFileModal extends Modal {
 
         const inputEl = folderSetting.controlEl.querySelector(
             'input',
-        ) as HTMLInputElement | null;
+        );
 
         const ensureSuggestEl = () => {
             if (this.folderSuggestEl) return this.folderSuggestEl;

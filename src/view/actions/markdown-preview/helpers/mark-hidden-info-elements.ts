@@ -41,7 +41,7 @@ export const markHiddenInfoElements = (container: HTMLElement) => {
         const text = comment.textContent?.trim();
         if (!text || !ID_COMMENT_REGEX.test(text)) return;
         const target =
-            (comment.closest('.cm-comment') as HTMLElement | null) || comment;
+            (comment.closest('.cm-comment')) || comment;
         target.classList.add('lng-hidden-info-part');
     });
 };

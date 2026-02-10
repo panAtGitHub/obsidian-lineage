@@ -152,7 +152,7 @@ test.describe('card hotkeys', () => {
         expect(await getTextsOfColumns()).toEqual([[n4, n3, n2, n1]]);
 
         await mergeCardUsingHotkey('down');
-        // eslint-disable-next-line no-irregular-whitespace
+         
         const n4_n3 = `${n4}\n${n3}`;
         expect(await getTextsOfColumns()).toEqual([[n4_n3, n2, n1]]);
 
@@ -161,7 +161,7 @@ test.describe('card hotkeys', () => {
         expect(await getTextsOfColumns()).toEqual([[n4_n3, n2, n1]]);
 
         await mergeCardUsingHotkey('up');
-        // eslint-disable-next-line no-irregular-whitespace
+         
         const n2_n1 = `${n2}\n${n1}`;
         expect(await getTextsOfColumns()).toEqual([[n4_n3, n2_n1]]);
     });

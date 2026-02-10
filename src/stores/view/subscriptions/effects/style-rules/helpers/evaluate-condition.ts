@@ -2,7 +2,6 @@ import {
     ConditionNode,
     NumericConditionNode,
     NumericOperator,
-    StringOperator,
 } from 'src/stores/settings/types/style-rules-types';
 import { Content } from 'src/stores/document/document-state-type';
 import { NodePropertyResolver } from 'src/stores/view/subscriptions/effects/style-rules/helpers/resolvers/node-property-resolver/node-property-resolver';
@@ -37,7 +36,7 @@ export const evaluateCondition = (
 
                 matches = evaluateStringCondition(
                     value as string,
-                    condition.operator as StringOperator,
+                    condition.operator,
                     condition.value.toLowerCase(),
                 );
             } else {

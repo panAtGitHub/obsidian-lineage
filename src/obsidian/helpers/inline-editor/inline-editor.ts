@@ -6,7 +6,10 @@ import { fixVimCursorWhenZooming } from 'src/obsidian/helpers/inline-editor/help
 import { lockFile } from 'src/obsidian/helpers/inline-editor/helpers/lock-file';
 import { unlockFile } from 'src/obsidian/helpers/inline-editor/helpers/unlock-file';
 
-const noop = async () => {};
+const noop = function (
+    this: void,
+    _clear?: boolean,
+): void {};
 
 export type InlineMarkdownView = MarkdownView & {
     mandalaSetViewData: MarkdownView['setViewData'];
@@ -164,8 +167,10 @@ export class InlineEditor {
         } as never) as InlineMarkdownView;
         this.inlineView.save = noop;
         this.inlineView.requestSave = this.invokeAndDeleteOnChangeSubscriptions;
-        this.inlineView.mandalaSetViewData = this.inlineView.setViewData;
-        this.inlineView.setViewData = noop;
+        this.inlineView.mandalaSetViewData =
+            this.inlineView.setViewData.bind(this.inlineView);
+        this.inlineView.setViewData =
+            noop as unknown as MarkdownView['setViewData'];
 
         if (this.inlineView.getMode() === 'preview') {
             await this.inlineView.setState(

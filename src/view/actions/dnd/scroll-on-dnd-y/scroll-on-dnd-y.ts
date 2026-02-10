@@ -32,7 +32,7 @@ export const scrollOnDndY = (container: HTMLElement) => {
 
         const columns = Array.from(
             container.querySelectorAll('.column'),
-        ) as HTMLElement[];
+        );
 
         const context: Context = {
             columns,

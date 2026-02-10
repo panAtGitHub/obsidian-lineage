@@ -17,7 +17,7 @@ export const ControlsBarButtons = (
                 const modal = new VerticalToolbarButtonsModal({
                     plugin: view.plugin,
                 });
-                void modal.open();
+                void modal.openWithPromise();
             });
         });
 };

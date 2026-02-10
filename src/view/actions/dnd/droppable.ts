@@ -56,7 +56,7 @@ export const droppable = (node: HTMLElement) => {
         if (!(event.currentTarget instanceof HTMLElement)) return;
         if (!event.dataTransfer) return;
         const data = event.dataTransfer.getData('text/plain');
-        const targetCard = event.currentTarget as HTMLElement;
+        const targetCard = event.currentTarget;
         if (!targetCard.id.startsWith('n')) return;
         targetCard.removeClasses(classesList);
         targetCard.removeClass('inactive-node-hover');

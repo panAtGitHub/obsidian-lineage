@@ -55,7 +55,7 @@ self.onmessage = (message: MessageEvent) => {
         default:
             // Exhaustive check to keep worker messages in sync with RulesWorkerEvent.
             throw new Error(
-                `Unhandled event type: ${JSON.stringify(payload as never)}`,
+                `Unhandled event type: ${JSON.stringify(payload)}`,
             );
     }
     self.postMessage({ id, payload: result });

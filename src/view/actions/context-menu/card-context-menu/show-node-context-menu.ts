@@ -44,7 +44,7 @@ export const showNodeContextMenu = (
     if (!target) return;
     const closestCardElement = target.closest(
         '.mandala-card, .simple-cell',
-    ) as HTMLElement | null;
+    );
 
     if (!closestCardElement || !closestCardElement.id) return;
 

@@ -8,7 +8,7 @@ export const handleLocalHeadingLink = (view: MandalaView, link: string) => {
     for (let level = 1; level <= 6; level++) {
         const headings = Array.from(
             view.containerEl.querySelectorAll('h' + level),
-        ) as HTMLHeadingElement[];
+        );
         const heading = headings.find((h) => h.dataset.heading === headingText);
         if (heading) {
             const card = heading.closest('.mandala-card');

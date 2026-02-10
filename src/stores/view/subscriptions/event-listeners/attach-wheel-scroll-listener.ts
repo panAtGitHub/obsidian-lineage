@@ -9,7 +9,7 @@ export const attachWheelScrollListener = (view: MandalaView) => {
             target.hasClass('lng-prev') || target.closest('.lng-prev');
         if (!targetIsACard) return;
 
-        const column = target.closest('.column') as HTMLElement | null;
+        const column = target.closest('.column');
         if (!column) return;
         evt.preventDefault();
         evt.stopPropagation();

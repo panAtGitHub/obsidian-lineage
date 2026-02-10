@@ -33,13 +33,17 @@ export const createSidebarContextMenuItems = (
         {
             title: lang.cm_copy_link_to_block,
             icon: 'links-coming-in',
-            action: () => copyLinkToBlock(view, true),
+            action: () => {
+                void copyLinkToBlock(view, true);
+            },
         },
         { type: 'separator' },
         {
             title: lang.cm_copy,
             icon: 'documents',
-            action: () => copyActiveNodesToClipboard(view, true),
+            action: () => {
+                void copyActiveNodesToClipboard(view, true);
+            },
         },
 
         { type: 'separator' },

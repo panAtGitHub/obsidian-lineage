@@ -52,7 +52,7 @@ export class TargetNodeResolver {
 
     public getTargetNodes(scope: StyleRuleTarget, nodeId: string): string[] {
         if (this.cache[scope][nodeId] !== undefined) {
-            return this.cache[scope][nodeId]!;
+            return this.cache[scope][nodeId];
         }
 
         let result: string[];

@@ -27,13 +27,13 @@ export type SplitNodeModalProps = {
 
 export class SplitNodeModal extends Modal {
     state: SplitNodeModalState;
-    private resolve: (value: unknown) => void;
+    private resolve?: (value: unknown) => void;
     private subscriptions: Set<() => void> = new Set();
 
     constructor(private props: SplitNodeModalProps) {
         super(props.plugin.app);
     }
-    open = () => {
+    openWithPromise = () => {
         this.setTitle('Choose how to split this section');
         this.initState();
         new Content({
@@ -53,7 +53,7 @@ export class SplitNodeModal extends Modal {
     };
 
     close = () => {
-        this.resolve(undefined);
+        this.resolve?.(undefined);
         super.close();
         for (const unsub of this.subscriptions) {
             unsub();

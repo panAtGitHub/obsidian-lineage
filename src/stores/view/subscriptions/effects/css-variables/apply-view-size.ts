@@ -6,7 +6,7 @@ const PADDING_V = 8 * 2;
 export const applyViewSize = (view: MandalaView) => {
     const viewElement = view.contentEl.querySelector(
         '.mandala-main',
-    ) as HTMLElement | null;
+    );
     if (!viewElement) return;
     const rect = viewElement.getBoundingClientRect();
     view.containerEl.style.setProperty(

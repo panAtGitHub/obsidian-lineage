@@ -1,7 +1,6 @@
 import { NodePosition } from 'src/lib/tree-utils/find/find-node-position';
 import {
     Columns,
-    NodeGroup,
     NodeId,
 } from 'src/stores/document/document-state-type';
 
@@ -20,7 +19,7 @@ export const findNodeAtPosition = (
         return null;
     }
 
-    const group = column.groups[groupIndex] as NodeGroup;
+    const group = column.groups[groupIndex];
     if (nodeIndex < 0 || nodeIndex >= group.nodes.length) {
         return null;
     }

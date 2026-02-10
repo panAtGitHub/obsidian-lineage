@@ -167,13 +167,13 @@ export class MandalaView extends TextFileView {
         return this.file ? this.file.basename : '';
     }
 
-    async onOpen() { }
+    async onOpen() {}
 
     async onClose() {
-        return this.onUnloadFile();
+        await this.onUnloadFile();
     }
 
-    async setEphemeralState(state: unknown) {
+    setEphemeralState(state: unknown) {
         super.setEphemeralState(state);
         if (!state) return;
         const documentLoaded =
@@ -183,11 +183,11 @@ export class MandalaView extends TextFileView {
             return;
         }
         if (typeof (state as { subpath?: string }).subpath === 'string') {
-            await this.handleSubpathJump(
+            void this.handleSubpathJump(
                 (state as { subpath: string }).subpath,
             );
         } else if (typeof (state as { line?: number }).line === 'number') {
-            await this.handleLineJump((state as { line: number }).line);
+            void this.handleLineJump((state as { line: number }).line);
         }
     }
 

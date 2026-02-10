@@ -2,9 +2,16 @@ import { _electron as electron } from 'playwright-core';
 import { Page } from '@playwright/test';
 import { delay } from '../../general/delay';
 
-export const __test_notice__ = (text: string) => {
-    // @ts-ignore
-    __obsidian__.evaluate((text) => new window.Notice(text), text);
+export const __test_notice__ = async (text: string) => {
+    if (!__obsidian__) return;
+    await __obsidian__.evaluate((message) => {
+        const scope = window as Window & {
+            Notice?: new (noticeText: string) => unknown;
+        };
+        if (scope.Notice) {
+            new scope.Notice(message);
+        }
+    }, text);
 };
 export let __obsidian__: Page;
 export const loadObsidian = async () => {

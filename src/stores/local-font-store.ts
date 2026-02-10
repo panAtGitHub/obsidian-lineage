@@ -2,10 +2,11 @@ import { writable } from 'svelte/store';
 import { Platform } from 'obsidian';
 
 const FONT_SIZE_KEY = 'mandala-device-local-font-size';
+const browserStorage = globalThis.localStorage;
 
 // 初始值检测：手机 12px，其他 16px
 const getInitialValue = () => {
-    const saved = localStorage.getItem(FONT_SIZE_KEY);
+    const saved = browserStorage.getItem(FONT_SIZE_KEY);
     if (saved) return parseInt(saved);
     return Platform.isPhone ? 12 : 16;
 };
@@ -17,9 +18,9 @@ const createLocalFontStore = () => {
         subscribe,
         setFontSize: (size: number) => {
             const clampedSize = Math.min(Math.max(size, 6), 36);
-            localStorage.setItem(FONT_SIZE_KEY, clampedSize.toString());
+            browserStorage.setItem(FONT_SIZE_KEY, clampedSize.toString());
             set(clampedSize);
-        }
+        },
     };
 };
 

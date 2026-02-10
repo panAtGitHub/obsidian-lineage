@@ -8,13 +8,13 @@ export type ModalProps = {
 };
 
 export class VerticalToolbarButtonsModal extends Modal {
-    private resolve: (value: unknown) => void;
+    private resolve?: (value: unknown) => void;
     private subscriptions: Set<() => void> = new Set();
 
     constructor(private props: ModalProps) {
         super(props.plugin.app);
     }
-    open = () => {
+    openWithPromise = () => {
         this.setTitle(lang.settings_vertical_toolbar_icons_desc);
         this.initState();
         new Content({
@@ -34,7 +34,7 @@ export class VerticalToolbarButtonsModal extends Modal {
     };
 
     close = () => {
-        this.resolve(undefined);
+        this.resolve?.(undefined);
         super.close();
         for (const unsub of this.subscriptions) {
             unsub();

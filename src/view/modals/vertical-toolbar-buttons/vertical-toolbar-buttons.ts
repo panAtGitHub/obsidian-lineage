@@ -25,7 +25,7 @@ export type ToolbarButton =
     | 'snapshots-list'
     | 'undo'
     | 'redo'
-    | 'snapshots-list'
+     
     | 'zoom-in'
     | 'zoom-out'
     | 'zoom-reset'

@@ -8,7 +8,7 @@ export const clipboardCommands = () => {
     return [
         {
             name: 'copy_node',
-            callback: async (view, event) => {
+            callback: (view, event) => {
                 const selectedText = activeWindow.getSelection()?.toString();
                 if (selectedText && selectedText.length > 0) {
                     return;
@@ -22,7 +22,7 @@ export const clipboardCommands = () => {
         },
         {
             name: 'copy_node_unformatted',
-            callback: async (view, event) => {
+            callback: (view, event) => {
                 event.preventDefault();
                 void copyActiveBranchesToClipboard(view, false, false);
             },
@@ -36,7 +36,7 @@ export const clipboardCommands = () => {
         },
         {
             name: 'copy_node_without_subitems',
-            callback: async (view, event) => {
+            callback: (view, event) => {
                 event.preventDefault();
                 void copyActiveNodesToClipboard(view, false);
             },
@@ -50,7 +50,7 @@ export const clipboardCommands = () => {
         },
         {
             name: 'cut_node',
-            callback: async (view, event) => {
+            callback: (view, event) => {
                 event.preventDefault();
                 void cutNode(view);
             },
@@ -60,7 +60,7 @@ export const clipboardCommands = () => {
         },
         {
             name: 'paste_node',
-            callback: async (view, event) => {
+            callback: (view, event) => {
                 event.preventDefault();
                 void pasteNode(view);
             },

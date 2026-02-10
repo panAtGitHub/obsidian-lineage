@@ -4,7 +4,6 @@
     import { ActiveSettingsTabStore } from 'src/view/components/container/modals/settings/active-settings-tab-store';
     import { X, Check } from 'lucide-svelte';
     import { getView } from '../../context';
-    import type { MandalaView } from 'src/view/view';
     import { Platform } from 'obsidian';
 
     const view = getView();

@@ -197,7 +197,7 @@
         }
     };
 
-    const updateA4Orientation = (event: Event) => {
+    const _updateA4Orientation = (event: Event) => {
         const target = event.target;
         if (!(target instanceof HTMLSelectElement)) return;
         const orientation =
@@ -511,7 +511,7 @@
         });
     };
 
-    const switchLastPrintConfig = () => {
+    const _switchLastPrintConfig = () => {
         if (!lastPrintConfig) {
             new Notice('暂无可切换的打印配置。');
             return;
@@ -528,7 +528,7 @@
         lastPrintConfig = current;
     };
 
-    const restoreEditMode = () => {
+    const _restoreEditMode = () => {
         capturePrintConfig();
         setExportMode('png-screen');
         updateWhiteThemeMode(false);
@@ -672,7 +672,7 @@
         let dataUrl = '';
         try {
             dataUrl = await renderToPNGDataUrl(target, options);
-        } catch (error) {
+        } catch (_error) {
             loadingNotice.hide();
             new Notice('导出失败，请稍后再试。');
             closeMenu();
@@ -1039,7 +1039,7 @@
         }
     };
 
-    const addPngDpiChunk = (dataUrl: string, dpi: number) => {
+    const _addPngDpiChunk = (dataUrl: string, dpi: number) => {
         const base64 = dataUrl.split(',')[1] ?? '';
         const binary = atob(base64);
         const bytes = new Uint8Array(binary.length);

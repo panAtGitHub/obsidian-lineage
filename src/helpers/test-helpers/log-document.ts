@@ -86,6 +86,7 @@ export const __logDocument__ = (
         output = variableDeclarations + output;
     }
 
+    // eslint-disable-next-line no-console
     console.debug(output);
     return output;
 };

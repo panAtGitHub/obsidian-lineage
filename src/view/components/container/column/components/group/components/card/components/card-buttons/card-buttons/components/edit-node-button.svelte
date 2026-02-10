@@ -17,7 +17,6 @@
     export let nodeId: string;
     export let isInSidebar: boolean;
     const view = getView();
-    const viewStore = view.viewStore;
 
     const enableEditMode = (e: MouseEvent) => {
         e.stopPropagation();

@@ -54,7 +54,9 @@ export const createSingleNodeContextMenuItems = (
         {
             title: lang.cm_copy_link_to_block,
             icon: 'links-coming-in',
-            action: () => copyLinkToBlock(view, false),
+            action: () => {
+                void copyLinkToBlock(view, false);
+            },
         },
         { type: 'separator' },
         {

@@ -28,7 +28,6 @@ export const mapBranchesToText = (
         return branchToHtmlComment(branches);
     } else if (format === 'unformatted-text') {
         return branchToText(branches);
-    } else {
-        throw new Error(`Invalid format: ${format}`);
     }
+    throw new Error('Invalid format');
 };

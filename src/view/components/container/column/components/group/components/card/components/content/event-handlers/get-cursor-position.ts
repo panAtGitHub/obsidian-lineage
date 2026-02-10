@@ -2,12 +2,21 @@ export const getCursorPosition = (
     markdownText: string,
     event: MouseEvent,
 ): { line: number; ch: number } | null => {
-    const range = document.caretRangeFromPoint(event.clientX, event.clientY);
-    if (!range) return null;
+    const docWithCaret = document as Document & {
+        caretPositionFromPoint?: (
+            x: number,
+            y: number,
+        ) => { offsetNode: Node; offset: number } | null;
+    };
+    const caretPosition = docWithCaret.caretPositionFromPoint?.(
+        event.clientX,
+        event.clientY,
+    );
+    if (!caretPosition) return null;
 
     const lines = markdownText.split('\n');
-    const clickedText = range.startContainer.textContent || '';
-    const offset = range.startOffset;
+    const clickedText = caretPosition.offsetNode.textContent || '';
+    const offset = caretPosition.offset;
     /* const target = event.target! as HTMLElement;
     const children = Array.from((event.currentTarget as HTMLElement).children);    const index = children.findIndex(        (parent) => parent === target || parent.contains(target),    );    const parentOfTarget = children[index];*/
     const start = Math.max(0, offset - 10);

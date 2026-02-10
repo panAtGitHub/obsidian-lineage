@@ -19,9 +19,9 @@ export const updateVisibleRange = async (view: MandalaView) => {
     if (payload && 'start_cpx' in payload) {
         const dom = view.getMinimapDom();
         const canvas = dom.canvas;
-        requestAnimationFrame(async () => {
+        requestAnimationFrame(() => {
             const marginTop = cpx_to_dpx(payload.start_cpx) + 'px';
-            await minimapWorker.run({
+            void minimapWorker.run({
                 type: 'minimap/draw-document',
                 payload: {
                     canvasId: canvasId,

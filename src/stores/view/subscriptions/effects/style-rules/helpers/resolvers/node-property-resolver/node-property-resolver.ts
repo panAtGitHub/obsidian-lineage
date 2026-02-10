@@ -63,7 +63,7 @@ export class NodePropertyResolver {
 
     public getProperty(nodeId: string, property: Property) {
         if (this.cache[property][nodeId] !== undefined) {
-            return this.cache[property][nodeId] as number | string;
+            return this.cache[property][nodeId];
         }
 
         let value: number | string;

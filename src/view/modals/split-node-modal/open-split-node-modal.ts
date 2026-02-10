@@ -42,5 +42,5 @@ export const openSplitNodeModal = async (view: MandalaView) => {
         },
         nodeContent,
     });
-    await modal.open();
+    await modal.openWithPromise();
 };

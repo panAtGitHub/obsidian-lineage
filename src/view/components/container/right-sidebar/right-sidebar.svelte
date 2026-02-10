@@ -1,10 +1,5 @@
 <script lang="ts">
     import { getView } from 'src/view/components/container/context';
-    import {
-        LeftSidebarActiveTabStore,
-        ShowLeftSidebarStore,
-    } from 'src/stores/settings/derived/view-settings-store';
-    import { onDestroy, onMount } from 'svelte';
     import { showMinimapStore } from '../../../../stores/settings/derived/scrolling-store';
     import Minimap from '../minimap/minimap.svelte';
 

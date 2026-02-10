@@ -1,6 +1,5 @@
 import {
     basicOperator,
-    ConditionNode,
     NodeStyle,
 } from 'src/stores/settings/types/style-rules-types';
 import { MandalaGridDocument } from 'src/stores/document/document-state-type';
@@ -44,7 +43,7 @@ export const processStyleRules = (
                     }
                     const match = evaluateCondition(
                         nodeId,
-                        rule.condition as ConditionNode,
+                        rule.condition,
                         doc.content,
                         propertyResolver,
                         nodeResolver,

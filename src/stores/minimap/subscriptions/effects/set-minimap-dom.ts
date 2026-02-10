@@ -6,14 +6,14 @@ import { SilentError } from 'src/lib/errors/errors';
 export const setMinimapDom = (view: MandalaView) => {
     const minimapContainer = view.contentEl.querySelector(
         '.minimap-container',
-    ) as HTMLElement | null;
+    );
 
     if (!minimapContainer)
         throw new SilentError('minimapContainer is undefined');
 
     const canvasContainer = minimapContainer.querySelector(
         '.canvas-container',
-    ) as HTMLElement | null;
+    );
     invariant(canvasContainer);
     const scrollIndicator = minimapContainer.querySelector(
         '#scrollIndicator',

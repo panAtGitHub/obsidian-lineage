@@ -13,7 +13,7 @@ export const fixConditionTypes = (rule: StyleRule) => {
             }
         } else {
             if (cnd.value && typeof cnd.value === 'string') {
-                cnd.value = parseFloat(cnd.value as string);
+                cnd.value = parseFloat(cnd.value);
             }
             if ('valueB' in cnd && typeof cnd.valueB === 'string') {
                 cnd.valueB = parseFloat(cnd.valueB as string);

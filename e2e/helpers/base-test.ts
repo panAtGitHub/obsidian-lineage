@@ -11,10 +11,9 @@ const test = base;
 test.beforeAll(async () => {
     await loadObsidian();
 });
-// eslint-disable-next-line no-empty-pattern
-test.beforeEach(async ({}, into) => {
+test.beforeEach(async (_fixtures, into) => {
     await closeThisTabGroup();
-    __test_notice__(into.title);
+    await __test_notice__(into.title);
     await createNewLineageFile();
     resetTextIndex();
 });

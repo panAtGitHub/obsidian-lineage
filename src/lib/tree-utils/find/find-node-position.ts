@@ -1,6 +1,5 @@
 import {
     Columns,
-    NodeGroup,
     NodeId,
 } from 'src/stores/document/document-state-type';
 
@@ -20,7 +19,7 @@ export const findNodePosition = (
             groupIndex < column.groups.length;
             groupIndex++
         ) {
-            const group = column.groups[groupIndex] as NodeGroup;
+            const group = column.groups[groupIndex];
             const nodeIndex = group.nodes.findIndex((n) => n === node);
             if (nodeIndex !== -1) {
                 return {

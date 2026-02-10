@@ -1,10 +1,8 @@
 import { getContext } from 'svelte';
-import { MandalaView } from 'src/view/view';
-import MandalaGrid from 'src/main';
 
 export const getPlugin = () => {
-    return getContext('plugin') as MandalaGrid;
+    return getContext('plugin');
 };
 export const getView = () => {
-    return getContext('view') as MandalaView;
+    return getContext('view');
 };

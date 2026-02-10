@@ -15,26 +15,32 @@ export const createMultipleNodesContextMenu = (view: MandalaView) => {
                 {
                     title: lang.cm_copy_branches,
                     icon: 'mandala-cards',
-                    action: () =>
-                        copyActiveBranchesToClipboard(view, true, false),
+                    action: () => {
+                        void copyActiveBranchesToClipboard(view, true, false);
+                    },
                 },
                 {
                     title: lang.cm_copy_branches_wo_formatting,
                     icon: 'file-text',
-                    action: () =>
-                        copyActiveBranchesToClipboard(view, false, false),
+                    action: () => {
+                        void copyActiveBranchesToClipboard(view, false, false);
+                    },
                 },
                 {
                     title: lang.cm_copy_node_wo_subitems,
                     icon: 'file-text',
-                    action: () => copyActiveNodesToClipboard(view, false),
+                    action: () => {
+                        void copyActiveNodesToClipboard(view, false);
+                    },
                 },
             ],
         },
         {
             title: lang.cm_cut,
             icon: 'scissors',
-            action: () => cutNode(view),
+            action: () => {
+                void cutNode(view);
+            },
         },
         { type: 'separator' },
         {
@@ -44,12 +50,16 @@ export const createMultipleNodesContextMenu = (view: MandalaView) => {
                 {
                     title: lang.cmd_export_branches_with_subitems,
                     icon: 'file-text',
-                    action: () => exportSelection(view, true),
+                    action: () => {
+                        void exportSelection(view, true);
+                    },
                 },
                 {
                     title: lang.cmd_export_nodes_wo_subitems,
                     icon: 'file-text',
-                    action: () => exportSelection(view, false),
+                    action: () => {
+                        void exportSelection(view, false);
+                    },
                 },
             ],
         },

@@ -13,13 +13,13 @@ export const fitDocumentHeightIntoView = async (view: MandalaView) => {
     });
     const columns = Array.from(
         view.container.querySelectorAll('.column'),
-    ) as HTMLElement[];
+    );
     let result = 1;
     if (columns.length) {
         const groupHeights = columns
             .map((c) => {
                 return getCombinedBoundingClientRect(
-                    Array.from((c as HTMLElement).querySelectorAll('.group')),
+                    Array.from((c).querySelectorAll('.group')),
                 ).height;
             })
             .sort((a, b) => a - b);

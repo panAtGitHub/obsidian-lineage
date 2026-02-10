@@ -44,7 +44,7 @@ export const lazyVerticalScrollingMode = (
                 isParentOfPreviousNode ||
                 (!isChildOfPreviousNode &&
                     activeBranch.sortedParentNodes.every((p, i) => {
-                        return previousActiveBranch!.sortedParentNodes[i] === p;
+                        return previousActiveBranch.sortedParentNodes[i] === p;
                     }));
 
             if (!(isChildOfPreviousNode || isMovingLeft)) {
