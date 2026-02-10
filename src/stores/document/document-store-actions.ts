@@ -3,7 +3,10 @@ import { SelectSnapshotAction } from 'src/stores/document/reducers/history/selec
 import { NodePosition } from 'src/lib/tree-utils/find/find-node-position';
 import { LoadDocumentAction } from 'src/stores/document/reducers/load-document-from-file/load-document-from-file';
 import { CreateNodeAction } from 'src/stores/document/reducers/insert-node/insert-node';
-import { SetNodeContentAction } from 'src/stores/document/reducers/content/set-node-content';
+import {
+    SetMultipleNodeContentAction,
+    SetNodeContentAction,
+} from 'src/stores/document/reducers/content/set-node-content';
 import { DropAction } from 'src/stores/document/reducers/drop-node/drop-node';
 import { DeleteNodeAction } from 'src/stores/document/reducers/delete-node/delete-node';
 import { MoveNodeAction } from 'src/stores/document/reducers/move-node/move-node';
@@ -40,6 +43,7 @@ export type DocumentAction =
     | LoadDocumentAction
     | CreateNodeAction
     | SetNodeContentAction
+    | SetMultipleNodeContentAction
     | MandalaSwapAction
     | MandalaEnsureChildrenAction
     | MandalaEnsureCoreThemeAction
@@ -65,6 +69,7 @@ export type DocumentAction =
 export type HistoryAction = UndoRedoAction | SelectSnapshotAction;
 export type UndoableAction =
     | SetNodeContentAction
+    | SetMultipleNodeContentAction
     | CreateNodeAction
     | DeleteNodeAction
     | MandalaSwapAction

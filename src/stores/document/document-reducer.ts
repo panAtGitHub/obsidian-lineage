@@ -1,7 +1,10 @@
 import { insertNode } from 'src/stores/document/reducers/insert-node/insert-node';
 import { dropNode } from 'src/stores/document/reducers/drop-node/drop-node';
 import { loadDocumentFromFile } from 'src/stores/document/reducers/load-document-from-file/load-document-from-file';
-import { setNodeContent } from 'src/stores/document/reducers/content/set-node-content';
+import {
+    setMultipleNodeContent,
+    setNodeContent,
+} from 'src/stores/document/reducers/content/set-node-content';
 import { deleteNode } from 'src/stores/document/reducers/delete-node/delete-node';
 import { moveNode } from 'src/stores/document/reducers/move-node/move-node';
 import {
@@ -104,6 +107,12 @@ const updateDocumentState = (
         const update = setNodeContent(state.document.content, action);
         if (!update) return NO_UPDATE;
         newActiveNodeId = action.payload.nodeId;
+    } else if (action.type === 'document/update-multiple-node-content') {
+        const changedNodeIds = setMultipleNodeContent(state.document.content, action);
+        if (changedNodeIds.length === 0) return NO_UPDATE;
+        newActiveNodeId = changedNodeIds[0];
+        affectedNodeId = changedNodeIds[0];
+        affectedNodes = changedNodeIds;
     } else if (action.type === 'document/mandala/swap') {
         const sourceSection =
             state.sections.id_section[action.payload.sourceNodeId];

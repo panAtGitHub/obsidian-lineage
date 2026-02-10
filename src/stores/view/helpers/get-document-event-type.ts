@@ -12,6 +12,7 @@ type ActionType = DocumentStoreAction['type'];
 
 const eventTypesDictionary: Partial<Record<ActionType, DocumentEventType>> = {
     'document/update-node-content': { content: true },
+    'document/update-multiple-node-content': { content: true },
     'document/format-headings': { content: true },
 
     'document/add-node': { createOrDelete: true },
@@ -65,6 +66,7 @@ export const STRUCTURE_AND_CONTENT = new Set<DocumentStoreAction['type']>([
 
 export const CONTENT_ONLY = new Set<DocumentStoreAction['type']>([
     'document/update-node-content',
+    'document/update-multiple-node-content',
     'document/format-headings',
 ]);
 

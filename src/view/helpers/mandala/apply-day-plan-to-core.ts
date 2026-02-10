@@ -137,30 +137,33 @@ export const applyDayPlanToCore = (
     }
 
     const nextCoreContent = docState.document.content[nextCoreNodeId]?.content ?? '';
-    view.documentStore.dispatch({
-        type: 'document/update-node-content',
-        payload: {
+    const updates: Array<{ nodeId: string; content: string }> = [];
+    const nextCenterContent = upsertCenterDateHeading(nextCoreContent, nextDate);
+    if (nextCenterContent !== nextCoreContent) {
+        updates.push({
             nodeId: nextCoreNodeId,
-            content: upsertCenterDateHeading(nextCoreContent, nextDate),
-        },
-        context: { isInSidebar: false },
-    });
+            content: nextCenterContent,
+        });
+    }
 
+    const refreshed = view.documentStore.getValue();
     for (let i = 1; i <= 8; i += 1) {
         const slotTitle = config.slots[i - 1];
         if (!slotTitle) continue;
 
-        const refreshed = view.documentStore.getValue();
         const section = `${nextCore}.${i}`;
         const nodeId = refreshed.sections.section_id[section];
         if (!nodeId) continue;
         const currentContent = refreshed.document.content[nodeId]?.content ?? '';
+        const nextContent = upsertSlotHeading(currentContent, slotTitle);
+        if (nextContent === currentContent) continue;
+        updates.push({ nodeId, content: nextContent });
+    }
+
+    if (updates.length > 0) {
         view.documentStore.dispatch({
-            type: 'document/update-node-content',
-            payload: {
-                nodeId,
-                content: upsertSlotHeading(currentContent, slotTitle),
-            },
+            type: 'document/update-multiple-node-content',
+            payload: { updates },
             context: { isInSidebar: false },
         });
     }
