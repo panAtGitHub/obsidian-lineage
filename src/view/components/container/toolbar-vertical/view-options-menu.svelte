@@ -39,6 +39,10 @@
         parseMandalaTemplates,
     } from 'src/lib/mandala/mandala-templates';
     import {
+        normalizeSlotTitle,
+        upsertSlotHeading,
+    } from 'src/lib/mandala/day-plan';
+    import {
         openMandalaTemplateNameModal,
         openMandalaTemplateSelectModal,
         openMandalaTemplatesFileModal,
@@ -1231,6 +1235,76 @@
         return slots;
     };
 
+    const toDayPlanSlotsRecord = (slots: string[]) => {
+        const record: Record<string, string> = {};
+        for (let i = 0; i < 8; i += 1) {
+            record[String(i + 1)] = normalizeSlotTitle(slots[i] ?? '');
+        }
+        return record;
+    };
+
+    const updateDayPlanSlotsInFrontmatter = async (slots: string[]) => {
+        if (!view.file) return false;
+        const cache = view.plugin.app.metadataCache.getFileCache(view.file);
+        const rawPlan = cache?.frontmatter?.mandala_plan;
+        if (!rawPlan || typeof rawPlan !== 'object') return false;
+        const plan = rawPlan as Record<string, unknown>;
+        if (plan.enabled !== true) return false;
+
+        await view.plugin.app.fileManager.processFrontMatter(
+            view.file,
+            (frontmatter) => {
+                const frontmatterRecord = frontmatter as Record<string, unknown>;
+                const currentPlan = frontmatterRecord.mandala_plan;
+                if (!currentPlan || typeof currentPlan !== 'object') return;
+                frontmatterRecord.mandala_plan = {
+                    ...(currentPlan as Record<string, unknown>),
+                    slots: toDayPlanSlotsRecord(slots),
+                };
+            },
+        );
+        return true;
+    };
+
+    const applyDayPlanSlotsToAllCoreThemes = (slots: string[]) => {
+        const normalizedSlots = slots.map((slot) => normalizeSlotTitle(slot));
+        const coreThemes = Object.keys(
+            view.documentStore.getValue().sections.section_id,
+        )
+            .filter((section) => /^\d+$/.test(section))
+            .sort((a, b) => Number(a) - Number(b));
+
+        for (const theme of coreThemes) {
+            const state = view.documentStore.getValue();
+            const centerNodeId = state.sections.section_id[theme];
+            if (!centerNodeId) continue;
+            view.documentStore.dispatch({
+                type: 'document/mandala/ensure-children',
+                payload: { parentNodeId: centerNodeId, count: 8 },
+            });
+        }
+
+        for (const theme of coreThemes) {
+            for (let i = 1; i <= 8; i += 1) {
+                const refreshed = view.documentStore.getValue();
+                const section = `${theme}.${i}`;
+                const nodeId = refreshed.sections.section_id[section];
+                if (!nodeId) continue;
+                const slotTitle = normalizedSlots[i - 1];
+                if (!slotTitle) continue;
+                const content = refreshed.document.content[nodeId]?.content ?? '';
+                view.documentStore.dispatch({
+                    type: 'document/update-node-content',
+                    payload: {
+                        nodeId,
+                        content: upsertSlotHeading(content, slotTitle),
+                    },
+                    context: { isInSidebar: false },
+                });
+            }
+        }
+    };
+
     const saveCurrentThemeAsTemplate = async () => {
         if (!ensureMandala3x3()) return;
         const file = await ensureTemplatesFile();
@@ -1288,6 +1362,18 @@
             templates,
         );
         if (!selected) return;
+
+        const normalizedSlots = Array.from(
+            { length: 8 },
+            (_, index) => normalizeSlotTitle(selected.slots[index] ?? ''),
+        );
+        const isDayPlan = await updateDayPlanSlotsInFrontmatter(normalizedSlots);
+        if (isDayPlan) {
+            applyDayPlanSlotsToAllCoreThemes(normalizedSlots);
+            new Notice('已根据文档前置区调整的标题进行全局替换。');
+            closeMenu();
+            return;
+        }
 
         const state = view.documentStore.getValue();
         const theme = view.viewStore.getValue().ui.mandala.subgridTheme ?? '1';
