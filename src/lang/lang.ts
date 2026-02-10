@@ -12,6 +12,7 @@ export const lang = {
 
     // create document
     cmd_create_new_document: 'New Mandala Grid',
+    cmd_set_day_plan_mandala_format: '设置成「日计划」九宫格格式',
     ocm_new_document: '新建九宫格文档',
     ocm_import_from_gingko: '从 Gingko 导入',
 

@@ -18,6 +18,7 @@ import invariant from 'tiny-invariant';
 import { sortChildNodes } from 'src/view/actions/context-menu/card-context-menu/helpers/sort-child-nodes';
 import { ejectDocument } from 'src/obsidian/commands/helpers/export-document/eject-document';
 import { cleanupLegacyMandalaFrontmatter } from 'src/obsidian/commands/helpers/cleanup-legacy-mandala-frontmatter';
+import { setupDayPlanMandalaFormat } from 'src/obsidian/commands/helpers/setup-day-plan-mandala-format';
 
 const createCommands = (plugin: MandalaGrid) => {
     const commands: (Omit<Command, 'id' | 'callback'> & {
@@ -251,6 +252,15 @@ const createCommands = (plugin: MandalaGrid) => {
             view!.plugin.settings.dispatch({
                 type: 'view/modes/gap-between-cards/toggle',
             });
+        },
+    });
+
+    commands.push({
+        name: lang.cmd_set_day_plan_mandala_format,
+        icon: customIcons.mandalaGrid.name,
+        checkCallback: (checking) => {
+            if (checking) return true;
+            void setupDayPlanMandalaFormat(plugin);
         },
     });
 
