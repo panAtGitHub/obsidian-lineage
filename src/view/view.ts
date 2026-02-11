@@ -58,7 +58,7 @@ import { parseHtmlCommentMarker } from 'src/lib/data-conversion/helpers/html-com
 import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
 import {
     getHotCoreSections,
-    parseDayPlanFromMarkdown,
+    parseDayPlanFrontmatter,
     sectionFromDateInPlanYear,
 } from 'src/lib/mandala/day-plan';
 
@@ -303,9 +303,20 @@ export class MandalaView extends TextFileView {
         const activeSection = activeNode
             ? documentState.sections.id_section[activeNode]
             : null;
+        const dayPlanTargetSection =
+            this.resolveDayPlanTargetSection(frontmatter);
+        const nextActiveSection = dayPlanTargetSection ?? activeSection;
         if (emptyStore || (bodyHasChanged && !isEditing)) {
-            loadFullDocument(this, body, frontmatter, format, activeSection);
-            this.focusDayPlanSectionOnMount();
+            loadFullDocument(
+                this,
+                body,
+                frontmatter,
+                format,
+                nextActiveSection,
+            );
+            if (dayPlanTargetSection) {
+                this.focusMandalaSection(dayPlanTargetSection);
+            }
             if (this.isActive && event !== 'view-mount') {
                 new Notice('Document updated externally');
             }
@@ -334,20 +345,24 @@ export class MandalaView extends TextFileView {
         250,
     );
 
-    private focusDayPlanSectionOnMount() {
-        const plan = parseDayPlanFromMarkdown(this.data);
-        if (!plan || plan.enabled !== true) return;
+    private resolveDayPlanTargetSection(frontmatter: string): string | null {
+        const plan = parseDayPlanFrontmatter(frontmatter);
+        if (!plan || plan.enabled !== true) return null;
 
         const todaySection = sectionFromDateInPlanYear(plan.year);
-        const targetSection = todaySection ?? '1';
         this.dayPlanHotCores = todaySection
             ? getHotCoreSections(plan.year)
             : new Set(['1']);
 
         if (!todaySection) {
             new Notice('年份错误。');
+            return '1';
         }
 
+        return todaySection;
+    }
+
+    private focusMandalaSection(targetSection: string) {
         const run = (attempt: number) => {
             const nodeId =
                 this.documentStore.getValue().sections.section_id[targetSection];
