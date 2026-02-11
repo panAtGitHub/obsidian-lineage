@@ -77,15 +77,25 @@ export const migrateSettings = (settings: Settings | Settings_0_5_4) => {
 
     // Legacy compatibility: split old shared toggle flags into desktop/mobile.
     if (typeof viewSettings.show3x3SubgridNavButtons === 'boolean') {
-        viewSettings.show3x3SubgridNavButtonsDesktop =
-            viewSettings.show3x3SubgridNavButtons;
-        viewSettings.show3x3SubgridNavButtonsMobile =
-            viewSettings.show3x3SubgridNavButtons;
+        if (viewSettings.show3x3SubgridNavButtonsDesktop === undefined) {
+            viewSettings.show3x3SubgridNavButtonsDesktop =
+                viewSettings.show3x3SubgridNavButtons;
+        }
+        if (viewSettings.show3x3SubgridNavButtonsMobile === undefined) {
+            viewSettings.show3x3SubgridNavButtonsMobile =
+                viewSettings.show3x3SubgridNavButtons;
+        }
+        delete viewSettings.show3x3SubgridNavButtons;
     }
     if (typeof viewSettings.show9x9ParallelNavButtons === 'boolean') {
-        viewSettings.show9x9ParallelNavButtonsDesktop =
-            viewSettings.show9x9ParallelNavButtons;
-        viewSettings.show9x9ParallelNavButtonsMobile =
-            viewSettings.show9x9ParallelNavButtons;
+        if (viewSettings.show9x9ParallelNavButtonsDesktop === undefined) {
+            viewSettings.show9x9ParallelNavButtonsDesktop =
+                viewSettings.show9x9ParallelNavButtons;
+        }
+        if (viewSettings.show9x9ParallelNavButtonsMobile === undefined) {
+            viewSettings.show9x9ParallelNavButtonsMobile =
+                viewSettings.show9x9ParallelNavButtons;
+        }
+        delete viewSettings.show9x9ParallelNavButtons;
     }
 };
