@@ -56,6 +56,11 @@ import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-f
 import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
 import { parseHtmlCommentMarker } from 'src/lib/data-conversion/helpers/html-comment-marker/parse-html-comment-marker';
 import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
+import {
+    getHotCoreSections,
+    parseDayPlanFromMarkdown,
+    sectionFromDateInPlanYear,
+} from 'src/lib/mandala/day-plan';
 
 export const MANDALA_VIEW_TYPE = 'mandala-grid';
 
@@ -300,6 +305,9 @@ export class MandalaView extends TextFileView {
             : null;
         if (emptyStore || (bodyHasChanged && !isEditing)) {
             loadFullDocument(this, body, frontmatter, format, activeSection);
+            if (event === 'view-mount') {
+                this.focusDayPlanSectionOnMount();
+            }
             if (this.isActive && event !== 'view-mount') {
                 new Notice('Document updated externally');
             }
@@ -327,6 +335,43 @@ export class MandalaView extends TextFileView {
         this.loadDocumentToStore,
         250,
     );
+
+    private focusDayPlanSectionOnMount() {
+        const plan = parseDayPlanFromMarkdown(this.data);
+        if (!plan || plan.enabled !== true) return;
+
+        const todaySection = sectionFromDateInPlanYear(plan.year);
+        const targetSection = todaySection ?? '1';
+        this.dayPlanHotCores = todaySection
+            ? getHotCoreSections(plan.year)
+            : new Set(['1']);
+
+        if (!todaySection) {
+            new Notice('年份错误。');
+        }
+
+        const run = (attempt: number) => {
+            const nodeId =
+                this.documentStore.getValue().sections.section_id[targetSection];
+            if (!nodeId) {
+                if (attempt < 20) {
+                    window.setTimeout(() => run(attempt + 1), 80);
+                }
+                return;
+            }
+
+            this.viewStore.dispatch({
+                type: 'view/mandala/subgrid/enter',
+                payload: { theme: targetSection },
+            });
+            this.viewStore.dispatch({
+                type: 'view/set-active-node/mouse-silent',
+                payload: { id: nodeId },
+            });
+        };
+
+        window.setTimeout(() => run(0), 80);
+    }
 
     setMinimapDom(dom: MinimapDomElements) {
         this.minimapDom = dom;
