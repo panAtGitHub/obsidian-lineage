@@ -305,9 +305,7 @@ export class MandalaView extends TextFileView {
             : null;
         if (emptyStore || (bodyHasChanged && !isEditing)) {
             loadFullDocument(this, body, frontmatter, format, activeSection);
-            if (event === 'view-mount') {
-                this.focusDayPlanSectionOnMount();
-            }
+            this.focusDayPlanSectionOnMount();
             if (this.isActive && event !== 'view-mount') {
                 new Notice('Document updated externally');
             }
