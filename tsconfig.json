@@ -30,7 +30,8 @@
 	"include": [
 		"src/**/*.ts",
 		"src/**/*.d.ts",
-		"e2e/**/*.ts"
+		"e2e/**/*.ts",
+		"playwright.config.ts"
 	],
 	"exclude": ["temp","node_modules"]
 }

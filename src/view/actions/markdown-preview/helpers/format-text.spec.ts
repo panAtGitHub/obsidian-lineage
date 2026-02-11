@@ -166,15 +166,15 @@ describe('performance-test: format-text', () => {
         const texts = Array.from({ length: 10 }).map(() => {
             return generateLoremIpsumWithMarkdown(loremIpsumLength);
         });
-        console.debug(texts.join('').length + ' characters');
+        const totalChars = texts.join('').length;
         const startedAt = performance.now();
         for (let i = 0; i < texts.length; i++) {
             formatText(texts[i]);
         }
-        console.debug(
-            `format-text: ${(performance.now() - startedAt).toFixed(3)}ms`,
-        );
+        const elapsedMs = performance.now() - startedAt;
 
+        expect(totalChars).toBeGreaterThan(0);
+        expect(elapsedMs).toBeGreaterThanOrEqual(0);
         expect(false).toBe(false);
     });
 });

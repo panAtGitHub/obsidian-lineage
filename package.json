@@ -13,6 +13,7 @@
         "test:e2e": "playwright test",
         "prepare": "husky install",
         "lint": "eslint src",
+        "lint:review": "eslint \"src/**/*.{ts,svelte}\" \"e2e/**/*.ts\" playwright.config.ts esbuild.config.mjs version-bump.mjs \"scripts/**/*.mjs\"",
         "lint:fix": "eslint . --fix"
     },
     "keywords": [],

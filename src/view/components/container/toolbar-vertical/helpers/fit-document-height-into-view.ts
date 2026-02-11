@@ -4,7 +4,7 @@ import { zoomLevelStore } from 'src/stores/view/derived/zoom-level-store';
 import { getCombinedBoundingClientRect } from 'src/lib/align-element/helpers/get-combined-client-rect';
 import { MandalaView } from 'src/view/view';
 
-export const fitDocumentHeightIntoView = async (view: MandalaView) => {
+export const fitDocumentHeightIntoView = (view: MandalaView) => {
     invariant(view.container);
     const initialZoomLevel = get(zoomLevelStore(view));
     view.plugin.settings.dispatch({

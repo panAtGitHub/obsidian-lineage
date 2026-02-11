@@ -1,13 +1,17 @@
-import { TFile } from 'obsidian';
+import { TAbstractFile, TFile } from 'obsidian';
 import MandalaGrid from 'src/main';
 import { addImportGinkgoMenuItem } from 'src/obsidian/events/workspace/context-menu-itetms/add-import-ginkgo-menu-item';
+
+const isTFileArray = (
+    files: TAbstractFile[],
+): files is TFile[] => files.every((af) => af instanceof TFile);
 
 export const registerFilesMenuEvent = (plugin: MandalaGrid) => {
     plugin.registerEvent(
         plugin.app.workspace.on('files-menu', (menu, abstractFile) => {
-            const allFiles = abstractFile.every((af) => af instanceof TFile);
-            if (allFiles)
-                addImportGinkgoMenuItem(menu, plugin, abstractFile as TFile[]);
+            if (isTFileArray(abstractFile)) {
+                addImportGinkgoMenuItem(menu, plugin, abstractFile);
+            }
         }),
     );
 };

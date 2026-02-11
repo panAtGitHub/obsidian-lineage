@@ -1,5 +1,4 @@
-import { _electron as electron } from 'playwright-core';
-import { Page } from '@playwright/test';
+import { _electron as electron, Page } from '@playwright/test';
 import { delay } from '../../general/delay';
 
 export const __test_notice__ = async (text: string) => {

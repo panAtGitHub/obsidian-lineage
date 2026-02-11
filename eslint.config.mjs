@@ -6,7 +6,9 @@ import svelte from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
 import globals from 'globals';
 
-const TS_FILES = ['**/*.{ts,tsx,mts,cts}'];
+const SRC_TS_FILES = ['src/**/*.{ts,tsx,mts,cts}'];
+const TOOLING_TS_FILES = ['e2e/**/*.ts', 'playwright.config.ts'];
+const TOOLING_MJS_FILES = ['esbuild.config.mjs', 'version-bump.mjs', 'scripts/**/*.mjs'];
 const SVELTE_FILES = ['**/*.svelte'];
 
 export default defineConfig([
@@ -18,7 +20,7 @@ export default defineConfig([
         config.files ? config : { ...config, files: SVELTE_FILES },
     ),
     {
-        files: TS_FILES,
+        files: SRC_TS_FILES,
         languageOptions: {
             parser: tsparser,
             parserOptions: {
@@ -45,6 +47,45 @@ export default defineConfig([
                 },
             ],
             'no-console': 'error',
+        },
+    },
+    {
+        files: TOOLING_TS_FILES,
+        languageOptions: {
+            parser: tsparser,
+            parserOptions: {
+                project: './tsconfig.json',
+                sourceType: 'module',
+            },
+            globals: {
+                ...globals.browser,
+                ...globals.node,
+                activeWindow: 'readonly',
+                activeDocument: 'readonly',
+            },
+        },
+        plugins: {
+            '@typescript-eslint': tseslint.plugin,
+        },
+        rules: {
+            'no-unused-vars': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    argsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                    caughtErrorsIgnorePattern: '^_',
+                },
+            ],
+            'no-console': 'error',
+        },
+    },
+    {
+        files: TOOLING_MJS_FILES,
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
         },
     },
     {

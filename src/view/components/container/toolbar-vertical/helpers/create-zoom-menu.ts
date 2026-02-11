@@ -12,7 +12,7 @@ type State = {
     lastMenuHideEvent_ms: number;
 };
 
-type DynamicZoomValue = (view: MandalaView) => Promise<number>;
+type DynamicZoomValue = (view: MandalaView) => number | Promise<number>;
 
 type Props = {
     event: MouseEvent;

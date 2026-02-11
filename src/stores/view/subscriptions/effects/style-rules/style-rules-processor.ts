@@ -16,15 +16,15 @@ export class StyleRulesProcessor {
         this.view = view;
     }
 
-    onViewMount = async () => {
+    onViewMount = () => {
         this.setRules();
         this.processRules(null);
     };
-    onDocumentUpdate = async (action: DocumentStoreAction) => {
+    onDocumentUpdate = (action: DocumentStoreAction) => {
         this.processRules(action);
     };
 
-    onRulesUpdate = async () => {
+    onRulesUpdate = () => {
         this.setRules();
         this.processRules(null);
     };

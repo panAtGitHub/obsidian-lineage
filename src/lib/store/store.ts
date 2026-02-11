@@ -1,4 +1,5 @@
 import { Unsubscriber, Updater, Writable } from 'svelte/store';
+import { logger } from 'src/helpers/logger';
 
 export const NO_UPDATE = Symbol('NO_UPDATE');
 
@@ -95,7 +96,7 @@ export class Store<T, U, C = never> implements Writable<T> {
 
     private readonly reducer: Reducer<T, U, C> = () => this.value;
     private readonly onError: OnError<U> = (error) => {
-        console.error(error);
+        logger.error(error);
     };
 
     private notifySubscribers(action?: U): void {

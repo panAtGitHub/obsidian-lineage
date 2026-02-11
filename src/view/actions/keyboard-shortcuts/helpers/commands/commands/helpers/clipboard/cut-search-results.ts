@@ -3,7 +3,7 @@ import { copySearchResultsToClipboard } from 'src/view/actions/keyboard-shortcut
 import { sortNodeIdsByDepthDesc } from 'src/lib/tree-utils/sort/sort-node-ids-by-depth-desc';
 import { sortNodeIdsBySectionNumber } from 'src/lib/tree-utils/sort/sort-node-ids-by-section-number';
 
-export const cutSearchResults = async (view: MandalaView) => {
+export const cutSearchResults = (view: MandalaView) => {
     void copySearchResultsToClipboard(view);
     const viewState = view.viewStore.getValue();
     const documentState = view.documentStore.getValue();

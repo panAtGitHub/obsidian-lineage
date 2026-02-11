@@ -86,6 +86,5 @@ export const __logDocument__ = (
         output = variableDeclarations + output;
     }
 
-    console.debug(output);
     return output;
 };

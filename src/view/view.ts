@@ -243,7 +243,7 @@ export class MandalaView extends TextFileView {
         onPluginError(error, location, action);
     };
 
-    saveDocument = async () => {
+    saveDocument = () => {
         invariant(this.file);
         const state = clone(this.documentStore.getValue());
         const data: string =

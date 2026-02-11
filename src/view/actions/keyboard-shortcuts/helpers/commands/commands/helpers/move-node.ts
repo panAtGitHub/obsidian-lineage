@@ -17,7 +17,7 @@ const restoreEditingState = (view: MandalaView, state: EditingState) => {
     });
 };
 
-export const moveNode = async (view: MandalaView, direction: AllDirections) => {
+export const moveNode = (view: MandalaView, direction: AllDirections) => {
     let state: null | EditingState = null;
     if (view.inlineEditor.nodeId) {
         state = {

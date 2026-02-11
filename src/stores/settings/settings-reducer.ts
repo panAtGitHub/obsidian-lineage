@@ -4,7 +4,6 @@ import { updateStyleRules } from 'src/stores/settings/reducers/update-style-rule
 import { CommandName } from 'src/lang/hotkey-groups';
 import { toggleEditorState } from 'src/stores/settings/reducers/toggle-editor-state';
 import { setHotkeyAsBlank } from 'src/stores/settings/reducers/set-hotkey-as-blank';
-import { PersistedViewHotkey } from 'src/view/actions/keyboard-shortcuts/helpers/commands/default-view-hotkeys';
 import { persistCollapsedSections } from 'src/stores/settings/reducers/persist-collapsed-sections';
 import { SettingsActions } from 'src/stores/settings/settings-store-actions';
 import { Platform } from 'obsidian';
@@ -286,25 +285,18 @@ const settingsHandlers: Record<string, SettingsActionHandler> = {
     },
     'settings/hotkeys/apply-preset': (store, action) => {
         if (action.type !== 'settings/hotkeys/apply-preset') return;
-        const entries = Object.entries(action.payload.preset) as [
-            command: CommandName,
-            hotkeys: {
-                primary?: PersistedViewHotkey;
-                secondary?: PersistedViewHotkey;
-            },
-        ][];
-        for (const [command, customHotkeys] of entries) {
-            if (!store.hotkeys.customHotkeys[command]) {
-                store.hotkeys.customHotkeys[command] = {};
-            }
+        const preset = action.payload.preset;
+        for (const command of Object.keys(preset) as CommandName[]) {
+            const customHotkeys = preset[command];
+            if (!customHotkeys) continue;
+            const hotkeys = store.hotkeys.customHotkeys[command] ?? {};
             if (customHotkeys.primary) {
-                store.hotkeys.customHotkeys[command]!.primary =
-                    customHotkeys.primary;
+                hotkeys.primary = customHotkeys.primary;
             }
             if (customHotkeys.secondary) {
-                store.hotkeys.customHotkeys[command]!.secondary =
-                    customHotkeys.secondary;
+                hotkeys.secondary = customHotkeys.secondary;
             }
+            store.hotkeys.customHotkeys[command] = hotkeys;
         }
         store.hotkeys.customHotkeys = {
             ...store.hotkeys.customHotkeys,

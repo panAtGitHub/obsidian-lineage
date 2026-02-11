@@ -1,5 +1,5 @@
 import { copyFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 
 const repoRoot = resolve('.');
 const source = resolve(repoRoot, 'manifest.json');
