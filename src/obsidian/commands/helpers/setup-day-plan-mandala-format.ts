@@ -1,6 +1,9 @@
 import { Notice, TFile } from 'obsidian';
 import MandalaGrid from 'src/main';
 import { getActiveFile } from 'src/obsidian/commands/helpers/get-active-file';
+import { getLeafOfFile } from 'src/obsidian/events/workspace/helpers/get-leaf-of-file';
+import { toggleFileViewType } from 'src/obsidian/events/workspace/effects/toggle-file-view-type';
+import { MANDALA_VIEW_TYPE, MandalaView } from 'src/view/view';
 import {
     analyzeMandalaContent,
     convertToMandalaMarkdown,
@@ -182,6 +185,28 @@ const applyTodaySlotsForYear = (
     return { body: nextBody, day, hasAnySlotContent };
 };
 
+const focusTodaySection = (plugin: MandalaGrid, file: TFile, section: string) => {
+    const run = (attempt: number) => {
+        const leaf = getLeafOfFile(plugin, file, MANDALA_VIEW_TYPE);
+        if (!leaf || !(leaf.view instanceof MandalaView)) {
+            if (attempt < 8) window.setTimeout(() => run(attempt + 1), 80);
+            return;
+        }
+        const view = leaf.view;
+        const nodeId = view.documentStore.getValue().sections.section_id[section];
+        if (!nodeId) return;
+        view.viewStore.dispatch({
+            type: 'view/mandala/subgrid/enter',
+            payload: { theme: section },
+        });
+        view.viewStore.dispatch({
+            type: 'view/set-active-node/mouse-silent',
+            payload: { id: nodeId },
+        });
+    };
+    window.setTimeout(() => run(0), 120);
+};
+
 export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
     if (isSettingUpDayPlan) {
         new Notice('正在生成年计划数据，请先不要使用。');
@@ -312,6 +337,13 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
             slots: toSlotsRecord(slots),
         };
     });
+
+    const mandalaLeaf = getLeafOfFile(plugin, file, MANDALA_VIEW_TYPE);
+    if (mandalaLeaf && mandalaLeaf.view instanceof MandalaView) {
+        focusTodaySection(plugin, file, todaySection);
+    } else {
+        await toggleFileViewType(plugin, file, undefined);
+    }
 
     new Notice('已设置为年计划日计划格式。');
     } finally {
