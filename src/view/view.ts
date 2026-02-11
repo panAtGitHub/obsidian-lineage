@@ -56,7 +56,10 @@ import { detectDocumentFormat } from 'src/lib/format-detection/detect-document-f
 import { MandalaGridDocumentFormat } from 'src/stores/settings/settings-type';
 import { parseHtmlCommentMarker } from 'src/lib/data-conversion/helpers/html-comment-marker/parse-html-comment-marker';
 import { selectCard } from 'src/view/components/container/column/components/group/components/card/components/content/event-handlers/handle-links/helpers/select-card';
-import { resolveMandalaProfileActivation } from 'src/lib/mandala/mandala-profile';
+import {
+    MandalaProfileActivation,
+    resolveMandalaProfileActivation,
+} from 'src/lib/mandala/mandala-profile';
 
 export const MANDALA_VIEW_TYPE = 'mandala-grid';
 
@@ -84,6 +87,11 @@ export class MandalaView extends TextFileView {
     private pendingEphemeralState: unknown = null;
     private readonly onDestroyCallbacks: Set<Unsubscriber> = new Set();
     private activeFilePath: null | string;
+    private lastLoadedBody = '';
+    private lastLoadedFrontmatter = '';
+    private cachedActivation:
+        | { frontmatter: string; activation: MandalaProfileActivation }
+        | null = null;
     constructor(
         leaf: WorkspaceLeaf,
         public plugin: MandalaGrid,
@@ -140,6 +148,9 @@ export class MandalaView extends TextFileView {
             this.component.$destroy();
         }
         this.activeFilePath = null;
+        this.lastLoadedBody = '';
+        this.lastLoadedFrontmatter = '';
+        this.cachedActivation = null;
         this.contentEl.empty();
         this.documentStore = new Store(
             defaultDocumentState(),
@@ -226,6 +237,9 @@ export class MandalaView extends TextFileView {
                 throw new Error(lang.error_save_empty_data);
             }
             this.data = data;
+            const parsed = extractFrontmatter(data);
+            this.lastLoadedBody = parsed.body;
+            this.lastLoadedFrontmatter = parsed.frontmatter;
             this.requestSave();
         }
     };
@@ -287,11 +301,8 @@ export class MandalaView extends TextFileView {
         const viewState = this.viewStore.getValue();
         const format = this.getDocumentFormat(body);
         const emptyStore = documentState.history.items.length === 0;
-        const existingBody = stringifyDocument(documentState.document, format);
-
-        const bodyHasChanged = existingBody !== body;
-        const frontmatterHasChanged =
-            frontmatter !== documentState.file.frontmatter;
+        const bodyHasChanged = body !== this.lastLoadedBody;
+        const frontmatterHasChanged = frontmatter !== this.lastLoadedFrontmatter;
 
         const isEditing = Boolean(viewState.document.editing.activeNodeId);
 
@@ -299,7 +310,7 @@ export class MandalaView extends TextFileView {
         const activeSection = activeNode
             ? documentState.sections.id_section[activeNode]
             : null;
-        const activation = resolveMandalaProfileActivation(frontmatter);
+        const activation = this.getMandalaProfileActivation(frontmatter);
         this.dayPlanHotCores = activation.hotCoreSections;
         const nextActiveSection = activation.targetSection ?? activeSection;
         if (emptyStore || (bodyHasChanged && !isEditing)) {
@@ -310,11 +321,14 @@ export class MandalaView extends TextFileView {
                 format,
                 nextActiveSection,
             );
+            this.lastLoadedBody = body;
+            this.lastLoadedFrontmatter = frontmatter;
             if (this.isActive && event !== 'view-mount') {
                 new Notice('Document updated externally');
             }
         } else if (frontmatterHasChanged) {
             updateFrontmatter(this, frontmatter);
+            this.lastLoadedFrontmatter = frontmatter;
         }
 
         if (activation.notice) {
@@ -346,6 +360,12 @@ export class MandalaView extends TextFileView {
     );
 
     private focusMandalaSection(targetSection: string) {
+        const currentNodeId = this.viewStore.getValue().document.activeNode;
+        const currentSection = this.documentStore.getValue().sections.id_section[
+            currentNodeId
+        ];
+        if (currentSection === targetSection) return;
+
         const run = (attempt: number) => {
             const nodeId =
                 this.documentStore.getValue().sections.section_id[targetSection];
@@ -367,6 +387,18 @@ export class MandalaView extends TextFileView {
         };
 
         window.setTimeout(() => run(0), 80);
+    }
+
+    private getMandalaProfileActivation(frontmatter: string) {
+        if (
+            this.cachedActivation &&
+            this.cachedActivation.frontmatter === frontmatter
+        ) {
+            return this.cachedActivation.activation;
+        }
+        const activation = resolveMandalaProfileActivation(frontmatter);
+        this.cachedActivation = { frontmatter, activation };
+        return activation;
     }
 
     setMinimapDom(dom: MinimapDomElements) {
