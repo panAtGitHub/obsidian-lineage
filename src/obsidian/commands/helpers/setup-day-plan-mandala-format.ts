@@ -4,7 +4,7 @@ import { getActiveFile } from 'src/obsidian/commands/helpers/get-active-file';
 import { getLeafOfFile } from 'src/obsidian/events/workspace/helpers/get-leaf-of-file';
 import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
 import { toggleObsidianViewType } from 'src/obsidian/events/workspace/effects/toggle-obsidian-view-type';
-import { MANDALA_VIEW_TYPE, MandalaView } from 'src/view/view';
+import { MANDALA_VIEW_TYPE } from 'src/view/view';
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
 import {
     analyzeMandalaContent,
@@ -194,31 +194,6 @@ const applyTodaySlotsForYear = (
     return { body: nextBody, day, hasAnySlotContent };
 };
 
-const focusTodaySection = (plugin: MandalaGrid, file: TFile, section: string) => {
-    const run = (attempt: number) => {
-        const leaf = getLeafOfFile(plugin, file, MANDALA_VIEW_TYPE);
-        if (!leaf || !(leaf.view instanceof MandalaView)) {
-            if (attempt < 30) window.setTimeout(() => run(attempt + 1), 120);
-            return;
-        }
-        const view = leaf.view;
-        const nodeId = view.documentStore.getValue().sections.section_id[section];
-        if (!nodeId) {
-            if (attempt < 30) window.setTimeout(() => run(attempt + 1), 120);
-            return;
-        }
-        view.viewStore.dispatch({
-            type: 'view/mandala/subgrid/enter',
-            payload: { theme: section },
-        });
-        view.viewStore.dispatch({
-            type: 'view/set-active-node/mouse-silent',
-            payload: { id: nodeId },
-        });
-    };
-    window.setTimeout(() => run(0), 120);
-};
-
 const refreshMandalaViewData = (
     plugin: MandalaGrid,
     file: TFile,
@@ -384,7 +359,6 @@ export const setupDayPlanMandalaFormat = async (plugin: MandalaGrid) => {
     await ensureMandalaView(plugin, file);
     const latestAfterFrontmatter = await plugin.app.vault.read(file);
     refreshMandalaViewData(plugin, file, latestAfterFrontmatter);
-    focusTodaySection(plugin, file, todaySection);
 
     new Notice('已设置为年计划日计划格式。');
     } finally {

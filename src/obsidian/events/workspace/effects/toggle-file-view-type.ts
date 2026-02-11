@@ -3,7 +3,7 @@ import { Notice, TFile, WorkspaceLeaf } from 'obsidian';
 import { getLeafOfFile } from 'src/obsidian/events/workspace/helpers/get-leaf-of-file';
 import { openFile } from 'src/obsidian/events/workspace/effects/open-file';
 import { toggleObsidianViewType } from 'src/obsidian/events/workspace/effects/toggle-obsidian-view-type';
-import { MANDALA_VIEW_TYPE, MandalaView } from 'src/view/view';
+import { MANDALA_VIEW_TYPE } from 'src/view/view';
 import { openMandalaConversionModal } from 'src/obsidian/modals/mandala-conversion-modal';
 import {
     analyzeMandalaContent,
@@ -18,9 +18,7 @@ import {
 import {
     buildCenterDateHeading,
     DAY_PLAN_FRONTMATTER_KEY,
-    getHotCoreSections,
     parseDayPlanFromMarkdown,
-    sectionFromDateInPlanYear,
 } from 'src/lib/mandala/day-plan';
 
 import { setViewType } from 'src/stores/settings/actions/set-view-type';
@@ -40,43 +38,6 @@ const refreshMandalaViewData = (
             maybeTextView.setViewData(content);
         }
     }, 50);
-};
-
-const focusDayPlanSection = (
-    plugin: MandalaGrid,
-    file: TFile,
-    content: string,
-) => {
-    const run = (attempt: number) => {
-        const leaf = getLeafOfFile(plugin, file, MANDALA_VIEW_TYPE);
-        if (!leaf || !(leaf.view instanceof MandalaView)) {
-            if (attempt < 8) window.setTimeout(() => run(attempt + 1), 80);
-            return;
-        }
-        const view = leaf.view;
-        const plan = parseDayPlanFromMarkdown(content);
-        if (!plan) return;
-        view.dayPlanHotCores = getHotCoreSections(plan.year);
-
-        const todaySection = sectionFromDateInPlanYear(plan.year);
-        const targetSection = todaySection ?? '1';
-        if (!todaySection) {
-            new Notice('年份错误。');
-            view.dayPlanHotCores = new Set(['1']);
-        }
-        const nodeId = view.documentStore.getValue().sections.section_id[targetSection];
-        if (!nodeId) return;
-
-        view.viewStore.dispatch({
-            type: 'view/mandala/subgrid/enter',
-            payload: { theme: targetSection },
-        });
-        view.viewStore.dispatch({
-            type: 'view/set-active-node/mouse-silent',
-            payload: { id: nodeId },
-        });
-    };
-    window.setTimeout(() => run(0), 120);
 };
 
 const getTodayIsoDate = () => {
@@ -187,7 +148,6 @@ export const toggleFileViewType = async (
     if (newViewType === MANDALA_VIEW_TYPE) {
         const latest = await plugin.app.vault.read(file);
         refreshMandalaViewData(plugin, file, latest);
-        focusDayPlanSection(plugin, file, latest);
     }
 };
 
